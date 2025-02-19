@@ -17,18 +17,3 @@ public class VehicledetectionApplication {
 }
 
 
-@Component
-class DatabaseChecker implements CommandLineRunner {
-	@Autowired
-	private JdbcTemplate jdbcTemplate;
-
-	@Override
-	public void run(String... args) {
-		try {
-			int count = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM information_schema.tables", Integer.class);
-			System.out.println("数据库连接成功，表数量：" + count);
-		} catch (Exception e) {
-			System.err.println("数据库连接失败：" + e.getMessage());
-		}
-	}
-}
