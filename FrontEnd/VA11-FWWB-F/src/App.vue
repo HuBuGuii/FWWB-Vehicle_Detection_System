@@ -10,6 +10,10 @@
       </Transition>
     </router-view>
   </main>
+
+  <div class="dialog">
+    
+  </div>
   
  </div>
 

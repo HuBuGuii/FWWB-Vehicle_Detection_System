@@ -18,7 +18,7 @@
           @click="handleRegister"
           color="rgba(255, 213, 3, 1)"
           class="registerButton"
-          round="true"
+          :round="true"
         >
           <template #icon
             ><svg
@@ -41,7 +41,7 @@
           @click="handleLogin"
           color="rgba(255, 255, 255, 1)"
           class="loginButton"
-          round="true"
+          :round="true"
           ><template #icon
             ><svg
               t="1740399283118"
@@ -62,19 +62,31 @@
       </div>
       <div class="cards">
         <div class="card1">
-          <div class="card-icon"></div>
-          <div class="card-title"></div>
-          <div class="card-desc"></div>
+          <div class="card-icon" style="background-color: rgba(106, 168, 234, 1)"></div>
+          <div class="card-title" style="color: rgba(27, 120, 227, 1);">智能预警</div>
+          <div class="card-desc">
+            我们的系统可以自动分析车辆的行驶轨迹，并实时预警出车辆异常行为，帮助交通运输管理者及时发现车辆违规行为，保障交通安全。
+        
+            
+          </div>
         </div>
         <div class="card2">
-          <div class="card-icon"></div>
-          <div class="card-title"></div>
-          <div class="card-desc"></div>
+          <div class="card-icon" style="background-color: rgba(255, 213, 0, 1);"></div>
+          <div class="card-title" style="color: rgba(250, 161, 27, 1);">路段规划</div>
+          <div class="card-desc">
+            通过我们的路段规划系统，您可以快速、准确地规划出交通枢纽的路线，并实时掌握交通状况，确保交通畅通。
+            
+           
+          </div>
         </div>
         <div class="card3">
-          <div class="card-icon"></div>
-          <div class="card-title"></div>
-          <div class="card-desc"></div>
+          <div class="card-icon" style="background-color: rgba(162, 231, 211, 1);"></div>
+          <div class="card-title" style="color: rgba(162, 231, 211, 1);">实时追踪</div>
+          <div class="card-desc">
+            通过我们的实时追踪系统，您可以随时掌握车辆的位置、速度、方向、状态等信息，并实时掌握交通状况，确保交通畅通。
+            
+            
+          </div>
         </div>
       </div>
     </main>
@@ -83,6 +95,16 @@
 
 <script setup lang="ts">
 import { ref, reactive, onMounted } from 'vue'
+
+const handleRegister = () => {
+  console.log('register')
+}
+
+const handleLogin = () => {
+  console.log('login')
+}
+
+
 </script>
 
 <style scoped lang="scss">
@@ -119,7 +141,7 @@ $design-height: 1080;
       width: px-to-vw(1920);
       height: px-to-vh(1080);
       opacity: 1;
-      background: linear-gradient(132.84deg, rgba(6, 35, 69, 1) 0%, rgba(124, 242, 171, 0.6) 100%);
+      background: linear-gradient(132.84deg, rgba(106, 168, 234, 1) 0%, rgba(162, 231, 211, 1) 100% );
     }
     .background-circle {
       position: absolute;
@@ -149,7 +171,7 @@ $design-height: 1080;
       }
       .smallTitle {
         opacity: 1;
-        font-size: 36px;
+        font-size: 30px;
         font-weight: 900;
         letter-spacing: 0px;
         line-height: 52.13px;
@@ -159,6 +181,7 @@ $design-height: 1080;
       }
       .user {
         right: px-to-vw(49);
+        color:rgba(255, 255, 255, 1);
       }
     }
     .Title {
@@ -170,7 +193,7 @@ $design-height: 1080;
       flex-direction: column;
       align-items: center;
       .name {
-        font-size: 72px;
+        font-size: 60px;
         font-weight: 900;
         letter-spacing: 0px;
         line-height: 104.26px;
@@ -230,6 +253,7 @@ $design-height: 1080;
       flex-direction: row;
       justify-content: space-between;
       > div {
+        position: relative;
         width: px-to-vw(390);
         height: px-to-vh(369);
         opacity: 1;
@@ -239,13 +263,52 @@ $design-height: 1080;
           0 1px 3px rgba(0, 0, 0, 0.12),
           0 1px 2px rgba(0, 0, 0, 0.24);
         transition: box-shadow 0.3s ease-in-out;
+        transition: transform 0.3s ease;
         &:hover {
           box-shadow:
             0 3px 6px rgba(0, 0, 0, 0.16),
             0 3px 6px rgba(0, 0, 0, 0.23);
+          transform: scale(1.05) translateY(-10px);
         }
       }
     }
   }
+}
+.card-icon {
+  position: absolute;
+  border-radius: 25px;
+  width: 50px;
+  height: 50px;
+  opacity: 1;
+  top: 20px;
+  left: 20px;
+}
+.card-title {
+  position: absolute;
+  top: 85px;
+  left: 25px;
+  height: 44px;
+  opacity: 1;
+  font-size: 30px;
+  font-weight: 300;
+  letter-spacing: 0px;
+  line-height: 43.44px;
+  text-align: left;
+  vertical-align: top;
+}
+.card-desc {
+  position: absolute;
+  top:145px;
+  height: 35%;
+  margin: 0px 25px ;
+  opacity: 1;
+  font-size: 18px;
+  font-weight: 300;
+  letter-spacing: 0px;
+  line-height: 26.06px;
+  color: rgba(128, 128, 128, 1);
+  text-align: left;
+  vertical-align: top;
+  overflow: hidden;
 }
 </style>
