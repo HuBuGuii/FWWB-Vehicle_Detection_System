@@ -7,6 +7,9 @@ spring:
     username: 13168
     password: 1234
     driver-class-name: org.postgresql.Driver
+  redis:
+    host: 127.0.0.1
+    port: 6379
   jpa:
     hibernate:
       ddl-auto: update
@@ -15,7 +18,14 @@ spring:
       hibernate:
         format_sql: true
 
-app:
-  jwt:
-    secret: "your-256-bit-secret-key-here"
-    expiration: 86400000
+#logging:
+#  level:
+#    io:
+#      lettuce=DEBUG:
+
+yolo:
+  model:
+    path: "/runs/model"
+  output:
+    dir: "/runs/result"
+
