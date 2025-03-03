@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -14,7 +13,11 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.UUID;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 @RestController
 @RequestMapping("/api/yolo")
@@ -36,6 +39,7 @@ public class YoloDetectionController {
      * POST /detection/video
      * 上传视频文件，经 Python 脚本检测后返回处理过的视频
      */
+
     @PostMapping("/video")
     public ResponseEntity<byte[]> detectVideo(@RequestParam("file") MultipartFile file) {
         String tempDir = System.getProperty("java.io.tmpdir");
@@ -88,27 +92,37 @@ public class YoloDetectionController {
     }
 
     /**
-     * POST /detection/image
+     * POST /api/yolo/image
      * 上传图片文件，经 Python 脚本检测后返回处理过的图片
      */
+    private static final String YOLO_SCRIPT_PATH = "detect.py"; // 改为相对路径
+    private static final String YOLO_MODEL_PATH = "yolov5s.pt"; // 改为相对路径
+    private static final String INPUT_IMAGE_DIR = new File("./backend/src/main/resources/python/yolov5/fwwbImages/input").getAbsolutePath();
+    private static final String OUTPUT_IMAGE_DIR = new File("./backend/src/main/resources/python/yolov5/fwwbImages/output").getAbsolutePath();
+    private static final String CONDA_PYTHON_PATH = "D:/Work/Tools/Anaconda/envs/yolov5/python.exe";
+
     @PostMapping(value = "/image")
-    public ResponseEntity<byte[]> detectImage( @RequestParam("file") MultipartFile file, HttpServletRequest request) {
+    public ResponseEntity<byte[]> detectImage(MultipartFile[] files, HttpServletRequest request) throws Exception {
         System.out.println("Content-Type: " + request.getContentType());
-        String tempDir = System.getProperty("java.io.tmpdir");
-        String uniqueID = UUID.randomUUID().toString();
-        // 使用 .jpg 扩展名保存文件
-        Path inputImage = Paths.get(tempDir, "input_" + uniqueID + ".jpg");
-        Path outputImage = Paths.get(tempDir, "output_" + uniqueID + ".jpg");
 
         try {
-            // 将上传的图片保存到临时文件
-            Files.write(inputImage, file.getBytes());
+            // 保存上传的图片到输入目录
+            for (MultipartFile file : files) {
+                String uniqueID = UUID.randomUUID().toString();
+                Path inputImage = Paths.get(INPUT_IMAGE_DIR, "input_" + uniqueID + ".jpg");
+                Files.write(inputImage, file.getBytes());
+            }
 
-            // 构造调用 Python 脚本命令：yolo_image_detection.py
-            ProcessBuilder pb = new ProcessBuilder("python", yoloImageScriptPath,
-                    "--input", inputImage.toString(),
-                    "--output", outputImage.toString(),
-                    "--model", yoloModelPath);
+            // 构造调用 Python 脚本命令
+            ProcessBuilder pb = new ProcessBuilder(
+                    CONDA_PYTHON_PATH,
+                    YOLO_SCRIPT_PATH,
+                    "--weights", YOLO_MODEL_PATH,
+                    "--source", INPUT_IMAGE_DIR,
+                    "--project", OUTPUT_IMAGE_DIR,
+                    "--name", "exp"
+            );
+            pb.directory(new File("./backend/src/main/resources/python/yolov5"));
             pb.redirectErrorStream(true);
             Process process = pb.start();
 
@@ -122,30 +136,54 @@ public class YoloDetectionController {
 
             int exitCode = process.waitFor();
             if (exitCode != 0) {
-                return ResponseEntity.status(500)
-                        .body(("YOLO 图像检测脚本执行失败，退出码：" + exitCode).getBytes());
+                throw new RuntimeException("YOLO 图像检测脚本执行失败，退出码：" + exitCode);
             }
 
-            // 读取处理后的图片数据并返回
-            byte[] imageBytes = Files.readAllBytes(outputImage);
+            // 删除输入目录中的图片
+            Files.list(Paths.get(INPUT_IMAGE_DIR)).forEach(path -> {
+                try {
+                    Files.deleteIfExists(path);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
 
+            // 获取最新的 expX 文件夹
+            Path outputExpDir = Files.list(Paths.get(OUTPUT_IMAGE_DIR))
+                    .filter(Files::isDirectory)
+                    .filter(path -> path.getFileName().toString().startsWith("exp"))
+                    .max(Comparator.comparing(path -> {
+                        try {
+                            return Files.getLastModifiedTime(path);
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }))
+                    .orElseThrow(() -> new RuntimeException("No output exp directory found"));
+
+            // 创建 ZIP 文件
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            try (ZipOutputStream zipOut = new ZipOutputStream(baos)) {
+                // 遍历 expX 文件夹中的所有图片文件
+                for (Path imagePath : Files.list(outputExpDir).filter(Files::isRegularFile).toList()) {
+                    // 创建 ZIP 条目
+                    ZipEntry zipEntry = new ZipEntry(imagePath.getFileName().toString());
+                    zipOut.putNextEntry(zipEntry);
+                    // 将图片文件写入 ZIP
+                    Files.copy(imagePath, zipOut);
+                    zipOut.closeEntry();
+                }
+            }
+
+            // 返回 ZIP 文件
             HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.IMAGE_JPEG);
-            headers.setContentDispositionFormData("attachment", "output_" + uniqueID + ".jpg");
-
-            return ResponseEntity.ok().headers(headers).body(imageBytes);
+            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+            headers.setContentDispositionFormData("attachment", "results.zip");
+            return ResponseEntity.ok().headers(headers).body(baos.toByteArray());
 
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
-            return ResponseEntity.status(500).body(e.getMessage().getBytes());
-        } finally {
-            // 清理临时文件
-            try {
-                Files.deleteIfExists(inputImage);
-                Files.deleteIfExists(outputImage);
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
+            throw new RuntimeException("Internal server error: " + e.getMessage());
         }
     }
 }
