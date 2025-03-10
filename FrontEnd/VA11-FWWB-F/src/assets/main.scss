@@ -1,0 +1,22 @@
+@use "sass:math";
+
+$design-width: 1920px; // 添加单位
+$design-height: 1080px; // 添加单位
+
+@function px-to-vw($px) {
+  @return math.div($px, $design-width) * 100vw;
+}
+
+@function px-to-vh($px) {
+  @return math.div($px, $design-height) * 100vh;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+#app {
+  width: 100vw;
+  height: 100vh;
+}

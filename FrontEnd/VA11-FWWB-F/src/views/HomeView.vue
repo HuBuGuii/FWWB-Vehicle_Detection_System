@@ -115,15 +115,16 @@ const handleLogin = () => {
 </script>
 
 <style scoped lang="scss">
+@use "sass:math";
 $design-width: 1920;
 $design-height: 1080;
 
 @function px-to-vw($px) {
-  @return ($px / $design-width) * 100vw;
+  @return math.div($px,1920) * 100vw;
 }
 
 @function px-to-vh($px) {
-  @return ($px / $design-height) * 100vh;
+  @return math.div($px,1080) * 100vh;
 }
 
 #home-view {

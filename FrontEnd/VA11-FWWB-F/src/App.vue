@@ -12,25 +12,35 @@
   </main>
 
   <div class="dialog">
+    <LogRegCom></LogRegCom>
   </div>
-  <LogRegCom></LogRegCom>
+
  </div>
 
 </template>
 
 <script setup lang='ts'>
-import {ref,reactive} from 'vue'
+import {reactive} from 'vue'
 import LogRegCom from './components/LogRegCom.vue';
 
-
 const cachedViews = reactive([])
-
-
 
 </script>
 <style scoped lang="scss">
 #app{
-  width: 100%;
   height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+*{
+  overflow: hidden;
+}
+.main-content{
+  overflow: hidden;
+}
+.dialog{
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
 }
 </style>

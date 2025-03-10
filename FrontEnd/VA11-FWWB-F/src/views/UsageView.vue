@@ -16,7 +16,36 @@
 
       <div class="cards">
         <div class="card1" @click="toMap()" style="cursor: pointer">
-          <div class="card-icon" style="background-color: rgba(106, 168, 234, 1)"></div>
+          <div class="card-icon" style="background-color: rgba(106, 168, 234, 1)">
+            <div class="innericon">
+              <svg
+                t="1741585059437"
+                class="icon"
+                viewBox="0 0 1024 1024"
+                version="1.1"
+                xmlns="http://www.w3.org/2000/svg"
+                p-id="4016"
+                width="80%"
+                height="80%"
+              >
+                <path
+                  d="M512 772.44c-143.33 0-259.95-116.61-259.95-259.94s116.62-260 260-260a26.52 26.52 0 0 1 0 53c-114.09 0-206.91 92.82-206.91 206.92S397.91 719.4 512 719.4s206.91-92.82 206.91-206.9a206.45 206.45 0 0 0-11.3-67.64 26.52 26.52 0 0 1 50.13-17.33 259.43 259.43 0 0 1 14.21 85C772 655.83 655.34 772.44 512 772.44z"
+                  fill="#e6e6e6"
+                  p-id="4017"
+                ></path>
+                <path
+                  d="M512 615.29A102.8 102.8 0 1 1 614.79 512.5 102.9 102.9 0 0 1 512 615.29z m0-152.55a49.76 49.76 0 1 0 49.75 49.76A49.81 49.81 0 0 0 512 462.74z"
+                  fill="#e6e6e6"
+                  p-id="4018"
+                ></path>
+                <path
+                  d="M512 960.77c-247.18 0-448.27-201.1-448.27-448.27S264.82 64.22 512 64.22a26.52 26.52 0 0 1 26.52 26.52v345.48a26.52 26.52 0 0 1-53 0V118.14C279.86 131.83 116.77 303.47 116.77 512.5c0 217.93 177.3 395.23 395.23 395.23s395.23-177.3 395.23-395.23a395.83 395.83 0 0 0-47.68-188.38 26.52 26.52 0 0 1 46.61-25.32 449 449 0 0 1 54.11 213.7c0 247.17-201.09 448.27-448.27 448.27z"
+                  fill="#e6e6e6"
+                  p-id="4019"
+                ></path>
+              </svg>
+            </div>
+          </div>
           <div class="card-title" style="color: rgba(27, 120, 227, 1)">实时监测</div>
           <div class="card-desc">
             进入到“监测地图”，您可以通过点击选中特定路段，进行更加细致的监测。
@@ -24,7 +53,26 @@
         </div>
 
         <div class="card2" @click="toFileUpload()" style="cursor: pointer">
-          <div class="card-icon" style="background-color: rgba(255, 213, 0, 1)"></div>
+          <div class="card-icon" style="background-color: rgba(124, 242, 171, 0.6)">
+            <div class="innericon">
+              <svg
+                t="1741584643205"
+                class="icon"
+                viewBox="0 0 1024 1024"
+                version="1.1"
+                xmlns="http://www.w3.org/2000/svg"
+                p-id="2831"
+                width="80%"
+                height="80%"
+              >
+                <path
+                  d="M544 201.6v470.4c0 19.2-12.8 32-32 32s-32-12.8-32-32v-460.8l-121.6 121.6c-12.8 12.8-32 12.8-44.8 0-12.8-12.8-12.8-32 0-44.8l156.8-156.8c25.6-25.6 64-25.6 89.6 0l156.8 156.8c12.8 12.8 12.8 32 0 44.8-12.8 12.8-32 12.8-44.8 0l-128-131.2z m288 406.4c0-19.2 12.8-32 32-32s32 12.8 32 32v160c0 54.4-41.6 96-96 96h-576c-54.4 0-96-41.6-96-96v-160c0-19.2 12.8-32 32-32s32 12.8 32 32v160c0 19.2 12.8 32 32 32h576c19.2 0 32-12.8 32-32v-160z"
+                  fill="#374E6B"
+                  p-id="2832"
+                ></path>
+              </svg>
+            </div>
+          </div>
           <div class="card-title" style="color: rgba(250, 161, 27, 1)">文件上传</div>
           <div class="card-desc">
             可以选择视频或是照片集进行上传，等待片刻之后得到数据分析结果。
@@ -37,12 +85,10 @@
 
 <script setup lang="ts">
 //导入
-import { ref, reactive, onMounted } from 'vue'
-import { useAuthStore } from '@/stores/auth'
+
 import router from '@/router'
 
 //初始化
-const authStore = useAuthStore()
 
 const toMap = () => {
   router.push({ name: 'detection-map' })
@@ -53,15 +99,16 @@ const toFileUpload = () => {
 </script>
 
 <style scoped lang="scss">
+@use 'sass:math';
 $design-width: 1920;
 $design-height: 1080;
 
 @function px-to-vw($px) {
-  @return ($px / $design-width) * 100vw;
+  @return math.div($px, 1920) * 100vw;
 }
 
 @function px-to-vh($px) {
-  @return ($px / $design-height) * 100vh;
+  @return math.div($px, 1080) * 100vh;
 }
 
 #home-view {
@@ -160,39 +207,6 @@ $design-height: 1080;
         vertical-align: top;
       }
     }
-    .buttons {
-      width: px-to-vw(378);
-      position: relative;
-      top: px-to-vh(350);
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      flex-direction: row;
-      justify-content: space-between;
-
-      .registerButton {
-        width: px-to-vw(151);
-        height: 72px;
-        font-size: 24px;
-        font-weight: 900;
-        letter-spacing: 0px;
-        line-height: 34.75px;
-        color: rgba(255, 255, 255, 1);
-        text-align: left;
-        vertical-align: top;
-      }
-      .loginButton {
-        width: px-to-vw(151);
-        height: 72px;
-        font-size: 24px;
-        font-weight: 900;
-        letter-spacing: 0px;
-        line-height: 34.75px;
-        color: rgba(255, 195, 0, 1);
-        text-align: left;
-        vertical-align: top;
-      }
-    }
     .cards {
       position: relative;
       top: px-to-vh(450);
@@ -232,6 +246,14 @@ $design-height: 1080;
   opacity: 1;
   top: 20px;
   left: 20px;
+}
+.innericon {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .card-title {
   position: absolute;
