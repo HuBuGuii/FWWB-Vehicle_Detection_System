@@ -12,15 +12,17 @@
   </main>
 
   <div class="dialog">
-    
   </div>
-  
+  <LogRegCom></LogRegCom>
  </div>
 
 </template>
 
 <script setup lang='ts'>
 import {ref,reactive} from 'vue'
+import LogRegCom from './components/LogRegCom.vue';
+
+
 const cachedViews = reactive([])
 
 

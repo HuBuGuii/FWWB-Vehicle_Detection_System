@@ -13,105 +13,43 @@
         <div class="name">智航云轨</div>
         <div class="desc">大型交通枢纽辖域内通行车辆智能检测系统</div>
       </div>
-      <div class="buttons">
-        <el-button
-          @click="handleRegister"
-          color="rgba(255, 213, 3, 1)"
-          class="registerButton"
-          :round="true"
-        >
-          <template #icon
-            ><svg
-              t="1740399189175"
-              class="icon"
-              viewBox="0 0 1024 1024"
-              version="1.1"
-              xmlns="http://www.w3.org/2000/svg"
-              p-id="2082"
-              width="200"
-              height="200"
-            >
-              <path
-                d="M320 307.2c6.4-95.2 84.8-172.8 180-178.4 111.2-6.4 204 81.6 204 192 0 105.6-85.6 192-192 192-110.4 0-199.2-93.6-192-205.6zM575.2 768c0-72.8 40.8-136.8 100.8-168.8C616 584 556 576 511.2 576 384 576 128 640 128 768v96c0 17.6 14.4 32 32 32h464c-30.4-33.6-48.8-78.4-48.8-128z m320.8-32h-96V640h-64v96H640v64h96v96h64v-96h96v-64z"
-                p-id="2083"
-              ></path></svg></template
-          ><span>注册</span></el-button
-        >
-        <el-button
-          @click="handleLogin"
-          color="rgba(255, 255, 255, 1)"
-          class="loginButton"
-          :round="true"
-          ><template #icon
-            ><svg
-              t="1740399283118"
-              class="icon"
-              viewBox="0 0 1024 1024"
-              version="1.1"
-              xmlns="http://www.w3.org/2000/svg"
-              p-id="3086"
-              width="200"
-              height="200"
-            >
-              <path
-                d="M783.69 882.537H289.438c-54.588 0-98.848-44.243-98.848-98.811v-98.808h49.424v98.808c0 27.286 22.132 49.406 49.424 49.406H783.69c27.294 0 49.423-22.124 49.423-49.406V240.274c0-27.287-22.133-49.407-49.423-49.407H289.438c-27.297 0-49.424 22.12-49.424 49.407v98.807H190.59v-98.807c0-54.568 44.26-98.812 98.848-98.812H783.69c54.587 0 98.847 44.243 98.847 98.812v543.451c0 54.568-44.26 98.812-98.847 98.812zM529.746 357.802c-9.63-9.649-9.63-25.304 0-34.93 9.65-9.65 25.313-9.65 34.967 0l170.501 170.432c5.139 5.14 7.335 11.966 6.999 18.695 0.336 6.731-1.86 13.557-6.999 18.723l-170.501 170.43c-9.655 9.648-25.318 9.648-34.967 0-9.63-9.65-9.63-25.306 0-34.932l129.57-129.52h-493.14c-13.637 0-24.713-11.047-24.713-24.702 0-13.627 11.076-24.703 24.711-24.703h493.143L529.746 357.8z m-40.774 0"
-                p-id="3087"
-              ></path></svg></template
-          ><span>登录</span></el-button
-        >
-      </div>
+
       <div class="cards">
-        <div class="card1">
+        <div class="card1" @click="toMap()" style="cursor: pointer">
           <div class="card-icon" style="background-color: rgba(106, 168, 234, 1)"></div>
-          <div class="card-title" style="color: rgba(27, 120, 227, 1);">智能预警</div>
+          <div class="card-title" style="color: rgba(27, 120, 227, 1)">实时监测</div>
           <div class="card-desc">
-            我们的系统可以自动分析车辆的行驶轨迹，并实时预警出车辆异常行为，帮助交通运输管理者及时发现车辆违规行为，保障交通安全。
-
-
+            进入到“监测地图”，您可以通过点击选中特定路段，进行更加细致的监测。
           </div>
         </div>
-        <div class="card2">
-          <div class="card-icon" style="background-color: rgba(255, 213, 0, 1);"></div>
-          <div class="card-title" style="color: rgba(250, 161, 27, 1);">路段规划</div>
+
+        <div class="card2" @click="toFileUpload()" style="cursor: pointer">
+          <div class="card-icon" style="background-color: rgba(255, 213, 0, 1)"></div>
+          <div class="card-title" style="color: rgba(250, 161, 27, 1)">文件上传</div>
           <div class="card-desc">
-            通过我们的路段规划系统，您可以快速、准确地规划出交通枢纽的路线，并实时掌握交通状况，确保交通畅通。
-
-
-          </div>
-        </div>
-        <div class="card3">
-          <div class="card-icon" style="background-color: rgba(162, 231, 211, 1);"></div>
-          <div class="card-title" style="color: rgba(162, 231, 211, 1);">实时追踪</div>
-          <div class="card-desc">
-            通过我们的实时追踪系统，您可以随时掌握车辆的位置、速度、方向、状态等信息，并实时掌握交通状况，确保交通畅通。
-
-
+            可以选择视频或是照片集进行上传，等待片刻之后得到数据分析结果。
           </div>
         </div>
       </div>
     </main>
-
-
   </div>
 </template>
 
 <script setup lang="ts">
+//导入
+import { ref, reactive, onMounted } from 'vue'
 import { useAuthStore } from '@/stores/auth'
+import router from '@/router'
 
-
-
+//初始化
 const authStore = useAuthStore()
-const handleRegister = () => {
-  authStore.RegisterVisible = true
-  console.log('register')
+
+const toMap = () => {
+  router.push({ name: 'detection-map' })
 }
-
-const handleLogin = () => {
-  authStore.LoginVisible = true
-  console.log('login')
+const toFileUpload = () => {
+  router.push({ name: 'file-upload' })
 }
-
-
 </script>
 
 <style scoped lang="scss">
@@ -148,7 +86,11 @@ $design-height: 1080;
       width: px-to-vw(1920);
       height: px-to-vh(1080);
       opacity: 1;
-      background: linear-gradient(132.84deg, rgba(106, 168, 234, 1) 0%, rgba(162, 231, 211, 1) 100% );
+      background: linear-gradient(
+        132.84deg,
+        rgba(106, 168, 234, 1) 0%,
+        rgba(162, 231, 211, 1) 100%
+      );
     }
     .background-circle {
       position: absolute;
@@ -188,7 +130,7 @@ $design-height: 1080;
       }
       .user {
         right: px-to-vw(49);
-        color:rgba(255, 255, 255, 1);
+        color: rgba(255, 255, 255, 1);
       }
     }
     .Title {
@@ -256,7 +198,7 @@ $design-height: 1080;
       top: px-to-vh(450);
       left: 50%;
       transform: translateX(-50%);
-      width: px-to-vw(1433);
+      width: px-to-vw(1150);
       display: flex;
       flex-direction: row;
       justify-content: space-between;
@@ -306,9 +248,9 @@ $design-height: 1080;
 }
 .card-desc {
   position: absolute;
-  top:145px;
+  top: 145px;
   height: 35%;
-  margin: 0px 25px ;
+  margin: 0px 25px;
   opacity: 1;
   font-size: 18px;
   font-weight: 300;

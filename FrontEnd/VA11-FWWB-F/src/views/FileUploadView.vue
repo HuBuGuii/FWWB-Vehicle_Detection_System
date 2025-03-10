@@ -1,8 +1,6 @@
 <template>
 
- <div>
-    <h1>Data Analysis View</h1>
- </div>
+ <div>this is file upload view</div>
 
 </template>
 

@@ -10,21 +10,41 @@ const router = createRouter({
       component: () => import('../views/HomeView.vue'),
     },
     {
+      path:'/usage',
+      name: 'usage',
+      component: () => import('../views/UsageView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
+      path:'/map',
+      name:'detection-map',
+      component: () => import('../views/DetectionMapView.vue'),
+      meta: { requiresAuth: true },
+
+    },
+    {
+      path:'/file-upload',
+      name:'file-upload',
+      component: () => import('../views/FileUploadView.vue'),
+      meta: { requiresAuth: true },
+
+    },
+    {
       path: '/data-analysis',
       name: 'data-analysis',
       component: () => import('../views/DataAnalysisView.vue'),
       meta: { requiresAuth: true },
     },
-    
+
   ],
 })
 
 router.beforeEach((to, from) => {
   const authStore = useAuthStore()
-
+  authStore.lastPath = from.fullPath
   if (to.meta.requiresAuth && !authStore.LogCondition) {
     authStore.redirectPath = to.fullPath
-    authStore.showLogin = true
+    authStore.LoginVisible = true
     if (to.path !== '/home') {
       return { name: 'home' }
     }
