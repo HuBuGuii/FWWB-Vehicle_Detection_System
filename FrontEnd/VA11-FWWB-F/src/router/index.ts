@@ -30,9 +30,9 @@ const router = createRouter({
 
     },
     {
-      path: '/data-analysis',
-      name: 'data-analysis',
-      component: () => import('../views/DataAnalysisView.vue'),
+      path: '/allData',
+      name: 'allData',
+      component: () => import('../views/AllDataListView.vue'),
       meta: { requiresAuth: true },
     },
 

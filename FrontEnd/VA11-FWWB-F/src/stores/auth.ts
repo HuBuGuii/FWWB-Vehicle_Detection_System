@@ -1,4 +1,4 @@
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 import { defineStore } from 'pinia'
 
 export const useAuthStore = defineStore('auth', () => {
@@ -25,4 +25,6 @@ export const useAuthStore = defineStore('auth', () => {
     redirectPath,
     token
   }
+},{
+  persist:true,
 })

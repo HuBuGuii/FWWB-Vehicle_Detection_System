@@ -1,7 +1,7 @@
 <template>
 
  <div>
-    <h1>Data Analysis View</h1>
+    <h1>All the data</h1>
  </div>
 
 </template>
