@@ -9,7 +9,7 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-@TableName("nonRealTimeDetectionRecord")
+@TableName("\"nonRealTimeDetectionRecord\"")
 public class NonRealTimeDetectionRecord {
     // 非实时检测记录ID：主键
     @TableId(type = IdType.AUTO)
@@ -32,4 +32,7 @@ public class NonRealTimeDetectionRecord {
 
     // 最大寿命
     private Long maxAge;
+
+    // exp文件夹
+    private String exp;
 }

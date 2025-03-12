@@ -63,7 +63,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/api/cameras/*",
                         "/api/detections/*",
                         "/api/token/*",
-                        "/api/detection/*"
+                        "/api/yolo/*"
                 ).hasRole("USER")
                 // 允许ADMIN角色访问所有URL
                 .antMatchers("/api/*").hasRole("ADMIN")
