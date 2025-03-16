@@ -1,27 +1,8 @@
 <template>
   <div id="fileUpload">
     <div class="mainContent">
-      <div class="title">文件分析</div>
-      <div class="graph">
-        <el-upload
-          ref="uploadRef"
-          class="upload"
-          drag
-          action="#"
-          multiple
-          :on-success="handleSucess"
-          :on-error="handleError"
-          :auto-upload="false"
-        >
-          <el-icon class="el-icon--upload"><upload-filled /></el-icon>
-          <div class="el-upload__text">拖拽文件或 <em>点击此处上传</em></div>
-          <template #tip>
-            <div class="el-upload__tip">
-              上传完成后点击右侧按钮开始分析 <el-button @click="handleUpload">开始分析</el-button>
-            </div>
-          </template>
-        </el-upload>
-      </div>
+      <div class="title">实时监控</div>
+      <div class="graph"></div>
       <div class="dashboard">
         <div class="board1">
           <div class="pie"></div>
@@ -64,9 +45,9 @@
           </span>
         </div>
         <div class="table">
-          <el-table :data="recentData" stripe style="width: 100%">
+          <el-table :data="recentData" stripe style="width: 100%;" >
             <el-table-column prop="date" label="Date" width="100" />
-            <el-table-column prop="car" label="Name" />
+            <el-table-column prop="car" label="Name"  />
           </el-table>
         </div>
       </div>
@@ -75,11 +56,6 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import { ElMessage } from 'element-plus'
-import type { UploadInstance } from 'element-plus'
-const uploadRef = ref<UploadInstance>()
-
 const recentData = [
   { date: '10/11', car: '小型车' },
   { date: '10/11', car: '小型车' },
@@ -92,18 +68,6 @@ const recentData = [
   { date: '10/11', car: '小型车' },
   { date: '10/11', car: '小型车' },
 ]
-
-const handleSucess = () => {
-  ElMessage.success('上传成功')
-}
-
-const handleError = () => {
-  ElMessage.error('上传失败')
-}
-
-const handleUpload = () => {
-  uploadRef.value?.submit()
-}
 </script>
 
 <style scoped lang="scss">
@@ -145,20 +109,9 @@ $design-height: 1080;
     }
 
     .graph {
-      display: flex;
-      align-items: center;
-      justify-content: center;
       border-radius: 10px;
-      background-color: #dcdcdc;
+      background-color: darkgrey;
       flex: 1;
-      .upload {
-        width: 80%;
-        .el-upload__tip {
-          display: flex;
-          justify-content: space-between;
-          padding: 0 20px;
-        }
-      }
     }
 
     .dashboard {
@@ -239,12 +192,12 @@ a {
 .totalData {
   flex-grow: 2;
   flex-shrink: 0;
-  flex-basis: 25%;
+  flex-basis:25%;
   margin-bottom: 20px;
 }
 .listData {
   flex-grow: 7;
-  flex-basis: 70%;
+  flex-basis:70%;
 }
 .name {
   height: px-to-vh(110);
@@ -252,8 +205,8 @@ a {
   align-items: center;
   justify-content: space-between;
 }
-.table {
-  flex: 1;
+.table{
+  flex:1;
   overflow-y: auto;
 }
 .cards {
@@ -269,4 +222,5 @@ a {
     height: 90%;
   }
 }
+
 </style>

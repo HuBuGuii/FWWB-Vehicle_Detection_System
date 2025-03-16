@@ -23,6 +23,11 @@ const router = createRouter({
 
     },
     {
+      path:'/realtime',
+      name:'realtime',
+      component: () => import('../views/RealTimeView.vue')
+    },
+    {
       path:'/file-upload',
       name:'file-upload',
       component: () => import('../views/FileUploadView.vue'),

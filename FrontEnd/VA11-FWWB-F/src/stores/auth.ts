@@ -9,7 +9,8 @@ export const useAuthStore = defineStore('auth', () => {
   const lastPath = ref<string>('')
   const redirectPath = ref<string>('')
   const token = ref<string>('')
-
+  const userName = ref<string>('小明')
+  const identity = ref<boolean>(false)  // 用于标识超级管理员
 
   // getters
 
@@ -23,7 +24,9 @@ export const useAuthStore = defineStore('auth', () => {
     RegisterVisible,
     lastPath,
     redirectPath,
-    token
+    token,
+    identity,
+    userName
   }
 },{
   persist:true,
