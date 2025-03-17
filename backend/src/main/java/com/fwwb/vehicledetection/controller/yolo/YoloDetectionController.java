@@ -1,18 +1,14 @@
 // File: src/main/java/com/fwwb/vehicledetection/controller/detection/YoloDetectionController.java
 package com.fwwb.vehicledetection.controller.yolo;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.fwwb.vehicledetection.domain.model.NonRealTimeDetectionRecord;
 import com.fwwb.vehicledetection.domain.model.Vehicle;
 import com.fwwb.vehicledetection.service.NonRealTimeDetectionRecordService;
 import com.fwwb.vehicledetection.service.VehicleService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.*;
@@ -22,8 +18,6 @@ import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
 @RestController
 @RequestMapping("/api/yolo")
