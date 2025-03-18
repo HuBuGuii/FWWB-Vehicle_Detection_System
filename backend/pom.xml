@@ -15,8 +15,6 @@
 		<java.version>17</java.version>
 		<spring.boot.version>2.7.12</spring.boot.version>
 		<mybatis-plus.version>3.5.3.1</mybatis-plus.version>
-		<!-- 将此路径修改为包含 opencv_java451.dll 的正确目录 -->
-		<opencv.library.path>D:/Work/Tools/opencv/opencv/build/java/x64</opencv.library.path>
 	</properties>
 
 	<dependencyManagement>
@@ -112,15 +110,6 @@
 			<artifactId>jaxb-runtime</artifactId>
 			<version>2.3.1</version>
 		</dependency>
-
-		<!-- OpenCV -->
-		<dependency>
-			<groupId>org.opencv</groupId>
-			<artifactId>opencv</artifactId>
-			<version>4.11.0</version>
-			<scope>system</scope>
-			<systemPath>D:\Work\Tools\opencv\opencv_4.11.0\opencv\build\java\opencv-4110.jar</systemPath>
-		</dependency>
 	</dependencies>
 
 	<build>
@@ -134,16 +123,6 @@
 					<source>${java.version}</source>
 					<target>${java.version}</target>
 					<encoding>UTF-8</encoding>
-				</configuration>
-			</plugin>
-
-			<!-- Maven Surefire 插件，配置 OpenCV native 库路径 -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>3.2.5</version>
-				<configuration>
-					<argLine>-Djava.library.path=${opencv.library.path}</argLine>
 				</configuration>
 			</plugin>
 
