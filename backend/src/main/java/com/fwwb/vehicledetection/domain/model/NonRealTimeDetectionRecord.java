@@ -2,6 +2,7 @@
 package com.fwwb.vehicledetection.domain.model;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
@@ -19,6 +20,7 @@ public class NonRealTimeDetectionRecord {
     private Long userId;
 
     // 记录检测时间
+    @TableField("time")
     private LocalDateTime time;
 
     // 记录置信度
@@ -31,6 +33,7 @@ public class NonRealTimeDetectionRecord {
     private String vehicleStatus;
 
     // 最大寿命
+    @TableField("max_age")
     private Long maxAge;
 
     // exp文件夹

@@ -13,12 +13,12 @@ public class RecordCleanupScheduler {
     @Autowired
     private NonRealTimeDetectionRecordService recordService;
 
-    // 每60秒执行一次（cron表达式格式）
-    @Scheduled(fixedRate = 60 * 1000)
+    // 每10min执行一次
+    @Scheduled(fixedRate = 10* 60 * 1000)
     public void cleanupExpiredRecords() {
-        // 构建删除条件（示例使用MySQL语法）
+        // 构建删除条件（PostgreSQL 语法）
         QueryWrapper<NonRealTimeDetectionRecord> wrapper = new QueryWrapper<>();
-        wrapper.apply("time + INTERVAL max_age HOUR < NOW()");
+        wrapper.apply("time + (max_age || ' HOUR')::INTERVAL < NOW()");
 
         // 执行删除并记录日志
         int deleted = recordService.getBaseMapper().delete(wrapper);

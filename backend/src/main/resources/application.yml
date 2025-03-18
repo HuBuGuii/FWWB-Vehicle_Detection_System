@@ -22,15 +22,14 @@ spring:
     properties:
       hibernate:
         format_sql: true
+mybatis-plus:
+  configuration:
+    default-enum-type-handler: org.apache.ibatis.type.EnumOrdinalTypeHandler
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
-#logging:
-#  level:
-#    io:
-#      lettuce=DEBUG:
+conda:
+  python:
+    path: "D:/Work/Tools/Anaconda/envs/yolov5/python.exe"
 
-yolo:
-  model:
-    path: "/runs/model"
-  output:
-    dir: "/runs/result"
 
