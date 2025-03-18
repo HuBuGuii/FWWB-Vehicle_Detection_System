@@ -24,7 +24,7 @@
             <span>文件分析</span>
           </el-menu-item>
 
-          <el-menu-item index="/user-manage" v-if="auth.identity">
+          <el-menu-item index="/user-manage" >
             <el-icon><Service /></el-icon>
             <span>用户管理</span>
           </el-menu-item>
@@ -36,6 +36,15 @@
             <el-icon size="50px" color="rgba(229, 229, 229, 1)"><Avatar /></el-icon>
             <span>welcome</span>
             <span>{{ auth.userName }}</span>
+          </div>
+          <div class="tools">
+            <el-input
+            v-model="searchInput"
+            placeholder="输入用户名"
+            :prefix-icon="Search"
+            />
+            <el-button plain type="info" style="margin-left:10px">搜索</el-button>
+            <el-button plain type="primary" style="margin-left: 15px;">新增用户</el-button>
           </div>
         </el-header>
         <el-main>
@@ -49,88 +58,88 @@
               v-loading="loading"
               table-layout="auto"
             >
-            <el-table-column prop="time" label="时间" align="center" min-width="120" />
-              <el-table-column prop="address" label="路段" align="center" min-width="120" />
-              <el-table-column prop="number" label="车牌号" align="center" min-width="120" />
-              <el-table-column prop="type" label="车辆类型" align="center" min-width="120" />
-              <el-table-column prop="color" label="车辆颜色" align="center" min-width="120" />
+            <el-table-column prop="name" label="用户名" align="center" min-width="120" />
+              <el-table-column prop="email" label="邮箱地址" align="center" min-width="120" />
+              <el-table-column prop="status" label="用户状态" align="center" min-width="120" />
+              <el-table-column prop="regTime" label="注册时间" align="center" min-width="120" />
+              <el-table-column prop="lastLog" label="最后登录时间" align="center" min-width="120" />
               <el-table-column label="详细信息" align="center" min-width="120">
                 <template #default="scope">
                   <el-button type="primary" plain @click="handleDetail(scope.row.id)"
-                    >详情</el-button
+                    >编辑</el-button
+                  >
+                  <el-button type="danger"  plain @click="handleDelete(scope.row.id) "
+                    >删除</el-button
                   >
                 </template>
               </el-table-column>
-
             </el-table>
           </div>
           <div class="pagination">
             <el-pagination
-              :page-size="pageSize"
+              :page-size="13"
               :pager-count="9"
               layout="prev, pager, next"
-              :total="1000"
+              :page-count="pageCount"
             />
           </div>
         </el-main>
       </el-container>
     </el-container>
   </div>
+  <LogRegCom></LogRegCom>
 </template>
 
 <script setup lang="ts">
+import LogRegCom from '@/components/LogRegCom.vue'
 import { computed, ref, onMounted } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { useRoute } from 'vue-router'
+import { Search } from '@element-plus/icons-vue'
 
 const route = useRoute()
 const auth = useAuthStore()
 const allData = ref([
-  { id: 1, time: '1/1', address: '路段1', number: 'h132kc', type: '小车', color: '白' },
-  { id: 1, time: '1/1', address: '路段1', number: 'h132kc', type: '小车', color: '白' },
-  { id: 1, time: '1/1', address: '路段1', number: 'h132kc', type: '小车', color: '白' },
-  { id: 1, time: '1/1', address: '路段1', number: 'h132kc', type: '小车', color: '白' },
-  { id: 1, time: '1/1', address: '路段1', number: 'h132kc', type: '小车', color: '白' },
-  { id: 1, time: '1/1', address: '路段1', number: 'h132kc', type: '小车', color: '白' },
-  { id: 1, time: '1/1', address: '路段1', number: 'h132kc', type: '小车', color: '白' },
-  { id: 1, time: '1/1', address: '路段1', number: 'h132kc', type: '小车', color: '白' },
-  { id: 1, time: '1/1', address: '路段1', number: 'h132kc', type: '小车', color: '白' },
-  { id: 1, time: '1/1', address: '路段1', number: 'h132kc', type: '小车', color: '白' },
-  { id: 1, time: '1/1', address: '路段1', number: 'h132kc', type: '小车', color: '白' },
-  { id: 1, time: '1/1', address: '路段1', number: 'h132kc', type: '小车', color: '白' },
-  { id: 1, time: '1/1', address: '路段1', number: 'h132kc', type: '小车', color: '白' },
+  { id: 1, name: 'guigui', email: '1232132123@gmail.com', status: 'nromal', regTime: '3/12 12:00', lastLog: '3/18 13:30' },
+  { id: 1, name: 'guigui', email: '1232132123@gmail.com', status: 'nromal', regTime: '3/12 12:00', lastLog: '3/18 13:30' },
+  { id: 1, name: 'guigui', email: '1232132123@gmail.com', status: 'nromal', regTime: '3/12 12:00', lastLog: '3/18 13:30' },
+  { id: 1, name: 'guigui', email: '1232132123@gmail.com', status: 'nromal', regTime: '3/12 12:00', lastLog: '3/18 13:30' },
+  { id: 1, name: 'guigui', email: '1232132123@gmail.com', status: 'nromal', regTime: '3/12 12:00', lastLog: '3/18 13:30' },
+  { id: 1, name: 'guigui', email: '1232132123@gmail.com', status: 'nromal', regTime: '3/12 12:00', lastLog: '3/18 13:30' },
+  { id: 1, name: 'guigui', email: '1232132123@gmail.com', status: 'nromal', regTime: '3/12 12:00', lastLog: '3/18 13:30' },
+  { id: 1, name: 'guigui', email: '1232132123@gmail.com', status: 'nromal', regTime: '3/12 12:00', lastLog: '3/18 13:30' },
+  { id: 1, name: 'guigui', email: '1232132123@gmail.com', status: 'nromal', regTime: '3/12 12:00', lastLog: '3/18 13:30' },
+  { id: 1, name: 'guigui', email: '1232132123@gmail.com', status: 'nromal', regTime: '3/12 12:00', lastLog: '3/18 13:30' },
+  { id: 1, name: 'guigui', email: '1232132123@gmail.com', status: 'nromal', regTime: '3/12 12:00', lastLog: '3/18 13:30' },
+  { id: 1, name: 'guigui', email: '1232132123@gmail.com', status: 'nromal', regTime: '3/12 12:00', lastLog: '3/18 13:30' },
+  { id: 1, name: 'guigui', email: '1232132123@gmail.com', status: 'nromal', regTime: '3/12 12:00', lastLog: '3/18 13:30' },
   //排个13行差不多，问后端要的时候就一页13行
 ])
 const tablecontainer = ref()
-const tableMaxH = ref<number>(0)
 const loading = ref(false)
-const pageSize = ref(0)
+const pageCount = ref(10)
+const searchInput = ref('')
 
 const activeMenu = computed(() => route.path)
 const handleSelect = (index: string) => {
   console.log('当前选中菜单:', index)
   // router.push(index)
 }
-const calMaxH = () => {
-  if (tablecontainer.value) {
-    const temp = tablecontainer.value.getBoundingClientRect()
-    tableMaxH.value = temp.height - 2
-  }
-}
+
 
 const handleDetail = (id: number) => {
   console.log(id)
 }
 
+const getData = async() => {
+  console.log("等着写getData")
+}
 
-
-const getData = async () => {
-  console.log('等着写')
+const handleDelete = (id:number) => {
+  console.log(id)
 }
 
 onMounted(() => {
-  calMaxH()
-  console.log(tableMaxH)
   getData()
 })
 </script>
@@ -145,7 +154,7 @@ onMounted(() => {
   height: 100%;
   width: 100%;
 }
-.el-main {
+.el-main{
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -155,12 +164,21 @@ onMounted(() => {
   border-right: 1px solid #e4e7ed !important;
   box-sizing: border-box;
 }
-.tablecontainer {
+.tablecontainer{
   width: 100%;
 }
-.user {
-  box-sizing: border-box;
+.el-header{
   padding-top: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  .tools{
+    margin-right: 20px;
+    display: flex;
+    align-items: center;
+  }
+  .user {
+  box-sizing: border-box;
   display: flex;
   align-items: center;
   border-bottom: 4px solid rgba(229, 229, 229, 1);
@@ -175,4 +193,6 @@ onMounted(() => {
     vertical-align: top;
   }
 }
+}
+
 </style>
