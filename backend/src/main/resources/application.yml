@@ -30,6 +30,6 @@ mybatis-plus:
 
 conda:
   python:
-    path: "D:/Work/Tools/Anaconda/envs/yolov5/python.exe"
+    path: "D:/Work/Tools/Anaconda/envs/fwwb_yolo/python.exe"
 
 

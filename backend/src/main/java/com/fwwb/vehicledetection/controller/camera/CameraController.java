@@ -35,10 +35,6 @@ public class CameraController {
 
     public static final Logger LOGGER = Logger.getLogger(CameraController.class.getName());
 
-    static {
-        // 加载 OpenCV 库，确保已正确配置 native 库路径
-        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-    }
 
     // 用于存放摄像头采集会话，key 为 cameraId
     private static final Map<Long, CameraCaptureSession> captureSessions = new ConcurrentHashMap<>();

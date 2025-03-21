@@ -21,13 +21,17 @@ public class VehicledetectionApplication {
 	private CondaConfig condaConfig; // 注入Conda配置
 
 	public static void main(String[] args) {
-		// 加载OpenCV DLL
-		String dllPath = "src/main/resources/opencv/opencv_java4110.dll";
-		System.load(Paths.get(dllPath).toAbsolutePath().toString());
-		System.out.println("Loaded OpenCV DLL from: " + dllPath);
-		System.out.println("java.library.path: " + System.getProperty("java.library.path"));
+		// 加载 OpenCV DLL
+		String dllPath = "src/main/resources/opencv/opencv-java4110.dll"; // 注意文件名保持一致
+		File dllFile = new File(dllPath);
+		if (dllFile.exists()) {
+			System.load(dllFile.getAbsolutePath());
+			System.out.println("Loaded OpenCV DLL from: " + dllFile.getAbsolutePath());
+		} else {
+			throw new RuntimeException("OpenCV DLL not found at: " + dllFile.getAbsolutePath());
+		}
 
-		// 启动Spring Boot应用
+		// 启动 Spring Boot 应用
 		SpringApplication.run(VehicledetectionApplication.class, args);
 	}
 
@@ -93,11 +97,13 @@ public class VehicledetectionApplication {
 	 */
 	private void checkOpenCV() {
 		try {
-			// 尝试调用OpenCV的某个方法
-			System.loadLibrary(org.opencv.core.Core.NATIVE_LIBRARY_NAME);
-			System.out.println("OpenCV is loaded successfully!");
+			// 检查OpenCV版本
+			String version = org.opencv.core.Core.VERSION;
+			System.out.println("OpenCV loaded successfully! Version: " + version);
 		} catch (UnsatisfiedLinkError e) {
-			System.out.println("OpenCV failed to load: " + e.getMessage());
+			System.out.println("OpenCV native library failed to load: " + e.getMessage());
+		} catch (Exception e) {
+			System.out.println("OpenCV check failed: " + e.getMessage());
 		}
 	}
 
