@@ -56,11 +56,7 @@ public class VehicledetectionApplication {
 			System.out.println("检测OpenCV是否载入...");
 			checkOpenCV();
 
-			// 4. 检测YOLO是否可用
-			System.out.println("检测YOLO服务是否可用...");
-			checkYOLO();
-
-			// 5. 检测Conda虚拟环境
+			// 4. 检测Conda虚拟环境
 			System.out.println("检测Conda环境是否可用...");
 			checkCondaEnvironment();
 
@@ -107,21 +103,6 @@ public class VehicledetectionApplication {
 		}
 	}
 
-	/**
-	 * 检测YOLO是否可用
-	 */
-	private void checkYOLO() {
-		String yoloPath = "src/main/resources/python/yolov5";
-		File yoloDir = new File(yoloPath);
-		if (yoloDir.exists() && yoloDir.isDirectory()) {
-			System.out.println("YOLO directory found at: " + yoloPath);
-			// 这里可以添加调用YOLO的命令行工具或脚本，检测其是否可用
-			// 例如：运行 `yolo --version` 并解析输出
-			System.out.println("YOLO is available.");
-		} else {
-			System.out.println("YOLO directory not found at: " + yoloPath);
-		}
-	}
 
 	/**
 	 * 检测Conda虚拟环境
