@@ -6,8 +6,10 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 @RestController
 @RequestMapping("/api/roadmap")
@@ -17,14 +19,14 @@ public class RoadMapController {
     @Autowired
     private ResourceLoader resourceLoader;
 
-    // 从路径得到Json地图文件，返回给客户端
     @GetMapping("/getJson")
     public void download(HttpServletResponse response) {
         try {
             Resource resource = resourceLoader.getResource(ROAD_MAP_JSON);
             if (resource.exists()) {
                 response.setContentType("application/json");
-                response.setHeader("Content-Disposition", "attachment; filename=" + resource.getFilename());
+                response.setHeader("Content-Disposition",
+                        "attachment; filename=" + resource.getFilename());
 
                 try (InputStream inputStream = resource.getInputStream();
                      OutputStream outputStream = response.getOutputStream()) {
@@ -44,18 +46,21 @@ public class RoadMapController {
         }
     }
 
-    // 客户端上传新的Json地图文件，覆盖原有的Json地图文件
     @PostMapping("/updateJson")
-    public String update(@RequestParam("file") MultipartFile file, HttpServletResponse response) {
+    public String update(
+            @RequestParam("file") MultipartFile file,
+            HttpServletResponse response
+    ) {
         if (file.isEmpty()) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return "File is empty";
         }
 
         try {
-            // 获取资源文件的绝对路径
-            Resource resource = resourceLoader.getResource(ROAD_MAP_JSON);
-            File targetFile = resource.getFile();
+            String uploadDir = "external-config/roadMap/";
+            Files.createDirectories(Paths.get(uploadDir));
+
+            File targetFile = new File(uploadDir + "roadMap.json");
             file.transferTo(targetFile);
             return "File updated successfully";
         } catch (IOException e) {

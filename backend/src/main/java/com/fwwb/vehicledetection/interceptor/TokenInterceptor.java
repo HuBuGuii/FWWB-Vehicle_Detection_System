@@ -1,8 +1,8 @@
 // File: src/main/java/com/fwwb/vehicledetection/interceptor/TokenInterceptor.java
 package com.fwwb.vehicledetection.interceptor;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import com.fwwb.vehicledetection.exception.UnauthorizedException;
 import com.fwwb.vehicledetection.util.TokenUtil;
@@ -43,4 +43,5 @@ public class TokenInterceptor implements HandlerInterceptor {
 //        }
 //        return true;
 //    }
+
 }
