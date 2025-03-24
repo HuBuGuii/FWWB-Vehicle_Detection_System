@@ -5,16 +5,14 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.fwwb.vehicledetection.domain.model.Camera;
 import com.fwwb.vehicledetection.service.CameraService;
 import com.fwwb.vehicledetection.util.TokenUtil;
-import org.opencv.core.Core;
-import org.opencv.core.Mat;
-import org.opencv.videoio.VideoCapture;
-import org.opencv.videoio.Videoio;
+import org.bytedeco.opencv.opencv_core.Mat;
+import org.bytedeco.opencv.opencv_videoio.VideoCapture;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.imageio.ImageIO;
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.HttpServletResponse;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -35,10 +33,6 @@ public class CameraController {
 
     public static final Logger LOGGER = Logger.getLogger(CameraController.class.getName());
 
-    static {
-        // 加载 OpenCV 库，确保已正确配置 native 库路径
-        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-    }
 
     // 用于存放摄像头采集会话，key 为 cameraId
     private static final Map<Long, CameraCaptureSession> captureSessions = new ConcurrentHashMap<>();
@@ -228,19 +222,26 @@ public class CameraController {
      * @return BufferedImage 对象
      */
     private BufferedImage matToBufferedImage(Mat mat) {
-        int width = mat.width();
-        int height = mat.height();
-        int channels = mat.channels();
+        int width = mat.cols();  // 获取宽度
+        int height = mat.rows(); // 获取高度
+        int channels = mat.channels(); // 获取通道数
+
+        // 创建字节数组存储像素数据
         byte[] sourcePixels = new byte[width * height * channels];
-        mat.get(0, 0, sourcePixels);
+        mat.ptr(0, 0).get(sourcePixels); // 获取像素数据
+
+        // 根据通道数创建 BufferedImage
         BufferedImage image;
         if (channels == 3) {
             image = new BufferedImage(width, height, BufferedImage.TYPE_3BYTE_BGR);
         } else {
             image = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY);
         }
+
+        // 将像素数据写入 BufferedImage
         byte[] targetPixels = ((java.awt.image.DataBufferByte) image.getRaster().getDataBuffer()).getData();
         System.arraycopy(sourcePixels, 0, targetPixels, 0, sourcePixels.length);
+
         return image;
     }
 

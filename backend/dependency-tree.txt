@@ -1,0 +1,369 @@
+[INFO] Scanning for projects...
+[INFO] Artifact org.apache.maven.plugins:maven-deploy-plugin:pom:3.1.1 is present in the local repository, but cached from a remote repository ID that is unavailable in current build context, verifying that is downloadable from [aliyunmaven (https://maven.aliyun.com/repository/public, default, releases+snapshots)]
+[INFO] Artifact org.apache.maven.plugins:maven-deploy-plugin:pom:3.1.1 is present in the local repository, but cached from a remote repository ID that is unavailable in current build context, verifying that is downloadable from [aliyunmaven (https://maven.aliyun.com/repository/public, default, releases+snapshots)]
+Downloading from aliyunmaven: https://maven.aliyun.com/repository/public/org/apache/maven/plugins/maven-deploy-plugin/3.1.1/maven-deploy-plugin-3.1.1.pom
+Downloaded from aliyunmaven: https://maven.aliyun.com/repository/public/org/apache/maven/plugins/maven-deploy-plugin/3.1.1/maven-deploy-plugin-3.1.1.pom (0 B at 0 B/s)
+[INFO] Artifact org.apache.maven.plugins:maven-deploy-plugin:jar:3.1.1 is present in the local repository, but cached from a remote repository ID that is unavailable in current build context, verifying that is downloadable from [aliyunmaven (https://maven.aliyun.com/repository/public, default, releases+snapshots)]
+[INFO] Artifact org.apache.maven.plugins:maven-deploy-plugin:jar:3.1.1 is present in the local repository, but cached from a remote repository ID that is unavailable in current build context, verifying that is downloadable from [aliyunmaven (https://maven.aliyun.com/repository/public, default, releases+snapshots)]
+Downloading from aliyunmaven: https://maven.aliyun.com/repository/public/org/apache/maven/plugins/maven-deploy-plugin/3.1.1/maven-deploy-plugin-3.1.1.jar
+Downloaded from aliyunmaven: https://maven.aliyun.com/repository/public/org/apache/maven/plugins/maven-deploy-plugin/3.1.1/maven-deploy-plugin-3.1.1.jar (0 B at 0 B/s)
+[INFO] Artifact org.codehaus.mojo:build-helper-maven-plugin:pom:3.4.0 is present in the local repository, but cached from a remote repository ID that is unavailable in current build context, verifying that is downloadable from [aliyunmaven (https://maven.aliyun.com/repository/public, default, releases+snapshots)]
+[INFO] Artifact org.codehaus.mojo:build-helper-maven-plugin:pom:3.4.0 is present in the local repository, but cached from a remote repository ID that is unavailable in current build context, verifying that is downloadable from [aliyunmaven (https://maven.aliyun.com/repository/public, default, releases+snapshots)]
+Downloading from aliyunmaven: https://maven.aliyun.com/repository/public/org/codehaus/mojo/build-helper-maven-plugin/3.4.0/build-helper-maven-plugin-3.4.0.pom
+Downloaded from aliyunmaven: https://maven.aliyun.com/repository/public/org/codehaus/mojo/build-helper-maven-plugin/3.4.0/build-helper-maven-plugin-3.4.0.pom (0 B at 0 B/s)
+[INFO] Artifact org.codehaus.mojo:mojo-parent:pom:74 is present in the local repository, but cached from a remote repository ID that is unavailable in current build context, verifying that is downloadable from [aliyunmaven (https://maven.aliyun.com/repository/public, default, releases+snapshots)]
+[INFO] Artifact org.codehaus.mojo:mojo-parent:pom:74 is present in the local repository, but cached from a remote repository ID that is unavailable in current build context, verifying that is downloadable from [aliyunmaven (https://maven.aliyun.com/repository/public, default, releases+snapshots)]
+Downloading from aliyunmaven: https://maven.aliyun.com/repository/public/org/codehaus/mojo/mojo-parent/74/mojo-parent-74.pom
+Downloaded from aliyunmaven: https://maven.aliyun.com/repository/public/org/codehaus/mojo/mojo-parent/74/mojo-parent-74.pom (0 B at 0 B/s)
+[INFO] Artifact org.codehaus.mojo:build-helper-maven-plugin:jar:3.4.0 is present in the local repository, but cached from a remote repository ID that is unavailable in current build context, verifying that is downloadable from [aliyunmaven (https://maven.aliyun.com/repository/public, default, releases+snapshots)]
+[INFO] Artifact org.codehaus.mojo:build-helper-maven-plugin:jar:3.4.0 is present in the local repository, but cached from a remote repository ID that is unavailable in current build context, verifying that is downloadable from [aliyunmaven (https://maven.aliyun.com/repository/public, default, releases+snapshots)]
+Downloading from aliyunmaven: https://maven.aliyun.com/repository/public/org/codehaus/mojo/build-helper-maven-plugin/3.4.0/build-helper-maven-plugin-3.4.0.jar
+Downloaded from aliyunmaven: https://maven.aliyun.com/repository/public/org/codehaus/mojo/build-helper-maven-plugin/3.4.0/build-helper-maven-plugin-3.4.0.jar (0 B at 0 B/s)
+[INFO] Artifact org.flywaydb:flyway-maven-plugin:pom:9.22.3 is present in the local repository, but cached from a remote repository ID that is unavailable in current build context, verifying that is downloadable from [aliyunmaven (https://maven.aliyun.com/repository/public, default, releases+snapshots)]
+[INFO] Artifact org.flywaydb:flyway-maven-plugin:pom:9.22.3 is present in the local repository, but cached from a remote repository ID that is unavailable in current build context, verifying that is downloadable from [aliyunmaven (https://maven.aliyun.com/repository/public, default, releases+snapshots)]
+Downloading from aliyunmaven: https://maven.aliyun.com/repository/public/org/flywaydb/flyway-maven-plugin/9.22.3/flyway-maven-plugin-9.22.3.pom
+Downloaded from aliyunmaven: https://maven.aliyun.com/repository/public/org/flywaydb/flyway-maven-plugin/9.22.3/flyway-maven-plugin-9.22.3.pom (0 B at 0 B/s)
+[INFO] Artifact org.flywaydb:flyway-parent:pom:9.22.3 is present in the local repository, but cached from a remote repository ID that is unavailable in current build context, verifying that is downloadable from [aliyunmaven (https://maven.aliyun.com/repository/public, default, releases+snapshots)]
+[INFO] Artifact org.flywaydb:flyway-parent:pom:9.22.3 is present in the local repository, but cached from a remote repository ID that is unavailable in current build context, verifying that is downloadable from [aliyunmaven (https://maven.aliyun.com/repository/public, default, releases+snapshots)]
+Downloading from aliyunmaven: https://maven.aliyun.com/repository/public/org/flywaydb/flyway-parent/9.22.3/flyway-parent-9.22.3.pom
+Downloaded from aliyunmaven: https://maven.aliyun.com/repository/public/org/flywaydb/flyway-parent/9.22.3/flyway-parent-9.22.3.pom (0 B at 0 B/s)
+[INFO] Artifact org.flywaydb:flyway-maven-plugin:jar:9.22.3 is present in the local repository, but cached from a remote repository ID that is unavailable in current build context, verifying that is downloadable from [aliyunmaven (https://maven.aliyun.com/repository/public, default, releases+snapshots)]
+[INFO] Artifact org.flywaydb:flyway-maven-plugin:jar:9.22.3 is present in the local repository, but cached from a remote repository ID that is unavailable in current build context, verifying that is downloadable from [aliyunmaven (https://maven.aliyun.com/repository/public, default, releases+snapshots)]
+Downloading from aliyunmaven: https://maven.aliyun.com/repository/public/org/flywaydb/flyway-maven-plugin/9.22.3/flyway-maven-plugin-9.22.3.jar
+Downloaded from aliyunmaven: https://maven.aliyun.com/repository/public/org/flywaydb/flyway-maven-plugin/9.22.3/flyway-maven-plugin-9.22.3.jar (0 B at 0 B/s)
+[INFO] Artifact io.github.git-commit-id:git-commit-id-maven-plugin:pom:6.0.0 is present in the local repository, but cached from a remote repository ID that is unavailable in current build context, verifying that is downloadable from [aliyunmaven (https://maven.aliyun.com/repository/public, default, releases+snapshots)]
+[INFO] Artifact io.github.git-commit-id:git-commit-id-maven-plugin:pom:6.0.0 is present in the local repository, but cached from a remote repository ID that is unavailable in current build context, verifying that is downloadable from [aliyunmaven (https://maven.aliyun.com/repository/public, default, releases+snapshots)]
+Downloading from aliyunmaven: https://maven.aliyun.com/repository/public/io/github/git-commit-id/git-commit-id-maven-plugin/6.0.0/git-commit-id-maven-plugin-6.0.0.pom
+Downloaded from aliyunmaven: https://maven.aliyun.com/repository/public/io/github/git-commit-id/git-commit-id-maven-plugin/6.0.0/git-commit-id-maven-plugin-6.0.0.pom (0 B at 0 B/s)
+[INFO] Artifact io.github.git-commit-id:git-commit-id-maven-plugin:jar:6.0.0 is present in the local repository, but cached from a remote repository ID that is unavailable in current build context, verifying that is downloadable from [aliyunmaven (https://maven.aliyun.com/repository/public, default, releases+snapshots)]
+[INFO] Artifact io.github.git-commit-id:git-commit-id-maven-plugin:jar:6.0.0 is present in the local repository, but cached from a remote repository ID that is unavailable in current build context, verifying that is downloadable from [aliyunmaven (https://maven.aliyun.com/repository/public, default, releases+snapshots)]
+Downloading from aliyunmaven: https://maven.aliyun.com/repository/public/io/github/git-commit-id/git-commit-id-maven-plugin/6.0.0/git-commit-id-maven-plugin-6.0.0.jar
+Downloaded from aliyunmaven: https://maven.aliyun.com/repository/public/io/github/git-commit-id/git-commit-id-maven-plugin/6.0.0/git-commit-id-maven-plugin-6.0.0.jar (0 B at 0 B/s)
+Downloading from aliyunmaven: https://maven.aliyun.com/repository/public/org/jooq/jooq-codegen-maven/3.18.13/jooq-codegen-maven-3.18.13.pom
+Progress (1): 3.6/4.5 kBProgress (1): 4.5 kB                        Downloaded from aliyunmaven: https://maven.aliyun.com/repository/public/org/jooq/jooq-codegen-maven/3.18.13/jooq-codegen-maven-3.18.13.pom (4.5 kB at 13 kB/s)
+Downloading from aliyunmaven: https://maven.aliyun.com/repository/public/org/jooq/jooq-parent/3.18.13/jooq-parent-3.18.13.pom
+Progress (1): 3.6/38 kBProgress (1): 7.7/38 kBProgress (1): 12/38 kB Progress (1): 16/38 kBProgress (1): 20/38 kBProgress (1): 24/38 kBProgress (1): 28/38 kBProgress (1): 32/38 kBProgress (1): 36/38 kBProgress (1): 38 kB                      Downloaded from aliyunmaven: https://maven.aliyun.com/repository/public/org/jooq/jooq-parent/3.18.13/jooq-parent-3.18.13.pom (38 kB at 140 kB/s)
+Downloading from aliyunmaven: https://maven.aliyun.com/repository/public/org/jooq/jooq-codegen-maven/3.18.13/jooq-codegen-maven-3.18.13.jar
+Progress (1): 3.6/18 kBProgress (1): 7.7/18 kBProgress (1): 12/18 kB Progress (1): 16/18 kBProgress (1): 18 kB                      Downloaded from aliyunmaven: https://maven.aliyun.com/repository/public/org/jooq/jooq-codegen-maven/3.18.13/jooq-codegen-maven-3.18.13.jar (18 kB at 75 kB/s)
+Downloading from aliyunmaven: https://maven.aliyun.com/repository/public/org/jetbrains/kotlin/kotlin-maven-plugin/1.9.23/kotlin-maven-plugin-1.9.23.pom
+Progress (1): 3.6/6.7 kBProgress (1): 6.7 kB                        Downloaded from aliyunmaven: https://maven.aliyun.com/repository/public/org/jetbrains/kotlin/kotlin-maven-plugin/1.9.23/kotlin-maven-plugin-1.9.23.pom (6.7 kB at 30 kB/s)
+Downloading from aliyunmaven: https://maven.aliyun.com/repository/public/org/jetbrains/kotlin/kotlin-project/1.9.23/kotlin-project-1.9.23.pom
+Progress (1): 3.6/16 kBProgress (1): 7.7/16 kBProgress (1): 12/16 kB Progress (1): 16 kB                      Downloaded from aliyunmaven: https://maven.aliyun.com/repository/public/org/jetbrains/kotlin/kotlin-project/1.9.23/kotlin-project-1.9.23.pom (16 kB at 36 kB/s)
+Downloading from aliyunmaven: https://maven.aliyun.com/repository/public/org/jetbrains/kotlin/kotlin-maven-plugin/1.9.23/kotlin-maven-plugin-1.9.23.jar
+Progress (1): 3.6/82 kBProgress (1): 7.7/82 kBProgress (1): 12/82 kB Progress (1): 16/82 kBProgress (1): 20/82 kBProgress (1): 24/82 kBProgress (1): 28/82 kBProgress (1): 32/82 kBProgress (1): 36/82 kBProgress (1): 40/82 kBProgress (1): 45/82 kBProgress (1): 49/82 kBProgress (1): 53/82 kBProgress (1): 57/82 kBProgress (1): 61/82 kBProgress (1): 65/82 kBProgress (1): 69/82 kBProgress (1): 73/82 kBProgress (1): 77/82 kBProgress (1): 81/82 kBProgress (1): 82 kB                      Downloaded from aliyunmaven: https://maven.aliyun.com/repository/public/org/jetbrains/kotlin/kotlin-maven-plugin/1.9.23/kotlin-maven-plugin-1.9.23.jar (82 kB at 326 kB/s)
+[INFO] Artifact org.liquibase:liquibase-maven-plugin:pom:4.24.0 is present in the local repository, but cached from a remote repository ID that is unavailable in current build context, verifying that is downloadable from [aliyunmaven (https://maven.aliyun.com/repository/public, default, releases+snapshots)]
+[INFO] Artifact org.liquibase:liquibase-maven-plugin:pom:4.24.0 is present in the local repository, but cached from a remote repository ID that is unavailable in current build context, verifying that is downloadable from [aliyunmaven (https://maven.aliyun.com/repository/public, default, releases+snapshots)]
+Downloading from aliyunmaven: https://maven.aliyun.com/repository/public/org/liquibase/liquibase-maven-plugin/4.24.0/liquibase-maven-plugin-4.24.0.pom
+Downloaded from aliyunmaven: https://maven.aliyun.com/repository/public/org/liquibase/liquibase-maven-plugin/4.24.0/liquibase-maven-plugin-4.24.0.pom (0 B at 0 B/s)
+[INFO] Artifact org.liquibase:liquibase-maven-plugin:jar:4.24.0 is present in the local repository, but cached from a remote repository ID that is unavailable in current build context, verifying that is downloadable from [aliyunmaven (https://maven.aliyun.com/repository/public, default, releases+snapshots)]
+[INFO] Artifact org.liquibase:liquibase-maven-plugin:jar:4.24.0 is present in the local repository, but cached from a remote repository ID that is unavailable in current build context, verifying that is downloadable from [aliyunmaven (https://maven.aliyun.com/repository/public, default, releases+snapshots)]
+Downloading from aliyunmaven: https://maven.aliyun.com/repository/public/org/liquibase/liquibase-maven-plugin/4.24.0/liquibase-maven-plugin-4.24.0.jar
+Downloaded from aliyunmaven: https://maven.aliyun.com/repository/public/org/liquibase/liquibase-maven-plugin/4.24.0/liquibase-maven-plugin-4.24.0.jar (0 B at 0 B/s)
+[INFO] Artifact org.apache.maven.plugins:maven-assembly-plugin:pom:3.6.0 is present in the local repository, but cached from a remote repository ID that is unavailable in current build context, verifying that is downloadable from [aliyunmaven (https://maven.aliyun.com/repository/public, default, releases+snapshots)]
+[INFO] Artifact org.apache.maven.plugins:maven-assembly-plugin:pom:3.6.0 is present in the local repository, but cached from a remote repository ID that is unavailable in current build context, verifying that is downloadable from [aliyunmaven (https://maven.aliyun.com/repository/public, default, releases+snapshots)]
+Downloading from aliyunmaven: https://maven.aliyun.com/repository/public/org/apache/maven/plugins/maven-assembly-plugin/3.6.0/maven-assembly-plugin-3.6.0.pom
+Downloaded from aliyunmaven: https://maven.aliyun.com/repository/public/org/apache/maven/plugins/maven-assembly-plugin/3.6.0/maven-assembly-plugin-3.6.0.pom (0 B at 0 B/s)
+[INFO] Artifact org.apache.maven.plugins:maven-assembly-plugin:jar:3.6.0 is present in the local repository, but cached from a remote repository ID that is unavailable in current build context, verifying that is downloadable from [aliyunmaven (https://maven.aliyun.com/repository/public, default, releases+snapshots)]
+[INFO] Artifact org.apache.maven.plugins:maven-assembly-plugin:jar:3.6.0 is present in the local repository, but cached from a remote repository ID that is unavailable in current build context, verifying that is downloadable from [aliyunmaven (https://maven.aliyun.com/repository/public, default, releases+snapshots)]
+Downloading from aliyunmaven: https://maven.aliyun.com/repository/public/org/apache/maven/plugins/maven-assembly-plugin/3.6.0/maven-assembly-plugin-3.6.0.jar
+Downloaded from aliyunmaven: https://maven.aliyun.com/repository/public/org/apache/maven/plugins/maven-assembly-plugin/3.6.0/maven-assembly-plugin-3.6.0.jar (0 B at 0 B/s)
+[INFO] 
+[INFO] ---------------------< com.fwwb:vehicledetection >----------------------
+[INFO] Building Vehicle Detection Backend 1.0.0
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- dependency:3.6.1:tree (default-cli) @ vehicledetection ---
+[INFO] com.fwwb:vehicledetection:jar:1.0.0
+[INFO] +- org.springframework.boot:spring-boot-starter-security:jar:3.2.4:compile
+[INFO] |  +- org.springframework.boot:spring-boot-starter:jar:3.2.4:compile
+[INFO] |  |  +- org.springframework.boot:spring-boot:jar:3.2.4:compile
+[INFO] |  |  +- org.springframework.boot:spring-boot-starter-logging:jar:3.2.4:compile
+[INFO] |  |  |  +- ch.qos.logback:logback-classic:jar:1.4.14:compile
+[INFO] |  |  |  |  \- ch.qos.logback:logback-core:jar:1.4.14:compile
+[INFO] |  |  |  +- org.apache.logging.log4j:log4j-to-slf4j:jar:2.21.1:compile
+[INFO] |  |  |  |  \- org.apache.logging.log4j:log4j-api:jar:2.21.1:compile
+[INFO] |  |  |  \- org.slf4j:jul-to-slf4j:jar:2.0.12:compile
+[INFO] |  |  \- org.yaml:snakeyaml:jar:2.2:compile
+[INFO] |  +- org.springframework:spring-aop:jar:6.1.5:compile
+[INFO] |  |  \- org.springframework:spring-beans:jar:6.1.5:compile
+[INFO] |  +- org.springframework.security:spring-security-config:jar:6.2.3:compile
+[INFO] |  |  +- org.springframework.security:spring-security-core:jar:6.2.3:compile
+[INFO] |  |  |  \- org.springframework.security:spring-security-crypto:jar:6.2.3:compile
+[INFO] |  |  \- org.springframework:spring-context:jar:6.1.5:compile
+[INFO] |  \- org.springframework.security:spring-security-web:jar:6.2.3:compile
+[INFO] |     \- org.springframework:spring-expression:jar:6.1.5:compile
+[INFO] +- org.springframework.boot:spring-boot-starter-web:jar:3.2.4:compile
+[INFO] |  +- org.springframework.boot:spring-boot-starter-json:jar:3.2.4:compile
+[INFO] |  |  +- com.fasterxml.jackson.datatype:jackson-datatype-jdk8:jar:2.15.4:compile
+[INFO] |  |  +- com.fasterxml.jackson.datatype:jackson-datatype-jsr310:jar:2.15.4:compile
+[INFO] |  |  \- com.fasterxml.jackson.module:jackson-module-parameter-names:jar:2.15.4:compile
+[INFO] |  +- org.springframework.boot:spring-boot-starter-tomcat:jar:3.2.4:compile
+[INFO] |  |  +- org.apache.tomcat.embed:tomcat-embed-core:jar:10.1.19:compile
+[INFO] |  |  +- org.apache.tomcat.embed:tomcat-embed-el:jar:10.1.19:compile
+[INFO] |  |  \- org.apache.tomcat.embed:tomcat-embed-websocket:jar:10.1.19:compile
+[INFO] |  +- org.springframework:spring-web:jar:6.1.5:compile
+[INFO] |  |  \- io.micrometer:micrometer-observation:jar:1.12.4:compile
+[INFO] |  |     \- io.micrometer:micrometer-commons:jar:1.12.4:compile
+[INFO] |  \- org.springframework:spring-webmvc:jar:6.1.5:compile
+[INFO] +- org.springframework.boot:spring-boot-starter-aop:jar:3.2.4:compile
+[INFO] |  \- org.aspectj:aspectjweaver:jar:1.9.21:compile
+[INFO] +- org.springframework.boot:spring-boot-starter-data-redis:jar:3.2.4:compile
+[INFO] |  \- org.springframework.data:spring-data-redis:jar:3.2.4:compile
+[INFO] |     +- org.springframework.data:spring-data-keyvalue:jar:3.2.4:compile
+[INFO] |     |  \- org.springframework.data:spring-data-commons:jar:3.2.4:compile
+[INFO] |     +- org.springframework:spring-tx:jar:6.1.5:compile
+[INFO] |     +- org.springframework:spring-oxm:jar:6.1.5:compile
+[INFO] |     +- org.springframework:spring-context-support:jar:6.1.5:compile
+[INFO] |     \- org.slf4j:slf4j-api:jar:2.0.12:compile
+[INFO] +- org.springframework.boot:spring-boot-starter-test:jar:3.2.4:test
+[INFO] |  +- org.springframework.boot:spring-boot-test:jar:3.2.4:test
+[INFO] |  +- org.springframework.boot:spring-boot-test-autoconfigure:jar:3.2.4:test
+[INFO] |  +- com.jayway.jsonpath:json-path:jar:2.9.0:test
+[INFO] |  +- net.minidev:json-smart:jar:2.5.0:test
+[INFO] |  |  \- net.minidev:accessors-smart:jar:2.5.0:test
+[INFO] |  |     \- org.ow2.asm:asm:jar:9.3:test
+[INFO] |  +- org.assertj:assertj-core:jar:3.24.2:test
+[INFO] |  |  \- net.bytebuddy:byte-buddy:jar:1.14.12:test
+[INFO] |  +- org.awaitility:awaitility:jar:4.2.0:test
+[INFO] |  +- org.hamcrest:hamcrest:jar:2.2:test
+[INFO] |  +- org.junit.jupiter:junit-jupiter:jar:5.10.2:test
+[INFO] |  |  +- org.junit.jupiter:junit-jupiter-api:jar:5.10.2:test
+[INFO] |  |  |  +- org.opentest4j:opentest4j:jar:1.3.0:test
+[INFO] |  |  |  +- org.junit.platform:junit-platform-commons:jar:1.10.2:test
+[INFO] |  |  |  \- org.apiguardian:apiguardian-api:jar:1.1.2:test
+[INFO] |  |  +- org.junit.jupiter:junit-jupiter-params:jar:5.10.2:test
+[INFO] |  |  \- org.junit.jupiter:junit-jupiter-engine:jar:5.10.2:test
+[INFO] |  |     \- org.junit.platform:junit-platform-engine:jar:1.10.2:test
+[INFO] |  +- org.mockito:mockito-core:jar:5.7.0:test
+[INFO] |  |  +- net.bytebuddy:byte-buddy-agent:jar:1.14.12:test
+[INFO] |  |  \- org.objenesis:objenesis:jar:3.3:test
+[INFO] |  +- org.mockito:mockito-junit-jupiter:jar:5.7.0:test
+[INFO] |  +- org.skyscreamer:jsonassert:jar:1.5.1:test
+[INFO] |  |  \- com.vaadin.external.google:android-json:jar:0.0.20131108.vaadin1:test
+[INFO] |  +- org.springframework:spring-core:jar:6.1.5:compile
+[INFO] |  |  \- org.springframework:spring-jcl:jar:6.1.5:compile
+[INFO] |  +- org.springframework:spring-test:jar:6.1.5:test
+[INFO] |  \- org.xmlunit:xmlunit-core:jar:2.9.1:test
+[INFO] +- io.lettuce:lettuce-core:jar:6.3.2.RELEASE:compile
+[INFO] |  +- io.netty:netty-common:jar:4.1.107.Final:compile
+[INFO] |  +- io.netty:netty-handler:jar:4.1.107.Final:compile
+[INFO] |  |  +- io.netty:netty-resolver:jar:4.1.107.Final:compile
+[INFO] |  |  +- io.netty:netty-buffer:jar:4.1.107.Final:compile
+[INFO] |  |  +- io.netty:netty-transport-native-unix-common:jar:4.1.107.Final:compile
+[INFO] |  |  \- io.netty:netty-codec:jar:4.1.107.Final:compile
+[INFO] |  +- io.netty:netty-transport:jar:4.1.107.Final:compile
+[INFO] |  \- io.projectreactor:reactor-core:jar:3.6.4:compile
+[INFO] |     \- org.reactivestreams:reactive-streams:jar:1.0.4:compile
+[INFO] +- com.baomidou:mybatis-plus-boot-starter:jar:3.5.5:compile
+[INFO] |  +- com.baomidou:mybatis-plus:jar:3.5.5:compile
+[INFO] |  |  +- com.baomidou:mybatis-plus-core:jar:3.5.5:compile
+[INFO] |  |  +- com.baomidou:mybatis-plus-annotation:jar:3.5.5:compile
+[INFO] |  |  +- com.baomidou:mybatis-plus-extension:jar:3.5.5:compile
+[INFO] |  |  +- org.mybatis:mybatis:jar:3.5.15:compile
+[INFO] |  |  \- com.github.jsqlparser:jsqlparser:jar:4.6:compile
+[INFO] |  +- org.mybatis:mybatis-spring:jar:2.1.2:compile
+[INFO] |  +- com.baomidou:mybatis-plus-spring-boot-autoconfigure:jar:3.5.5:compile
+[INFO] |  +- org.springframework.boot:spring-boot-autoconfigure:jar:3.2.4:compile
+[INFO] |  \- org.springframework.boot:spring-boot-starter-jdbc:jar:3.2.4:compile
+[INFO] |     +- com.zaxxer:HikariCP:jar:5.0.1:compile
+[INFO] |     \- org.springframework:spring-jdbc:jar:6.1.5:compile
+[INFO] +- org.postgresql:postgresql:jar:42.7.1:runtime
+[INFO] |  \- org.checkerframework:checker-qual:jar:3.41.0:compile
+[INFO] +- io.jsonwebtoken:jjwt:jar:0.12.5:compile
+[INFO] +- org.projectlombok:lombok:jar:1.18.30:provided
+[INFO] +- com.google.guava:guava:jar:33.0.0-jre:compile
+[INFO] |  +- com.google.guava:failureaccess:jar:1.0.2:compile
+[INFO] |  +- com.google.guava:listenablefuture:jar:9999.0-empty-to-avoid-conflict-with-guava:compile
+[INFO] |  +- com.google.code.findbugs:jsr305:jar:3.0.2:compile
+[INFO] |  +- com.google.errorprone:error_prone_annotations:jar:2.23.0:compile
+[INFO] |  \- com.google.j2objc:j2objc-annotations:jar:2.8:compile
+[INFO] +- jakarta.xml.bind:jakarta.xml.bind-api:jar:4.0.2:compile
+[INFO] |  \- jakarta.activation:jakarta.activation-api:jar:2.1.3:compile
+[INFO] +- org.glassfish.jaxb:jaxb-runtime:jar:4.0.5:compile
+[INFO] |  \- org.glassfish.jaxb:jaxb-core:jar:4.0.5:compile
+[INFO] |     +- org.eclipse.angus:angus-activation:jar:2.0.2:runtime
+[INFO] |     +- org.glassfish.jaxb:txw2:jar:4.0.5:compile
+[INFO] |     \- com.sun.istack:istack-commons-runtime:jar:4.1.2:compile
+[INFO] +- jakarta.servlet:jakarta.servlet-api:jar:6.0.0:provided
+[INFO] +- jakarta.annotation:jakarta.annotation-api:jar:2.1.1:compile
+[INFO] +- org.bytedeco:javacv-platform:jar:1.5.9:compile
+[INFO] |  +- org.bytedeco:javacv:jar:1.5.9:compile
+[INFO] |  |  +- org.bytedeco:javacpp:jar:1.5.9:compile
+[INFO] |  |  +- org.bytedeco:openblas:jar:0.3.23-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:opencv:jar:4.7.0-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:ffmpeg:jar:6.0-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:flycapture:jar:2.13.3.31-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:libdc1394:jar:2.2.6-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:libfreenect:jar:0.5.7-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:libfreenect2:jar:0.2.0-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:librealsense:jar:1.12.4-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:librealsense2:jar:2.53.1-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:videoinput:jar:0.200-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:artoolkitplus:jar:2.3.1-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:leptonica:jar:1.83.0-1.5.9:compile
+[INFO] |  |  \- org.bytedeco:tesseract:jar:5.3.1-1.5.9:compile
+[INFO] |  +- org.bytedeco:openblas-platform:jar:0.3.23-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:javacpp-platform:jar:1.5.9:compile
+[INFO] |  |  |  +- org.bytedeco:javacpp:jar:android-arm:1.5.9:compile
+[INFO] |  |  |  +- org.bytedeco:javacpp:jar:android-arm64:1.5.9:compile
+[INFO] |  |  |  +- org.bytedeco:javacpp:jar:android-x86:1.5.9:compile
+[INFO] |  |  |  +- org.bytedeco:javacpp:jar:android-x86_64:1.5.9:compile
+[INFO] |  |  |  +- org.bytedeco:javacpp:jar:ios-arm64:1.5.9:compile
+[INFO] |  |  |  +- org.bytedeco:javacpp:jar:ios-x86_64:1.5.9:compile
+[INFO] |  |  |  +- org.bytedeco:javacpp:jar:linux-armhf:1.5.9:compile
+[INFO] |  |  |  +- org.bytedeco:javacpp:jar:linux-arm64:1.5.9:compile
+[INFO] |  |  |  +- org.bytedeco:javacpp:jar:linux-ppc64le:1.5.9:compile
+[INFO] |  |  |  +- org.bytedeco:javacpp:jar:linux-x86:1.5.9:compile
+[INFO] |  |  |  +- org.bytedeco:javacpp:jar:linux-x86_64:1.5.9:compile
+[INFO] |  |  |  +- org.bytedeco:javacpp:jar:macosx-arm64:1.5.9:compile
+[INFO] |  |  |  +- org.bytedeco:javacpp:jar:macosx-x86_64:1.5.9:compile
+[INFO] |  |  |  +- org.bytedeco:javacpp:jar:windows-x86:1.5.9:compile
+[INFO] |  |  |  \- org.bytedeco:javacpp:jar:windows-x86_64:1.5.9:compile
+[INFO] |  |  +- org.bytedeco:openblas:jar:android-arm:0.3.23-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:openblas:jar:android-arm64:0.3.23-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:openblas:jar:android-x86:0.3.23-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:openblas:jar:android-x86_64:0.3.23-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:openblas:jar:ios-arm64:0.3.23-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:openblas:jar:ios-x86_64:0.3.23-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:openblas:jar:linux-x86:0.3.23-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:openblas:jar:linux-x86_64:0.3.23-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:openblas:jar:linux-armhf:0.3.23-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:openblas:jar:linux-arm64:0.3.23-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:openblas:jar:linux-ppc64le:0.3.23-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:openblas:jar:macosx-arm64:0.3.23-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:openblas:jar:macosx-x86_64:0.3.23-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:openblas:jar:windows-x86:0.3.23-1.5.9:compile
+[INFO] |  |  \- org.bytedeco:openblas:jar:windows-x86_64:0.3.23-1.5.9:compile
+[INFO] |  +- org.bytedeco:opencv-platform:jar:4.7.0-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:opencv:jar:android-arm:4.7.0-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:opencv:jar:android-arm64:4.7.0-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:opencv:jar:android-x86:4.7.0-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:opencv:jar:android-x86_64:4.7.0-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:opencv:jar:ios-arm64:4.7.0-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:opencv:jar:ios-x86_64:4.7.0-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:opencv:jar:linux-x86:4.7.0-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:opencv:jar:linux-x86_64:4.7.0-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:opencv:jar:linux-armhf:4.7.0-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:opencv:jar:linux-arm64:4.7.0-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:opencv:jar:linux-ppc64le:4.7.0-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:opencv:jar:macosx-arm64:4.7.0-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:opencv:jar:macosx-x86_64:4.7.0-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:opencv:jar:windows-x86:4.7.0-1.5.9:compile
+[INFO] |  |  \- org.bytedeco:opencv:jar:windows-x86_64:4.7.0-1.5.9:compile
+[INFO] |  +- org.bytedeco:ffmpeg-platform:jar:6.0-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:ffmpeg:jar:android-arm:6.0-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:ffmpeg:jar:android-arm64:6.0-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:ffmpeg:jar:android-x86:6.0-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:ffmpeg:jar:android-x86_64:6.0-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:ffmpeg:jar:linux-x86:6.0-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:ffmpeg:jar:linux-x86_64:6.0-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:ffmpeg:jar:linux-armhf:6.0-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:ffmpeg:jar:linux-arm64:6.0-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:ffmpeg:jar:linux-ppc64le:6.0-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:ffmpeg:jar:macosx-arm64:6.0-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:ffmpeg:jar:macosx-x86_64:6.0-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:ffmpeg:jar:windows-x86:6.0-1.5.9:compile
+[INFO] |  |  \- org.bytedeco:ffmpeg:jar:windows-x86_64:6.0-1.5.9:compile
+[INFO] |  +- org.bytedeco:flycapture-platform:jar:2.13.3.31-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:flycapture:jar:linux-x86:2.13.3.31-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:flycapture:jar:linux-x86_64:2.13.3.31-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:flycapture:jar:linux-armhf:2.13.3.31-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:flycapture:jar:linux-arm64:2.13.3.31-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:flycapture:jar:windows-x86:2.13.3.31-1.5.9:compile
+[INFO] |  |  \- org.bytedeco:flycapture:jar:windows-x86_64:2.13.3.31-1.5.9:compile
+[INFO] |  +- org.bytedeco:libdc1394-platform:jar:2.2.6-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:libdc1394:jar:linux-x86:2.2.6-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:libdc1394:jar:linux-x86_64:2.2.6-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:libdc1394:jar:linux-armhf:2.2.6-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:libdc1394:jar:linux-arm64:2.2.6-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:libdc1394:jar:linux-ppc64le:2.2.6-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:libdc1394:jar:macosx-x86_64:2.2.6-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:libdc1394:jar:windows-x86:2.2.6-1.5.9:compile
+[INFO] |  |  \- org.bytedeco:libdc1394:jar:windows-x86_64:2.2.6-1.5.9:compile
+[INFO] |  +- org.bytedeco:libfreenect-platform:jar:0.5.7-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:libfreenect:jar:linux-x86:0.5.7-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:libfreenect:jar:linux-x86_64:0.5.7-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:libfreenect:jar:linux-armhf:0.5.7-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:libfreenect:jar:linux-arm64:0.5.7-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:libfreenect:jar:linux-ppc64le:0.5.7-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:libfreenect:jar:macosx-x86_64:0.5.7-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:libfreenect:jar:windows-x86:0.5.7-1.5.9:compile
+[INFO] |  |  \- org.bytedeco:libfreenect:jar:windows-x86_64:0.5.7-1.5.9:compile
+[INFO] |  +- org.bytedeco:libfreenect2-platform:jar:0.2.0-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:libfreenect2:jar:linux-x86:0.2.0-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:libfreenect2:jar:linux-x86_64:0.2.0-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:libfreenect2:jar:macosx-x86_64:0.2.0-1.5.9:compile
+[INFO] |  |  \- org.bytedeco:libfreenect2:jar:windows-x86_64:0.2.0-1.5.9:compile
+[INFO] |  +- org.bytedeco:librealsense-platform:jar:1.12.4-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:librealsense:jar:linux-armhf:1.12.4-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:librealsense:jar:linux-arm64:1.12.4-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:librealsense:jar:linux-x86:1.12.4-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:librealsense:jar:linux-x86_64:1.12.4-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:librealsense:jar:macosx-x86_64:1.12.4-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:librealsense:jar:windows-x86:1.12.4-1.5.9:compile
+[INFO] |  |  \- org.bytedeco:librealsense:jar:windows-x86_64:1.12.4-1.5.9:compile
+[INFO] |  +- org.bytedeco:librealsense2-platform:jar:2.53.1-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:librealsense2:jar:linux-armhf:2.53.1-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:librealsense2:jar:linux-arm64:2.53.1-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:librealsense2:jar:linux-x86:2.53.1-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:librealsense2:jar:linux-x86_64:2.53.1-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:librealsense2:jar:macosx-x86_64:2.53.1-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:librealsense2:jar:windows-x86:2.53.1-1.5.9:compile
+[INFO] |  |  \- org.bytedeco:librealsense2:jar:windows-x86_64:2.53.1-1.5.9:compile
+[INFO] |  +- org.bytedeco:videoinput-platform:jar:0.200-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:videoinput:jar:windows-x86:0.200-1.5.9:compile
+[INFO] |  |  \- org.bytedeco:videoinput:jar:windows-x86_64:0.200-1.5.9:compile
+[INFO] |  +- org.bytedeco:artoolkitplus-platform:jar:2.3.1-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:artoolkitplus:jar:android-arm:2.3.1-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:artoolkitplus:jar:android-arm64:2.3.1-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:artoolkitplus:jar:android-x86:2.3.1-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:artoolkitplus:jar:android-x86_64:2.3.1-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:artoolkitplus:jar:linux-x86:2.3.1-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:artoolkitplus:jar:linux-x86_64:2.3.1-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:artoolkitplus:jar:linux-armhf:2.3.1-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:artoolkitplus:jar:linux-arm64:2.3.1-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:artoolkitplus:jar:linux-ppc64le:2.3.1-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:artoolkitplus:jar:macosx-x86_64:2.3.1-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:artoolkitplus:jar:windows-x86:2.3.1-1.5.9:compile
+[INFO] |  |  \- org.bytedeco:artoolkitplus:jar:windows-x86_64:2.3.1-1.5.9:compile
+[INFO] |  +- org.bytedeco:leptonica-platform:jar:1.83.0-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:leptonica:jar:android-arm:1.83.0-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:leptonica:jar:android-arm64:1.83.0-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:leptonica:jar:android-x86:1.83.0-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:leptonica:jar:android-x86_64:1.83.0-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:leptonica:jar:linux-x86:1.83.0-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:leptonica:jar:linux-x86_64:1.83.0-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:leptonica:jar:linux-armhf:1.83.0-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:leptonica:jar:linux-arm64:1.83.0-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:leptonica:jar:linux-ppc64le:1.83.0-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:leptonica:jar:macosx-arm64:1.83.0-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:leptonica:jar:macosx-x86_64:1.83.0-1.5.9:compile
+[INFO] |  |  +- org.bytedeco:leptonica:jar:windows-x86:1.83.0-1.5.9:compile
+[INFO] |  |  \- org.bytedeco:leptonica:jar:windows-x86_64:1.83.0-1.5.9:compile
+[INFO] |  \- org.bytedeco:tesseract-platform:jar:5.3.1-1.5.9:compile
+[INFO] |     +- org.bytedeco:tesseract:jar:android-arm:5.3.1-1.5.9:compile
+[INFO] |     +- org.bytedeco:tesseract:jar:android-arm64:5.3.1-1.5.9:compile
+[INFO] |     +- org.bytedeco:tesseract:jar:android-x86:5.3.1-1.5.9:compile
+[INFO] |     +- org.bytedeco:tesseract:jar:android-x86_64:5.3.1-1.5.9:compile
+[INFO] |     +- org.bytedeco:tesseract:jar:linux-x86:5.3.1-1.5.9:compile
+[INFO] |     +- org.bytedeco:tesseract:jar:linux-x86_64:5.3.1-1.5.9:compile
+[INFO] |     +- org.bytedeco:tesseract:jar:linux-armhf:5.3.1-1.5.9:compile
+[INFO] |     +- org.bytedeco:tesseract:jar:linux-arm64:5.3.1-1.5.9:compile
+[INFO] |     +- org.bytedeco:tesseract:jar:linux-ppc64le:5.3.1-1.5.9:compile
+[INFO] |     +- org.bytedeco:tesseract:jar:macosx-arm64:5.3.1-1.5.9:compile
+[INFO] |     +- org.bytedeco:tesseract:jar:macosx-x86_64:5.3.1-1.5.9:compile
+[INFO] |     +- org.bytedeco:tesseract:jar:windows-x86:5.3.1-1.5.9:compile
+[INFO] |     \- org.bytedeco:tesseract:jar:windows-x86_64:5.3.1-1.5.9:compile
+[INFO] +- io.jsonwebtoken:jjwt-api:jar:0.11.5:compile
+[INFO] +- io.jsonwebtoken:jjwt-impl:jar:0.11.5:runtime
+[INFO] \- io.jsonwebtoken:jjwt-jackson:jar:0.11.5:runtime
+[INFO]    \- com.fasterxml.jackson.core:jackson-databind:jar:2.15.4:compile
+[INFO]       +- com.fasterxml.jackson.core:jackson-annotations:jar:2.15.4:compile
+[INFO]       \- com.fasterxml.jackson.core:jackson-core:jar:2.15.4:compile
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  5.874 s
+[INFO] Finished at: 2025-03-23T14:30:14+08:00
+[INFO] ------------------------------------------------------------------------

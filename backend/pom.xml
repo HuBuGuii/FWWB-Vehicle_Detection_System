@@ -5,6 +5,14 @@
                              http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
+	<!-- 使用 Spring Boot 3.2.x 支持 Java 21 -->
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>3.2.4</version>
+		<relativePath/>
+	</parent>
+
 	<groupId>com.fwwb</groupId>
 	<artifactId>vehicledetection</artifactId>
 	<version>1.0.0</version>
@@ -12,26 +20,22 @@
 	<name>Vehicle Detection Backend</name>
 
 	<properties>
-		<java.version>17</java.version>
-		<spring.boot.version>2.7.12</spring.boot.version>
-		<mybatis-plus.version>3.5.3.1</mybatis-plus.version>
-		<opencv.library.path>${project.basedir}/src/main/resources/opencv/opencv-java4110.dll</opencv.library.path>
+		<!-- 使用 Java 21 (Spring Boot 3.2.x 官方支持的最高版本) -->
+		<java.version>21</java.version>
+		<mybatis-plus.version>3.5.9</mybatis-plus.version>
+
+		<!-- 显式管理依赖版本 -->
+		<postgresql.version>42.7.1</postgresql.version>
+		<lombok.version>1.18.30</lombok.version>
+		<jjwt.version>0.12.5</jjwt.version>
+		<guava.version>33.0.0-jre</guava.version>
+
+		<spring-data-redis.version>3.2.4</spring-data-redis.version>
+
 	</properties>
 
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-dependencies</artifactId>
-				<version>${spring.boot.version}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
-
 	<dependencies>
-		<!-- Spring Boot Starters -->
+		<!-- Spring Boot Starters (版本由 parent 管理) -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
@@ -59,12 +63,24 @@
 			<groupId>com.baomidou</groupId>
 			<artifactId>mybatis-plus-boot-starter</artifactId>
 			<version>${mybatis-plus.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.mybatis</groupId>
+					<artifactId>mybatis-spring</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.mybatis</groupId>
+			<artifactId>mybatis-spring</artifactId>
+			<version>3.0.4</version>
 		</dependency>
 
 		<!-- Database -->
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
+			<version>${postgresql.version}</version>
 			<scope>runtime</scope>
 		</dependency>
 
@@ -72,71 +88,103 @@
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt</artifactId>
-			<version>0.9.1</version>
+			<version>${jjwt.version}</version>
 		</dependency>
 
 		<!-- Utilities -->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
+			<version>${lombok.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
-			<version>31.1-jre</version>
+			<version>${guava.version}</version>
 		</dependency>
 
-		<!-- XML Processing -->
+		<!-- XML Processing (Spring Boot 3.x 已内置 Jakarta EE 10) -->
 		<dependency>
-			<groupId>javax.xml.bind</groupId>
-			<artifactId>jaxb-api</artifactId>
-			<version>2.3.1</version>
+			<groupId>jakarta.xml.bind</groupId>
+			<artifactId>jakarta.xml.bind-api</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.glassfish.jaxb</groupId>
 			<artifactId>jaxb-runtime</artifactId>
-			<version>2.3.1</version>
+		</dependency>
+		<dependency>
+			<groupId>jakarta.servlet</groupId>
+			<artifactId>jakarta.servlet-api</artifactId>
+			<version>6.0.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>jakarta.annotation</groupId>
+			<artifactId>jakarta.annotation-api</artifactId>
+			<version>2.1.1</version>
 		</dependency>
 
-		<!-- OpenCV -->
+		<!-- OpenCV 依赖（阿里云可用） -->
 		<dependency>
-			<groupId>org.opencv</groupId>
-			<artifactId>opencv</artifactId>
-			<version>4.11.0</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/src/main/resources/opencv/opencv-4110.jar</systemPath>
+			<groupId>org.bytedeco</groupId>
+			<artifactId>javacv-platform</artifactId>
+			<version>1.5.10</version>
+		</dependency>
+
+		<!-- JJWT -->
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-api</artifactId>
+			<version>${jjwt.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-impl</artifactId>
+			<version>${jjwt.version}</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-jackson</artifactId>
+			<version>${jjwt.version}</version>
+			<scope>runtime</scope>
 		</dependency>
 	</dependencies>
 
 	<build>
 		<plugins>
-			<!-- Maven Compiler Plugin -->
+			<!-- 强制指定较新的 Maven Compiler 插件以支持 Java 21 -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.10.1</version>
+				<version>3.11.0</version>
 				<configuration>
 					<source>${java.version}</source>
 					<target>${java.version}</target>
 					<encoding>UTF-8</encoding>
+					<!-- 添加模块化支持参数（可选） -->
+					<compilerArgs>
+						<arg>--enable-preview</arg>
+					</compilerArgs>
 				</configuration>
 			</plugin>
 
-			<!-- Maven Surefire Plugin -->
+			<!-- Surefire 插件需要适配新版本 -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>3.2.5</version>
-				<configuration>
-					<argLine>-Djava.library.path=${opencv.library.path}</argLine>
-				</configuration>
 			</plugin>
 
-			<!-- Spring Boot Maven Plugin -->
+			<!-- Spring Boot Maven 插件 -->
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<mainClass>com.fwwb.vehicledetection.VehicledetectionApplication</mainClass>
+					<jvmArguments>--enable-preview</jvmArguments>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>

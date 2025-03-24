@@ -1,0 +1,52 @@
+{
+  "timestamp": "2025-03-21 19:30:04.710",
+  "frame": 0,
+  "type": "person",
+  "confidence": 0.708,
+  "coordinates": [
+    1626,
+    886,
+    2171,
+    1375
+  ],
+  "license_plate": "None"
+},
+{
+  "timestamp": "2025-03-21 19:30:04.913",
+  "frame": 1,
+  "type": "car",
+  "confidence": 0.814,
+  "coordinates": [
+    235,
+    319,
+    329,
+    401
+  ],
+  "license_plate": "None"
+},
+{
+  "timestamp": "2025-03-21 19:30:04.928",
+  "frame": 1,
+  "type": "car",
+  "confidence": 0.772,
+  "coordinates": [
+    408,
+    333,
+    516,
+    425
+  ],
+  "license_plate": "None"
+},
+{
+  "timestamp": "2025-03-21 19:30:04.987",
+  "frame": 1,
+  "type": "car",
+  "confidence": 0.727,
+  "coordinates": [
+    51,
+    292,
+    140,
+    370
+  ],
+  "license_plate": "None"
+},

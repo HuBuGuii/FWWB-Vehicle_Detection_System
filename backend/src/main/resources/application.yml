@@ -12,9 +12,6 @@ spring:
     username: 13168
     password: 1234
     driver-class-name: org.postgresql.Driver
-  redis:
-    host: 127.0.0.1
-    port: 6379
   jpa:
     hibernate:
       ddl-auto: update
@@ -22,6 +19,10 @@ spring:
     properties:
       hibernate:
         format_sql: true
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6379
 mybatis-plus:
   configuration:
     default-enum-type-handler: org.apache.ibatis.type.EnumOrdinalTypeHandler
@@ -30,6 +31,12 @@ mybatis-plus:
 
 conda:
   python:
-    path: "D:/Work/Tools/Anaconda/envs/yolov5/python.exe"
+    path: "D:/Work/Tools/Anaconda/envs/fwwb_yolo/python.exe"
 
-
+logging:
+  level:
+    org:
+      springframework=DEBUG:
+        .beans=TRACE:
+        .context:
+          .annotation=TRACE:
