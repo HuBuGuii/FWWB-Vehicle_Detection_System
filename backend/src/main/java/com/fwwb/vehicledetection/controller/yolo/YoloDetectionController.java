@@ -28,7 +28,7 @@ public class YoloDetectionController {
     // 使用新模型（例如 best.pt）
     private static final String YOLO_MODEL_PATH = "best.pt";
     // 修改为新虚拟环境的 Python 路径（fwwb_yolo）
-    private static final String CONDA_PYTHON_PATH = "D:/Work/Tools/Anaconda/envs/fwwb_yolo/python.exe";
+    private static final String CONDA_PYTHON_PATH = "./src/main/resources/env/fwwb_yolo/python.exe";
 
     // 视频检测：输入/输出目录
     private static final String INPUT_VIDEO_DIR = new File("./src/main/resources/yolo/video/videoInput").getAbsolutePath();

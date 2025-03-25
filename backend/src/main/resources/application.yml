@@ -31,7 +31,7 @@ mybatis-plus:
 
 conda:
   python:
-    path: "D:/Work/Tools/Anaconda/envs/fwwb_yolo/python.exe"
+    path: "./src/main/resources/env/fwwb_yolo/python.exe"
 
 logging:
   level:

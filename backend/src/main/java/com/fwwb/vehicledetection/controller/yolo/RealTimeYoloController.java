@@ -25,7 +25,7 @@ import java.util.concurrent.TimeUnit;
 public class RealTimeYoloController {
 
     // Python环境和脚本相关参数
-    private static final String CONDA_PYTHON_PATH = "D:/Work/Tools/Anaconda/envs/fwwb_yolo/python.exe";
+    private static final String CONDA_PYTHON_PATH = "./src/main/resources/env/fwwb_yolo/python.exe";
     private static final String YOLO_SCRIPT_PATH = "main.py";
     private static final String YOLO_MODEL_PATH = "best.pt";
     // 实时检测的输出目录（所有实时检测 exp 文件夹均位于此目录下）
