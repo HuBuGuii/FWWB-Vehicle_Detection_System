@@ -1,6 +1,5 @@
 <template>
   <div id="sectionCom">
-    <div class="arrow" v-if="props.isFirst"></div>
     <div class="card">
       <div class="title">
         <div class="total">

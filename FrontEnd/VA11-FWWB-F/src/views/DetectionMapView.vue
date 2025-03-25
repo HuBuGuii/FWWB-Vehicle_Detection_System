@@ -1,5 +1,6 @@
 <template>
-  <div class="common-layout">
+  <div class="mapView">
+    <div class="common-layout">
     <el-container>
       <el-header>
         <div class="header">
@@ -7,24 +8,75 @@
             ><el-icon class="icon"><ArrowLeftBold /></el-icon
             ><RouterLink to="/" class="link">返回首页</RouterLink></span
           >
-          <span class="manager" @click="handleManager">
+          <span class="manager" >
             <span class="manage"
-              >进入路段规划
+              ><el-button plain @click="handleManager" >进入路段规划</el-button>
               <el-icon class="icon"><ArrowLeftBold /></el-icon>
             </span>
           </span>
         </div>
       </el-header>
-      <el-main>Main</el-main>
+      <el-main>
+        <div class="container">
+          <FlowChart></FlowChart>
+        </div>
+      </el-main>
     </el-container>
+  </div>
+  <div class="manager">
+    <MapManager></MapManager>
+  </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
-// import sectionCom from '@/components/sectionCom.vue'
+import sectionCom from '@/components/sectionCom.vue'
+import { useMapStore } from '@/stores/map'
+import MapManager from '@/components/mapManager.vue'
+import FlowChart from '@/components/flowChart.vue'
 
-const road = ref({ dir1: 32, dir2: 54 })
+
+const map = useMapStore()
+
+const roadData = map.treeData
+
+const getLevelElementCounts = <T>(arr: Array<T | Array<T>>): { [level: number]: number } => {
+  const levelCounts: { [level: number]: number } = {};
+
+  const traverse = (array: Array<T | Array<T>>, level: number): void => {
+    if (!Array.isArray(array)) {
+      return;
+    }
+
+    // 初始化当前层级的计数
+    if (!levelCounts[level]) {
+      levelCounts[level] = 0;
+    }
+
+    // 增加当前层级的元素计数
+    levelCounts[level] += array.length;
+
+    // 递归遍历子数组
+    for (const item of array) {
+      if (Array.isArray(item)) {
+        traverse(item, level + 1);
+      }
+    }
+  };
+
+  traverse(arr, 0);
+  return levelCounts;
+};
+
+
+const levels = getLevelElementCounts(roadData)
+console.log(levels)
+
+const handleManager = () => {
+  map.showManager = true
+  console.log(map.showManager)
+}
 </script>
 
 <style scoped lang="scss">
@@ -61,7 +113,17 @@ const road = ref({ dir1: 32, dir2: 54 })
     }
   }
   .manager{
-      cursor: pointer;
+    display: flex;
+    align-items: center;
   }
+
+}
+.container{
+  width: 100%;
+  height: 100%;
+}
+.el-main{
+  height: calc(100vh - 60px);
+  padding:0;
 }
 </style>
