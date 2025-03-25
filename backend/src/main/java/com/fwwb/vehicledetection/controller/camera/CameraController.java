@@ -349,4 +349,10 @@ public class CameraController {
             return running;
         }
     }
+
+    // 添加摄像头状态检查方法
+    public boolean isCameraRunning(Long cameraId) {
+        return captureSessions.containsKey(cameraId) &&
+                captureSessions.get(cameraId).isRunning();
+    }
 }

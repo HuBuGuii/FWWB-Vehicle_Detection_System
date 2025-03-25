@@ -18,21 +18,21 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
+
 
 @RestController
 @RequestMapping("/api/yolo")
 public class YoloDetectionController {
     // 修改后的 Python 脚本路径（位于 yolo 文件夹下的 main.py）
     private static final String YOLO_SCRIPT_PATH = "main.py";
-    // 使用新模型（例如 yolo11n.pt）
-    private static final String YOLO_MODEL_PATH = "yolo11n.pt";
+    // 使用新模型（例如 best.pt）
+    private static final String YOLO_MODEL_PATH = "best.pt";
     // 修改为新虚拟环境的 Python 路径（fwwb_yolo）
     private static final String CONDA_PYTHON_PATH = "D:/Work/Tools/Anaconda/envs/fwwb_yolo/python.exe";
 
     // 视频检测：输入/输出目录
-    private static final String INPUT_VIDEO_DIR = new File("./src/main/resources/yolo/image/videoInput").getAbsolutePath();
-    private static final String OUTPUT_VIDEO_DIR = new File("./src/main/resources/yolo/image/videoOutput").getAbsolutePath();
+    private static final String INPUT_VIDEO_DIR = new File("./src/main/resources/yolo/video/videoInput").getAbsolutePath();
+    private static final String OUTPUT_VIDEO_DIR = new File("./src/main/resources/yolo/video/videoOutput").getAbsolutePath();
 
     // 图像检测：输入/输出目录
     private static final String INPUT_IMAGE_DIR = new File("./src/main/resources/yolo/image/imageInput").getAbsolutePath();

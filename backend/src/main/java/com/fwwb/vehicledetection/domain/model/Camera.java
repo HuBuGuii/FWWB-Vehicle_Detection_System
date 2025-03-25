@@ -35,4 +35,15 @@ public class Camera {
 
     //  本地设备序列号（网络摄像头无效）
     private Integer deviceId;
+
+    // 添加获取 RTSP URL 的方法
+    public String getRtspUrl() {
+        if ("NETWORK".equalsIgnoreCase(sourceType)) {
+            return String.format("%s://%s:%d",
+                    protocol.toLowerCase(),
+                    ipAddress,
+                    port);
+        }
+        return null;
+    }
 }

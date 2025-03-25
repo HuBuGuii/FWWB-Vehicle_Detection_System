@@ -9,7 +9,7 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-@TableName("realTimeDetectionRecord")
+@TableName("\"realTimeDetectionRecord\"")
 public class RealTimeDetectionRecord {
     // 主键：实时监测记录ID
     @TableId(type = IdType.AUTO)
@@ -38,4 +38,7 @@ public class RealTimeDetectionRecord {
 
     // 记录的最大寿命
     private Long maxAge;
+
+    // 记录保存的文件夹
+    private String exp;
 }
