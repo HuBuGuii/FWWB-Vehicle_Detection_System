@@ -32,10 +32,13 @@
       </el-aside>
       <el-container>
         <el-header>
-          <div class="user">
-            <el-icon size="50px" color="rgba(229, 229, 229, 1)"><Avatar /></el-icon>
-            <span>welcome</span>
-            <span>{{ auth.userName }}</span>
+          <div class="header-bar">
+            <div class="user">
+              <el-icon size="50px" color="rgba(229, 229, 229, 1)"><Avatar /></el-icon>
+              <span>welcome</span>
+              <span>{{ auth.userName }}</span>
+            </div>
+            <div class="tool"><el-button plian @click="showScreen">点击筛选</el-button></div>
           </div>
         </el-header>
         <el-main>
@@ -49,7 +52,7 @@
               v-loading="loading"
               table-layout="auto"
             >
-            <el-table-column prop="time" label="时间" align="center" min-width="120" />
+              <el-table-column prop="time" label="时间" align="center" min-width="120" />
               <el-table-column prop="address" label="路段" align="center" min-width="120" />
               <el-table-column prop="number" label="车牌号" align="center" min-width="120" />
               <el-table-column prop="type" label="车辆类型" align="center" min-width="120" />
@@ -61,7 +64,6 @@
                   >
                 </template>
               </el-table-column>
-
             </el-table>
           </div>
           <div class="pagination">
@@ -75,6 +77,7 @@
         </el-main>
       </el-container>
     </el-container>
+    <ScreenCom :ifshow-screen="ifshowScreen"></ScreenCom>
   </div>
 </template>
 
@@ -82,9 +85,11 @@
 import { computed, ref, onMounted } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { useRoute } from 'vue-router'
+import ScreenCom from '@/components/screenCom.vue'
 
 const route = useRoute()
 const auth = useAuthStore()
+const ifshowScreen = ref(false)
 const allData = ref([
   { id: 1, time: '1/1', address: '路段1', number: 'h132kc', type: '小车', color: '白' },
   { id: 1, time: '1/1', address: '路段1', number: 'h132kc', type: '小车', color: '白' },
@@ -107,6 +112,10 @@ const loading = ref(false)
 const pageSize = ref(0)
 
 const activeMenu = computed(() => route.path)
+const showScreen = () => {
+  ifshowScreen.value = !ifshowScreen.value
+  console.log('筛选组件已开')
+}
 const handleSelect = (index: string) => {
   console.log('当前选中菜单:', index)
   // router.push(index)
@@ -121,8 +130,6 @@ const calMaxH = () => {
 const handleDetail = (id: number) => {
   console.log(id)
 }
-
-
 
 const getData = async () => {
   console.log('等着写')
@@ -158,11 +165,13 @@ onMounted(() => {
 .tablecontainer {
   width: 100%;
 }
-.user {
+.header-bar {
+  width: 100%;
   box-sizing: border-box;
-  padding-top: 10px;
+  padding: 10px 50px 0 10px;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   border-bottom: 4px solid rgba(229, 229, 229, 1);
   span {
     margin-left: 20px;
