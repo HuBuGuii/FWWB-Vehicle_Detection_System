@@ -4,6 +4,9 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
+# 忽略 env 目录
+src/main/resources/env/
+
 ### STS ###
 .apt_generated
 .classpath
