@@ -9,8 +9,8 @@ spring:
       enabled: true
   datasource:
     url: jdbc:postgresql://localhost:5432/fwwb
-    username: 13168
-    password: 1234
+    username: postgres
+    password: password
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
