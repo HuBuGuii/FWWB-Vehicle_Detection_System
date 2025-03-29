@@ -291,7 +291,14 @@ const handleRegister = async (): Promise<void> => {
     // 模拟注册请求
     request.post('/auth/register',send).then(
       response => console.log(response)
-    )
+    ).catch(error => {
+      console.error('完整错误信息:', {
+      message: error.message,
+      config: error.config,
+      response: error.response?.data,
+      headers: error.response?.headers // 检查返回的 CORS 头
+    });
+    })
 
     ElMessage.success('注册成功')
     authStore.RegisterVisible = false
