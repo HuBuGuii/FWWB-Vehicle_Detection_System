@@ -122,6 +122,12 @@
             show-password
           />
         </el-form-item>
+        <el-form-item label="姓名" prop="name">
+          <el-input v-model="registerForm.name" placeholder="请输入真实姓名" />
+        </el-form-item>
+        <el-form-item label="电子邮箱" prop="email">
+          <el-input v-model="registerForm.email" placeholder="请输入邮箱地址" />
+        </el-form-item>
       </el-form>
       <template #footer>
         <div class="dialog-footer">
@@ -142,6 +148,8 @@ import type { FormInstance, FormRules } from 'element-plus'
 import { ElMessage } from 'element-plus'
 import { useAuthStore } from '@/stores/auth'
 import { useRouter } from 'vue-router'
+import request from '@/utils/request'
+
 
 // 类型定义
 interface LoginFormData {
@@ -154,6 +162,8 @@ interface RegisterFormData {
   username: string
   password: string
   confirmPassword: string
+  name:string
+  email:string
 }
 
 // 实例化
@@ -180,6 +190,8 @@ const registerForm = reactive<RegisterFormData>({
   username: '',
   password: '',
   confirmPassword: '',
+  name:'',
+  email:''
 })
 
 // 登录表单验证规则
@@ -216,6 +228,9 @@ const registerRules = reactive<FormRules>({
       },
       trigger: 'blur',
     },
+  ],
+  name:[
+    {required:true,message:'请输入姓名',trigger:'blur'}
   ],
   email: [
     { required: true, message: '请输入邮箱地址', trigger: 'blur' },
@@ -271,9 +286,12 @@ const handleRegister = async (): Promise<void> => {
 
     // 这里添加注册逻辑
     console.log('注册表单数据:', registerForm)
-
+    const send = JSON.stringify(registerForm)
+    console.log(send)
     // 模拟注册请求
-    await new Promise((resolve) => setTimeout(resolve, 1000))
+    request.post('/auth/register',send).then(
+      response => console.log(response)
+    )
 
     ElMessage.success('注册成功')
     authStore.RegisterVisible = false

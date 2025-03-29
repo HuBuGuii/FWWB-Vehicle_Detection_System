@@ -19,6 +19,7 @@
     "@vue-flow/core": "^1.42.4",
     "@vue-flow/minimap": "^1.5.2",
     "@vue-flow/node-resizer": "^1.4.0",
+    "axios": "^1.8.4",
     "element-plus": "^2.9.6",
     "pinia": "^3.0.1",
     "pinia-plugin-persistedstate": "^4.2.0",
@@ -27,6 +28,7 @@
   },
   "devDependencies": {
     "@tsconfig/node22": "^22.0.0",
+    "@types/axios": "^0.9.36",
     "@types/jsdom": "^21.1.7",
     "@types/node": "^22.13.4",
     "@vitejs/plugin-vue": "^5.2.1",
