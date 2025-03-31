@@ -9,6 +9,7 @@
           drag
           action="#"
           multiple
+          :before-upload="beforeUpload"
           :on-success="handleSucess"
           :on-error="handleError"
           :auto-upload="false"
@@ -17,7 +18,7 @@
           <div class="el-upload__text">拖拽文件或 <em>点击此处上传</em></div>
           <template #tip>
             <div class="el-upload__tip">
-              上传完成后点击右侧按钮开始分析 <el-button @click="handleUpload">开始分析</el-button>
+              只能上传视频或图片，上传完成后点击右侧按钮开始分析 <el-button @click="handleUpload">开始分析</el-button>
             </div>
           </template>
         </el-upload>
@@ -92,6 +93,16 @@ const recentData = [
   { date: '10/11', car: '小型车' },
   { date: '10/11', car: '小型车' },
 ]
+
+const beforeUpload = (file:File) => {
+  const isImage = file.type.startsWith('image/'); // 检查是否为图片
+  const isVideo = file.type.startsWith('video/'); // 检查是否为视频
+  if(!isImage && !isVideo){
+    ElMessage.error('只能上传视频或图片')
+    return false
+  }
+  return true
+}
 
 const handleSucess = () => {
   ElMessage.success('上传成功')

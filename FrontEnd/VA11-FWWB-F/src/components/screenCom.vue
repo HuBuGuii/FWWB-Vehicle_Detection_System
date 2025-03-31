@@ -49,14 +49,6 @@
             <el-input v-model="formData.plateNumber" placeholder="请输入车牌号" clearable />
           </el-form-item>
 
-          <!-- 记录类型选择 -->
-          <el-form-item label="记录类型" prop="type">
-            <el-select v-model="formData.type" placeholder="请选择记录类型" clearable>
-              <el-option v-for="item in types" :key="item.value" :label="item.label" :value="item.value">
-
-              </el-option>
-            </el-select>
-          </el-form-item>
 
           <!-- 车辆类型选择 -->
           <el-form-item label="车辆类型" prop="vehicleType">
@@ -90,7 +82,8 @@ import { watch } from 'vue'
 import { ElMessage, type FormInstance, type FormRules } from 'element-plus'
 
 const showScreen = ref(false)
-const props = defineProps({ ifshowScreen: Boolean })
+const condition = ref(true)
+const props = defineProps({ ifshowScreen: Boolean , isR:Boolean})
 // 表单数据类型
 interface FormData {
   date: string
@@ -129,10 +122,7 @@ const vehicleTypeOptions = [
   { value: '4', label: '特种车辆' },
 ]
 
-const types = [
-  {value:'realTime',label:'实时监测'},
-  {value:'file',label:'文件上传'}
-]
+
 // 验证规则
 const formRules = reactive<FormRules<FormData>>({
   time: [{ required: false, message: '请选择时间', trigger: 'change' }],
@@ -196,6 +186,13 @@ watch(
   () => {
     showScreen.value = true
   },
+)
+watch(
+  () => props.isR,
+  (newVal) => {
+    condition.value = newVal
+    console.log('conditiontime?'+condition.value)
+  }
 )
 </script>
 

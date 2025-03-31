@@ -7,7 +7,7 @@
     <main class="view-content">
       <div class="header">
         <div class="smallTitle">VA11</div>
-        <div class="user">用户123 已登入</div>
+        <div class="user"><ControlCom></ControlCom></div>
       </div>
       <div class="Title">
         <div class="name">智航云轨</div>
@@ -96,6 +96,7 @@
 </template>
 
 <script setup lang="ts">
+import ControlCom from '@/components/controlCom.vue'
 import { useAuthStore } from '@/stores/auth'
 
 

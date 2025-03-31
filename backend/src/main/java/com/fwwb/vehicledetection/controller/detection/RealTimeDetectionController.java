@@ -21,14 +21,14 @@ public class RealTimeDetectionController {
     // 获取实时检测记录（分页）
     @GetMapping("/{pageNum}")
     public Page<RealTimeDetectionRecord> listRecords(@PathVariable int pageNum) {
-        return realTimeService.page(new Page<>(pageNum, 10));
+        return realTimeService.page(new Page<>(pageNum, 13));
     }
 
     // 根据类型获取实时记录（示例：根据 vehicleStatus 筛选）
     @GetMapping("/type")
     public Page<RealTimeDetectionRecord> searchRecords(@RequestParam("type") String type,
                                                        @RequestParam("pageNum") int pageNum) {
-        return realTimeService.page(new Page<>(pageNum, 10),
+        return realTimeService.page(new Page<>(pageNum, 13),
                 new QueryWrapper<RealTimeDetectionRecord>().eq("vehicle_status", type));
     }
 
@@ -71,7 +71,7 @@ public class RealTimeDetectionController {
                     "SELECT camera_id FROM camera WHERE location LIKE '%" + searchDTO.getLocation() + "%'");
         }
 
-        return realTimeService.page(new Page<>(pageNum, 10), queryWrapper);
+        return realTimeService.page(new Page<>(pageNum, 13), queryWrapper);
     }
 
     // 创建实时检测记录

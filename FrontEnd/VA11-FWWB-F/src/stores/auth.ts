@@ -9,14 +9,16 @@ export const useAuthStore = defineStore('auth', () => {
   const lastPath = ref<string>('')
   const redirectPath = ref<string>('')
   const token = ref<string>('')
-  const userName = ref<string>('小明')
-  const identity = ref<boolean>(false)  // 用于标识超级管理员
+  const userName = ref<string>('系统用户')
+  const role = ref<string>('user')  // 用于标识超级管理员
 
   // getters
-
-
+  
   // actions
-
+const logout = () => {
+  token.value = ''
+  userName.value = '系统用户'
+}
 
   return {
     LogCondition,
@@ -25,8 +27,9 @@ export const useAuthStore = defineStore('auth', () => {
     lastPath,
     redirectPath,
     token,
-    identity,
-    userName
+    role,
+    userName,
+    logout
   }
 },{
   persist:true,

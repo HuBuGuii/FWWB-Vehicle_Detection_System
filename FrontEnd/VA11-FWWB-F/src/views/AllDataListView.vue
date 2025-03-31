@@ -24,7 +24,7 @@
             <span>文件分析</span>
           </el-menu-item>
 
-          <el-menu-item index="/user-manage" v-if="auth.identity">
+          <el-menu-item index="/user-manage" v-if="auth.role === 'user'">
             <el-icon><Service /></el-icon>
             <span>用户管理</span>
           </el-menu-item>
@@ -38,7 +38,7 @@
               <span>welcome</span>
               <span>{{ auth.userName }}</span>
             </div>
-            <div class="tool"><el-button plian @click="showScreen">点击筛选</el-button></div>
+            <div class="tool"><el-button plain @click="switchCC">实时/文件</el-button><el-button plian @click="showScreen">筛选小助手</el-button></div>
           </div>
         </el-header>
         <el-main>
@@ -77,7 +77,7 @@
         </el-main>
       </el-container>
     </el-container>
-    <ScreenCom :ifshow-screen="ifshowScreen"></ScreenCom>
+    <ScreenCom :ifshow-screen="ifshowScreen" :condition="isR"></ScreenCom>
   </div>
 </template>
 
@@ -104,18 +104,27 @@ const allData = ref([
   { id: 1, time: '1/1', address: '路段1', number: 'h132kc', type: '小车', color: '白' },
   { id: 1, time: '1/1', address: '路段1', number: 'h132kc', type: '小车', color: '白' },
   { id: 1, time: '1/1', address: '路段1', number: 'h132kc', type: '小车', color: '白' },
+
   //排个13行差不多，问后端要的时候就一页13行
 ])
 const tablecontainer = ref()
 const tableMaxH = ref<number>(0)
 const loading = ref(false)
 const pageSize = ref(0)
+const isR = ref(true)
 
 const activeMenu = computed(() => route.path)
+
 const showScreen = () => {
   ifshowScreen.value = !ifshowScreen.value
   console.log('筛选组件已开')
 }
+
+const switchCC = () => {
+  isR.value = !isR.value
+  console.log('已切换')
+}
+
 const handleSelect = (index: string) => {
   console.log('当前选中菜单:', index)
   // router.push(index)

@@ -1,11 +1,7 @@
 <template>
   <div class="auth-container">
     <!-- 登录对话框 -->
-    <el-dialog
-      v-model="authStore.LoginVisible"
-      :close-on-click-modal="true"
-      center
-    >
+    <el-dialog v-model="authStore.LoginVisible" :close-on-click-modal="true" center>
       <svg
         t="1741584083381"
         class="icon"
@@ -36,8 +32,8 @@
         label-position="left"
         status-icon
       >
-        <el-form-item label="用户名" prop="username" style="margin-top: 25px">
-          <el-input v-model="loginForm.username" placeholder="请输入用户名" />
+        <el-form-item label="用户名" prop="account" style="margin-top: 25px">
+          <el-input v-model="loginForm.account" placeholder="请输入用户名" />
         </el-form-item>
         <el-form-item label="密码" prop="password">
           <el-input
@@ -58,11 +54,7 @@
     </el-dialog>
 
     <!-- 注册对话框 -->
-    <el-dialog
-      v-model="authStore.RegisterVisible"
-      :close-on-click-modal="true"
-      center
-    >
+    <el-dialog v-model="authStore.RegisterVisible" :close-on-click-modal="true" center>
       <svg
         t="1741583992340"
         class="icon"
@@ -103,8 +95,8 @@
         label-position="left"
         status-icon
       >
-        <el-form-item label="用户名" prop="username" style="margin-top: 25px">
-          <el-input v-model="registerForm.username" placeholder="请输入用户名" />
+        <el-form-item label="用户名" prop="account" style="margin-top: 25px">
+          <el-input v-model="registerForm.account" placeholder="请输入用户名" />
         </el-form-item>
         <el-form-item label="密码" prop="password">
           <el-input
@@ -122,11 +114,11 @@
             show-password
           />
         </el-form-item>
-        <el-form-item label="姓名" prop="name">
-          <el-input v-model="registerForm.name" placeholder="请输入真实姓名" />
+        <el-form-item label="姓名" prop="realName">
+          <el-input v-model="registerForm.realName" placeholder="请输入真实姓名" />
         </el-form-item>
-        <el-form-item label="电子邮箱" prop="email">
-          <el-input v-model="registerForm.email" placeholder="请输入邮箱地址" />
+        <el-form-item label="电子邮箱" prop="contact">
+          <el-input v-model="registerForm.contact" placeholder="请输入邮箱地址" />
         </el-form-item>
       </el-form>
       <template #footer>
@@ -150,20 +142,18 @@ import { useAuthStore } from '@/stores/auth'
 import { useRouter } from 'vue-router'
 import request from '@/utils/request'
 
-
 // 类型定义
 interface LoginFormData {
-  username: string
+  account: string
   password: string
-  remember: boolean
 }
 
 interface RegisterFormData {
-  username: string
+  account: string
   password: string
   confirmPassword: string
-  name:string
-  email:string
+  realName: string
+  contact: string
 }
 
 // 实例化
@@ -180,41 +170,41 @@ const registerLoading = ref<boolean>(false)
 
 // 登录表单数据
 const loginForm = reactive<LoginFormData>({
-  username: '',
+  account: '',
   password: '',
-  remember: false,
+
 })
 
 // 注册表单数据
 const registerForm = reactive<RegisterFormData>({
-  username: '',
+  account: '',
   password: '',
   confirmPassword: '',
-  name:'',
-  email:''
+  realName: '',
+  contact: '',
 })
 
 // 登录表单验证规则
 const loginRules = reactive<FormRules>({
-  username: [
+  account: [
     { required: true, message: '请输入用户名', trigger: 'blur' },
     { min: 3, max: 20, message: '长度在 3 到 20 个字符', trigger: 'blur' },
   ],
   password: [
     { required: true, message: '请输入密码', trigger: 'blur' },
-    { min: 6, max: 20, message: '长度在 6 到 20 个字符', trigger: 'blur' },
+    { min: 3, max: 20, message: '长度在 6 到 20 个字符', trigger: 'blur' },
   ],
 })
 
 // 注册表单验证规则
 const registerRules = reactive<FormRules>({
-  username: [
+  account: [
     { required: true, message: '请输入用户名', trigger: 'blur' },
     { min: 3, max: 20, message: '长度在 3 到 20 个字符', trigger: 'blur' },
   ],
   password: [
     { required: true, message: '请输入密码', trigger: 'blur' },
-    { min: 6, max: 20, message: '长度在 6 到 20 个字符', trigger: 'blur' },
+    { min: 3, max: 20, message: '长度在 6 到 20 个字符', trigger: 'blur' },
   ],
   confirmPassword: [
     { required: true, message: '请再次输入密码', trigger: 'blur' },
@@ -229,10 +219,8 @@ const registerRules = reactive<FormRules>({
       trigger: 'blur',
     },
   ],
-  name:[
-    {required:true,message:'请输入姓名',trigger:'blur'}
-  ],
-  email: [
+  realName: [{ required: true, message: '请输入姓名', trigger: 'blur' }],
+  contact: [
     { required: true, message: '请输入邮箱地址', trigger: 'blur' },
     { type: 'email', message: '请输入正确的邮箱地址', trigger: 'blur' },
   ],
@@ -260,10 +248,13 @@ const handleLogin = async (): Promise<void> => {
 
     // 这里添加登录逻辑
     console.log('登录表单数据:', loginForm)
-
     // 模拟登录请求
-    await new Promise((resolve) => setTimeout(resolve, 1000))
-
+    const response = await request.post('auth/login',loginForm)
+    console.log(response)
+    const token = response.token                                          //没有问题，后端没按格式返
+    console.log('token是' + token)
+    localStorage.setItem('access_token',token)
+    console.log('token has been stored')
     ElMessage.success('登录成功')
     authStore.LogCondition = true
     router.push(authStore.redirectPath || { name: 'usage' })
@@ -283,23 +274,13 @@ const handleRegister = async (): Promise<void> => {
   try {
     await registerFormRef.value.validate()
     registerLoading.value = true
-
     // 这里添加注册逻辑
-    console.log('注册表单数据:', registerForm)
-    const send = JSON.stringify(registerForm)
-    console.log(send)
+    const { confirmPassword, ...sendM } = registerForm
+    const send = JSON.stringify(sendM)
+    console.log('发送的表单数据', send)
     // 模拟注册请求
-    request.post('/auth/register',send).then(
-      response => console.log(response)
-    ).catch(error => {
-      console.error('完整错误信息:', {
-      message: error.message,
-      config: error.config,
-      response: error.response?.data,
-      headers: error.response?.headers // 检查返回的 CORS 头
-    });
-    })
-
+    const response = await request.post('/auth/register', send)
+    console.log(response)
     ElMessage.success('注册成功')
     authStore.RegisterVisible = false
     authStore.LoginVisible = true
@@ -312,7 +293,6 @@ const handleRegister = async (): Promise<void> => {
 </script>
 
 <style scoped>
-
 .auth-container {
   overflow: hidden;
   height: 100%;
@@ -341,7 +321,7 @@ const handleRegister = async (): Promise<void> => {
   }
 }
 :deep(.el-overlay-dialog) {
-    overflow: hidden;
+  overflow: hidden;
 }
 
 .diaName {

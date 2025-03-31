@@ -22,14 +22,14 @@ public class NonRealTimeDetectionController {
     // 获取非实时检测记录（分页）
     @GetMapping("/{pageNum}")
     public Page<NonRealTimeDetectionRecord> listRecords(@PathVariable int pageNum) {
-        return nonRealTimeService.page(new Page<>(pageNum, 10));
+        return nonRealTimeService.page(new Page<>(pageNum, 13));
     }
 
     // 根据类型获取非实时记录（示例：根据 vehicleStatus 筛选）
     @GetMapping("/type")
     public Page<NonRealTimeDetectionRecord> searchRecords(@RequestParam("type") String type,
                                                           @RequestParam("pageNum") int pageNum) {
-        return nonRealTimeService.page(new Page<>(pageNum, 10),
+        return nonRealTimeService.page(new Page<>(pageNum, 13),
                 new QueryWrapper<NonRealTimeDetectionRecord>().eq("vehicle_status", type));
     }
 
@@ -66,7 +66,7 @@ public class NonRealTimeDetectionController {
                     "SELECT vehicle_id FROM vehicle WHERE licence LIKE '%" + searchDTO.getLicense() + "%'");
         }
 
-        return nonRealTimeService.page(new Page<>(pageNum, 10), queryWrapper);
+        return nonRealTimeService.page(new Page<>(pageNum, 13), queryWrapper);
     }
 
     // 创建非实时检测记录
