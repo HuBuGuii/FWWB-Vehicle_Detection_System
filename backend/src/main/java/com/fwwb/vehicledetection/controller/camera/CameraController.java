@@ -33,7 +33,6 @@ public class CameraController {
 
     public static final Logger LOGGER = Logger.getLogger(CameraController.class.getName());
 
-
     // 用于存放摄像头采集会话，key 为 cameraId
     private static final Map<Long, CameraCaptureSession> captureSessions = new ConcurrentHashMap<>();
 
@@ -45,6 +44,18 @@ public class CameraController {
     @GetMapping("/{pageNum}")
     public Page<Camera> listCameras(@PathVariable int pageNum) {
         return cameraService.page(new Page<>(pageNum, 10));
+    }
+
+    /**
+     * 新增接口：获取数据库中的摄像头总页数
+     * 可以通过请求参数 pageSize 指定每页记录数，默认值为10
+     * URL: /api/cameras/pageCount?pageSize=10
+     */
+    @GetMapping("/pageCount")
+    public int getTotalPageCount(@RequestParam(defaultValue = "10") int pageSize) {
+        long totalRecords = cameraService.count();
+        // 向上取整计算总页数： (totalRecords + pageSize - 1) / pageSize
+        return (int) ((totalRecords + pageSize - 1) / pageSize);
     }
 
     /**

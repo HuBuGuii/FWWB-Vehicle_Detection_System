@@ -1,4 +1,3 @@
-// File: src/main/java/com/fwwb/vehicledetection/controller/user/UserController.java
 package com.fwwb.vehicledetection.controller.user;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -20,6 +19,17 @@ public class UserController {
     @GetMapping("/{pageNum}")
     public Page<User> listUsers(@PathVariable int pageNum) {
         return userService.page(new Page<>(pageNum, 10));
+    }
+
+    // 新增接口：获取数据库中的总页数
+    // 管理员可以通过请求参数指定每页大小，默认为10
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/pageCount")
+    public int getTotalPageCount(@RequestParam(defaultValue = "10") int pageSize) {
+        // 获取总记录数
+        long totalRecords = userService.count();
+        // 根据每页大小计算总页数（向上取整）
+        return (int) ((totalRecords + pageSize - 1) / pageSize);
     }
 
     // 其他管理、修改、删除等接口也可以通过 @PreAuthorize 注解进行权限限制

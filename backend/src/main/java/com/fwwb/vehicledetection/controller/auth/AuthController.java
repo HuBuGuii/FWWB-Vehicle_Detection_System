@@ -1,4 +1,3 @@
-// File: src/main/java/com/fwwb/vehicledetection/controller/auth/AuthController.java
 package com.fwwb.vehicledetection.controller.auth;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -54,6 +53,7 @@ public class AuthController {
      * 1. 通过 BCrypt 校验密码
      * 2. 验证用户审批状态（authorizationStatus）是否为 "pass"
      * 3. 通过 JwtUtil.generateToken(account, roleId) 生成包含角色信息的 token
+     * 4. 返回 token 的同时，也返回用户的 userId、roleId、realName
      */
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody Map<String, String> loginMap) {
@@ -78,6 +78,10 @@ public class AuthController {
         String token = JwtUtil.generateToken(user.getAccount(), user.getRoleId());
         Map<String, Object> resp = new HashMap<>();
         resp.put("token", token);
+        resp.put("userId", user.getUserId());
+        resp.put("roleId", user.getRoleId());
+        resp.put("realName", user.getRealName());
+
         return ResponseEntity.ok(resp);
     }
 }

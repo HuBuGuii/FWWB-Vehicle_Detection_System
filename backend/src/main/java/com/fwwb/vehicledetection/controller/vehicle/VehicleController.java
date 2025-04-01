@@ -1,4 +1,3 @@
-// File: src/main/java/com/fwwb/vehicledetection/controller/vehicle/VehicleController.java
 package com.fwwb.vehicledetection.controller.vehicle;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -22,7 +21,7 @@ public class VehicleController {
     }
 
     // 获取车辆信息
-    @GetMapping("/{vehicleId}")
+    @GetMapping("/info/{vehicleId}")
     public Vehicle getVehicle(@PathVariable Long vehicleId) {
         return vehicleService.getById(vehicleId);
     }
@@ -53,5 +52,14 @@ public class VehicleController {
     @PostMapping
     public String addVehicle(@RequestBody Vehicle vehicle) {
         return vehicleService.save(vehicle) ? "添加成功" : "添加失败";
+    }
+
+    // 新增接口：获取数据库中的车辆总页数
+    // 可以通过请求参数 pageSize 指定每页记录数，默认值为10
+    @GetMapping("/pageCount")
+    public int getTotalPageCount(@RequestParam(defaultValue = "10") int pageSize) {
+        long totalRecords = vehicleService.count();
+        // 向上取整计算总页数： (totalRecords + pageSize - 1) / pageSize
+        return (int) ((totalRecords + pageSize - 1) / pageSize);
     }
 }
