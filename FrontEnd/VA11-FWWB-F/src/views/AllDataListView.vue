@@ -35,10 +35,15 @@
           <div class="header-bar">
             <div class="user">
               <el-icon size="50px" color="rgba(229, 229, 229, 1)"><Avatar /></el-icon>
-              <span>welcome</span>
-              <span>{{ auth.userName }}</span>
+              <span>当前正在查看</span>
+              <span style="color:#409eff">{{ nowCon }}</span>
             </div>
-            <div class="tool"><el-button plain @click="switchCC">实时/文件</el-button><el-button plian @click="showScreen">筛选小助手</el-button></div>
+            <div class="tool">
+              <el-button plain @click="switchCC">实时/文件</el-button
+              ><el-button plian @click="showScreen" style="margin-right: 20px;">筛选小助手</el-button>
+              <ControlCom></ControlCom>
+            </div>
+
           </div>
         </el-header>
         <el-main>
@@ -82,10 +87,12 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, onMounted } from 'vue'
+import { computed, ref, onMounted, watch } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { useRoute } from 'vue-router'
 import ScreenCom from '@/components/screenCom.vue'
+import ControlCom from '@/components/controlCom.vue'
+import { ElMessage } from 'element-plus'
 
 const route = useRoute()
 const auth = useAuthStore()
@@ -135,6 +142,19 @@ const calMaxH = () => {
     tableMaxH.value = temp.height - 2
   }
 }
+
+const nowCon = computed(() => {
+  return isR.value? '实时监测' : '文件上传'
+})
+
+watch(isR,(newVal)=> {
+  if(newVal === true){
+    ElMessage.success('已切换至实时监测')
+  }
+  if(newVal === false){
+    ElMessage.success('已切换至文件上传')
+  }
+})
 
 const handleDetail = (id: number) => {
   console.log(id)
@@ -193,4 +213,5 @@ onMounted(() => {
     vertical-align: top;
   }
 }
+
 </style>

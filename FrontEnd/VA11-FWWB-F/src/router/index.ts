@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
+import { ElMessage } from 'element-plus'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -52,6 +53,7 @@ router.beforeEach((to, from) => {
   const authStore = useAuthStore()
   authStore.lastPath = from.fullPath
   if (to.meta.requiresAuth && !authStore.LogCondition) {
+    ElMessage.error('您还没有登录哦')
     authStore.redirectPath = to.fullPath
     authStore.LoginVisible = true
     if (to.path !== '/home') {

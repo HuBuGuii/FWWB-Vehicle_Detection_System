@@ -15,25 +15,17 @@
               v-model="formData.date"
               type="daterange"
               unlink-panels
-              value-format="YYYY/MM/DD"
+
               range-separator="To"
               start-placeholder="起始日期"
               end-placeholder="结束日期"
             >
             </el-date-picker>
           </el-form-item>
-          <!-- 时间选择器 -->
-          <el-form-item label="选择日期" prop="time">
-            <el-time-picker
-              v-model="formData.time"
-              format="HH:mm"
-              value-format="HH:mm"
-              placeholder="选择时间"
-            />
-          </el-form-item>
+
 
           <!-- 路段选择器 -->
-          <el-form-item label="选择路段" prop="section">
+          <el-form-item label="选择路段" prop="section" v-if="condition===true">
             <el-select v-model="formData.section" placeholder="请选择路段" clearable>
               <el-option
                 v-for="item in sectionOptions"
@@ -80,16 +72,15 @@
 import { ref, reactive } from 'vue'
 import { watch } from 'vue'
 import { ElMessage, type FormInstance, type FormRules } from 'element-plus'
+import request from '@/utils/request'
 
 const showScreen = ref(false)
-const condition = ref(true)
-const props = defineProps({ ifshowScreen: Boolean , isR:Boolean})
+const conDition = ref(true)
+const props = defineProps({ ifshowScreen: Boolean , condition:Boolean})
 // 表单数据类型
 interface FormData {
   date: string
-  time: string
   section: string
-  type:string
   plateNumber: string
   vehicleType: string
 }
@@ -100,9 +91,7 @@ const formRef = ref<FormInstance>()
 // 表单数据
 const formData = reactive<FormData>({
   date: '',
-  time: '',
   section: '',
-  type:'',
   plateNumber: '',
   vehicleType: '',
 })
@@ -125,7 +114,6 @@ const vehicleTypeOptions = [
 
 // 验证规则
 const formRules = reactive<FormRules<FormData>>({
-  time: [{ required: false, message: '请选择时间', trigger: 'change' }],
   section: [{ required: false, message: '请选择路段', trigger: 'change' }],
   plateNumber: [
     { required: false, message: '请输入车牌号', trigger: 'blur' },
@@ -158,16 +146,37 @@ const submitForm = async () => {
     ElMessage.warning('至少选择一项筛选')
     return
   }
-
-  try {
-    await formRef.value?.validate()
-    // 验证通过后的处理
-    console.log('表单数据：', formData)
-    // 这里可以添加提交逻辑，例如：
-    // await api.submit(formData)
-    ElMessage.success('提交成功')
-  } catch (error) {
-    ElMessage.warning('请正确填写表单' + error)
+  const send = {
+    timerange:{
+      startTime:`${formData.date[0]}`,
+      endTime:`${formData.date[1]}`
+    },
+    ...(conDition.value && {location:`${formData.section}`}),
+    license:`${formData.plateNumber}`,
+    type:`${formData.vehicleType}`
+  }
+  if(conDition.value === true){                                   //实时监测的调用
+    try{
+      await formRef.value?.validate()
+      const message = JSON.stringify(send)
+      console.log('send==' + message)
+      const response = await request.get('/detections/realtime/search',message)
+      console.log('response == ' + response)
+    }catch(error){
+      ElMessage.error('表单填写出现错误')
+      console.log('error信息' + error)
+    }
+  }
+  if(conDition.value === false){                                  //文件上传的调用
+    try{
+      await formRef.value?.validate()
+      console.log('send==' + send)
+      const response = await request.get('/detections/nonrealtime/search',send)
+      console.log('response == ' + response)
+    }catch(error){
+      ElMessage.error('表单填写出现错误')
+      console.log('error信息' + error)
+    }
   }
 }
 
@@ -188,10 +197,10 @@ watch(
   },
 )
 watch(
-  () => props.isR,
+  () => props.condition,
   (newVal) => {
-    condition.value = newVal
-    console.log('conditiontime?'+condition.value)
+    conDition.value = newVal
+    console.log('condition?'+conDition.value)
   }
 )
 </script>
