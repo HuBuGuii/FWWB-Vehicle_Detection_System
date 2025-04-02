@@ -32,28 +32,27 @@ public class RealTimeDetectionController {
     }
 
     /**
-     * 多条件筛选非实时检测记录
+     * 多条件筛选实时检测记录
      * @param startTime 开始时间（可选）
      * @param endTime   结束时间（可选）
-     * @param type      车辆类型（可选）  —— 对应车辆表中的 type 字段
-     * @param license   车牌号（可选）  —— 对应车辆表中的 licence 字段
+     * @param type      车辆类型（可选）
+     * @param license   车牌号（可选）
+     * @param location  摄像头位置（可选）
      * @param pageNum   页码
-     * @return 分页查询结果，同时包含总记录数和总页数信息
+     * @return 分页查询结果
      */
     @GetMapping("/search")
-    public Page<NonRealTimeDetectionRecord> searchNonRealTimeRecords(
-            @RequestParam(required = false)
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startTime,
-            @RequestParam(required = false)
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endTime,
+    public Page<RealTimeDetectionRecord> searchRealTimeRecords(
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startTime,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endTime,
             @RequestParam(required = false) String type,
             @RequestParam(required = false) String license,
+            @RequestParam(required = false) String location,
             @RequestParam(defaultValue = "1") int pageNum) {
 
-        // 固定每页显示 13 条记录（如果需要可以把 pageSize 作为参数传入）
+        // 固定每页显示 13 条记录（如果需要，也可将 pageSize 作为参数传入）
         int pageSize = 13;
-
-        QueryWrapper<NonRealTimeDetectionRecord> queryWrapper = new QueryWrapper<>();
+        QueryWrapper<RealTimeDetectionRecord> queryWrapper = new QueryWrapper<>();
 
         // 添加时间范围条件
         if (startTime != null && endTime != null) {
@@ -64,35 +63,38 @@ public class RealTimeDetectionController {
             queryWrapper.le("time", endTime);
         }
 
-        // 构造车辆表子查询：当传入车辆类型或车牌号参数时
-        if ((type != null && !type.trim().isEmpty()) ||
-                (license != null && !license.trim().isEmpty())) {
-
-            StringBuilder subQuery = new StringBuilder("SELECT vehicle_id FROM vehicle WHERE 1=1");
-
+        // 如果传入车辆类型 (type) 或车牌号 (license) 参数，则构造一个关联车辆表的子查询
+        if ((type != null && !type.trim().isEmpty()) || (license != null && !license.trim().isEmpty())) {
+            StringBuilder vehicleSubQuery = new StringBuilder("SELECT vehicle_id FROM vehicle WHERE 1=1");
             if (license != null && !license.trim().isEmpty()) {
-                subQuery.append(" AND licence LIKE '%").append(license).append("%'");
+                vehicleSubQuery.append(" AND licence LIKE '%").append(license.trim()).append("%'");
             }
-
             if (type != null && !type.trim().isEmpty()) {
-                subQuery.append(" AND type = '").append(type).append("'");
+                vehicleSubQuery.append(" AND type = '").append(type.trim()).append("'");
             }
-
-            queryWrapper.inSql("vehicle_id", subQuery.toString());
+            queryWrapper.inSql("vehicle_id", vehicleSubQuery.toString());
         }
 
-        // 使用 MyBatis-Plus 分页查询数据
-        Page<NonRealTimeDetectionRecord> page = nonRealTimeService.page(new Page<>(pageNum, pageSize), queryWrapper);
+        // 根据摄像头位置 (location) 筛选，通过关联摄像头表查询
+        if (location != null && !location.trim().isEmpty()) {
+            StringBuilder cameraSubQuery = new StringBuilder("SELECT camera_id FROM camera WHERE location LIKE '%")
+                    .append(location.trim()).append("%'");
+            queryWrapper.inSql("camera_id", cameraSubQuery.toString());
+        }
 
-        // 手动调用 count 查询，并计算总页数（公式： (totalRecords + pageSize - 1) / pageSize ）
-        long totalRecords = nonRealTimeService.count(queryWrapper);
+        // 分页查询数据
+        Page<RealTimeDetectionRecord> page = realTimeService.page(new Page<>(pageNum, pageSize), queryWrapper);
+
+        // 手动调用 count 查询获取符合条件的记录总数，并计算总页数（公式： (totalRecords + pageSize - 1) / pageSize ）
+        long totalRecords = realTimeService.count(queryWrapper);
         int totalPages = (int) ((totalRecords + pageSize - 1) / pageSize);
 
-        // 更新 Page 对象中的 total 字段，pages 字段通常为自动计算（取决于 MyBatis-Plus 版本）
+        // 设置总记录数，不同版本的 MyBatis-Plus 会自动计算 pages 字段，也可以通过 page.getPages() 获取
         page.setTotal(totalRecords);
 
-        // 如果需要在返回的 JSON 中明确返回自定义计算的页数，可以将 totalPages 封装到 DTO 中返回
-        // 或者将其写入日志、响应头等方式传递给前端
+        // 如果前端需要自定义显示 totalPages，也可以通过返回 DTO 或者在响应头中传递
+        // 此处仅为示例，用日志输出一下计算得到的总页数
+        System.out.println("Total pages: " + totalPages);
 
         return page;
     }
