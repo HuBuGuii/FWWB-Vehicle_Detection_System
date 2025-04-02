@@ -18,13 +18,6 @@ import java.io.File;
 @EnableScheduling
 public class VehicledetectionApplication {
 
-//	static {
-//		// 设置 java.library.path
-//		System.setProperty("java.library.path", "/path/to/opencv/libs");
-//		// 加载 OpenCV 本地库
-//		Loader.load(opencv_java.class);
-//	}
-
 	@Autowired
 	private CondaConfig condaConfig;
 

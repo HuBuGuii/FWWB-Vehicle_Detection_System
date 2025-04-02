@@ -43,7 +43,7 @@ public class CameraController {
      */
     @GetMapping("/{pageNum}")
     public Page<Camera> listCameras(@PathVariable int pageNum) {
-        return cameraService.page(new Page<>(pageNum, 10));
+        return cameraService.page(new Page<>(pageNum, 13));
     }
 
     /**
@@ -52,7 +52,7 @@ public class CameraController {
      * URL: /api/cameras/pageCount?pageSize=10
      */
     @GetMapping("/pageCount")
-    public int getTotalPageCount(@RequestParam(defaultValue = "10") int pageSize) {
+    public int getTotalPageCount(@RequestParam(defaultValue = "13") int pageSize) {
         long totalRecords = cameraService.count();
         // 向上取整计算总页数： (totalRecords + pageSize - 1) / pageSize
         return (int) ((totalRecords + pageSize - 1) / pageSize);
@@ -74,7 +74,7 @@ public class CameraController {
                                       @RequestParam("pageNum") int pageNum) {
         QueryWrapper<Camera> query = new QueryWrapper<>();
         query.like("location", keyword);
-        return cameraService.page(new Page<>(pageNum, 10), query);
+        return cameraService.page(new Page<>(pageNum, 13), query);
     }
 
     /**

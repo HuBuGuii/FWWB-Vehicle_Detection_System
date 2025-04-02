@@ -20,16 +20,16 @@ public class NonRealTimeDetectionController {
     // 获取非实时检测记录（分页）
     @GetMapping("/{pageNum}")
     public Page<NonRealTimeDetectionRecord> listRecords(@PathVariable int pageNum) {
-        return nonRealTimeService.page(new Page<>(pageNum, 10));
+        return nonRealTimeService.page(new Page<>(pageNum, 13));
     }
 
     /**
      * 新增接口：获取数据库中非实时检测记录的总页数
-     * 可以通过请求参数 pageSize 指定每页记录数，默认值为 10
-     * URL 示例: /api/detections/nonrealtime/pageCount?pageSize=10
+     * 可以通过请求参数 pageSize 指定每页记录数，默认值为 13
+     * URL 示例: /api/detections/nonrealtime/pageCount?pageSize=13
      */
     @GetMapping("/pageCount")
-    public int getTotalPageCount(@RequestParam(defaultValue = "10") int pageSize) {
+    public int getTotalPageCount(@RequestParam(defaultValue = "13") int pageSize) {
         long totalRecords = nonRealTimeService.count();
         // 向上取整计算总页数： (totalRecords + pageSize - 1) / pageSize
         return (int) ((totalRecords + pageSize - 1) / pageSize);
@@ -45,24 +45,19 @@ public class NonRealTimeDetectionController {
 
     /**
      * 多条件筛选非实时检测记录
-     *
-     * 改为通过 URL 参数传递筛选条件：
-     * - startTime 与 endTime：使用 ISO 日期时间格式（例如：2025-04-01T10:15:30）
-     * - type：车辆状态
-     * - license：车牌号
-     * - pageNum：页码（默认为1）
-     *
      * @param startTime 开始时间（可选）
      * @param endTime   结束时间（可选）
-     * @param type      车辆状态（可选）
-     * @param license   车牌号（可选）
+     * @param type      车辆类型（可选）  —— 对应车辆表中的 type 字段
+     * @param license   车牌号（可选）  —— 对应车辆表中的 licence 字段
      * @param pageNum   页码
      * @return 分页查询结果
      */
     @GetMapping("/search")
     public Page<NonRealTimeDetectionRecord> searchNonRealTimeRecords(
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startTime,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endTime,
+            @RequestParam(required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startTime,
+            @RequestParam(required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endTime,
             @RequestParam(required = false) String type,
             @RequestParam(required = false) String license,
             @RequestParam(defaultValue = "1") int pageNum) {
@@ -78,18 +73,24 @@ public class NonRealTimeDetectionController {
             queryWrapper.le("time", endTime);
         }
 
-        // 车辆类型条件
-        if (type != null && !type.isEmpty()) {
-            queryWrapper.eq("vehicle_status", type);
+        // 如果传入车辆类型或车牌号参数，则构造一个车辆表子查询
+        if ((type != null && !type.trim().isEmpty()) ||
+                (license != null && !license.trim().isEmpty())) {
+
+            StringBuilder subQuery = new StringBuilder("SELECT vehicle_id FROM vehicle WHERE 1=1");
+
+            if (license != null && !license.trim().isEmpty()) {
+                subQuery.append(" AND licence LIKE '%").append(license).append("%'");
+            }
+
+            if (type != null && !type.trim().isEmpty()) {
+                subQuery.append(" AND type = '").append(type).append("'");
+            }
+
+            queryWrapper.inSql("vehicle_id", subQuery.toString());
         }
 
-        // 车牌号条件（需要关联车辆表查询）
-        if (license != null && !license.isEmpty()) {
-            queryWrapper.inSql("vehicle_id",
-                    "SELECT vehicle_id FROM vehicle WHERE licence LIKE '%" + license + "%'");
-        }
-
-        return nonRealTimeService.page(new Page<>(pageNum, 10), queryWrapper);
+        return nonRealTimeService.page(new Page<>(pageNum, 13), queryWrapper);
     }
 
     // 创建非实时检测记录

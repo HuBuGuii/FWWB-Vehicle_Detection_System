@@ -28,15 +28,15 @@ public class YoloDetectionController {
     // 使用新模型（例如 best.pt）
     private static final String YOLO_MODEL_PATH = "best.pt";
     // 修改为新虚拟环境的 Python 路径（fwwb_yolo）
-    private static final String CONDA_PYTHON_PATH = "./src/main/resources/env/fwwb_yolo/python.exe";
+    private static final String CONDA_PYTHON_PATH = "src\\main\\resources\\env\\fwwb_yolo\\python.exe";
 
     // 视频检测：输入/输出目录
-    private static final String INPUT_VIDEO_DIR = new File("./src/main/resources/yolo/video/videoInput").getAbsolutePath();
-    private static final String OUTPUT_VIDEO_DIR = new File("./src/main/resources/yolo/video/videoOutput").getAbsolutePath();
+    private static final String INPUT_VIDEO_DIR = new File("src\\main\\resources\\yolo\\video\\videoInput").getAbsolutePath();
+    private static final String OUTPUT_VIDEO_DIR = new File("src\\main\\resources\\yolo\\video\\videoOutput").getAbsolutePath();
 
     // 图像检测：输入/输出目录
-    private static final String INPUT_IMAGE_DIR = new File("./src/main/resources/yolo/image/imageInput").getAbsolutePath();
-    private static final String OUTPUT_IMAGE_DIR = new File("./src/main/resources/yolo/image/imageOutput").getAbsolutePath();
+    private static final String INPUT_IMAGE_DIR = new File("src\\main\\resources\\yolo\\image\\imageInput").getAbsolutePath();
+    private static final String OUTPUT_IMAGE_DIR = new File("src\\main\\resources\\yolo\\image\\imageOutput").getAbsolutePath();
 
     @Autowired
     private NonRealTimeDetectionRecordService nonRealTimeService;
@@ -206,7 +206,8 @@ public class YoloDetectionController {
                     "--source", INPUT_IMAGE_DIR,
                     "--project", OUTPUT_IMAGE_DIR,
                     "--name", "imageExp",
-                    "--json"
+                    "--json",
+                    "--mode","image"
             );
             pb.directory(new File("./src/main/resources/yolo"));
             pb.redirectErrorStream(true);
@@ -284,7 +285,7 @@ public class YoloDetectionController {
                 record.setConfidence(confidence);
                 record.setVehicleId(vehicleId);
                 record.setVehicleStatus("Nah");
-                record.setMaxAge(24L);
+                record.setMaxAge(168L);
                 record.setExp(outputExpDir.getFileName().toString());
                 nonRealTimeService.save(record);
             }

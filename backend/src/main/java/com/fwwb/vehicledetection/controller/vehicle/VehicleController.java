@@ -17,7 +17,7 @@ public class VehicleController {
     // 车辆列表获取
     @GetMapping("/{pageNum}")
     public Page<Vehicle> listVehicles(@PathVariable int pageNum) {
-        return vehicleService.page(new Page<>(pageNum, 10));
+        return vehicleService.page(new Page<>(pageNum, 13));
     }
 
     // 获取车辆信息
@@ -32,7 +32,7 @@ public class VehicleController {
                                         @RequestParam("pageNum") int pageNum) {
         QueryWrapper<Vehicle> query = new QueryWrapper<>();
         query.like("licence", keyword);
-        return vehicleService.page(new Page<>(pageNum, 10), query);
+        return vehicleService.page(new Page<>(pageNum, 13), query);
     }
 
     // 车辆信息更新
@@ -57,7 +57,7 @@ public class VehicleController {
     // 新增接口：获取数据库中的车辆总页数
     // 可以通过请求参数 pageSize 指定每页记录数，默认值为10
     @GetMapping("/pageCount")
-    public int getTotalPageCount(@RequestParam(defaultValue = "10") int pageSize) {
+    public int getTotalPageCount(@RequestParam(defaultValue = "13") int pageSize) {
         long totalRecords = vehicleService.count();
         // 向上取整计算总页数： (totalRecords + pageSize - 1) / pageSize
         return (int) ((totalRecords + pageSize - 1) / pageSize);

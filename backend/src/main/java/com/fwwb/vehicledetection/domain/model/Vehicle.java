@@ -9,7 +9,7 @@ import lombok.Data;
 @Data
 @TableName("vehicle")
 public class Vehicle {
-    @TableId(type = IdType.ASSIGN_ID) // 改为手动分配 ID
+    @TableId(type = IdType.ASSIGN_ID)
     private Long vehicleId;
 
     // 车牌

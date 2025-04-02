@@ -18,14 +18,14 @@ public class UserController {
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{pageNum}")
     public Page<User> listUsers(@PathVariable int pageNum) {
-        return userService.page(new Page<>(pageNum, 10));
+        return userService.page(new Page<>(pageNum, 13));
     }
 
     // 新增接口：获取数据库中的总页数
     // 管理员可以通过请求参数指定每页大小，默认为10
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/pageCount")
-    public int getTotalPageCount(@RequestParam(defaultValue = "10") int pageSize) {
+    public int getTotalPageCount(@RequestParam(defaultValue = "13") int pageSize) {
         // 获取总记录数
         long totalRecords = userService.count();
         // 根据每页大小计算总页数（向上取整）

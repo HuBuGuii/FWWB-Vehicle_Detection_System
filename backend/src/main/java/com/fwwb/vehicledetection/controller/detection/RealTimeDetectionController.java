@@ -20,14 +20,14 @@ public class RealTimeDetectionController {
     // 获取实时检测记录（分页）
     @GetMapping("/{pageNum}")
     public Page<RealTimeDetectionRecord> listRecords(@PathVariable int pageNum) {
-        return realTimeService.page(new Page<>(pageNum, 10));
+        return realTimeService.page(new Page<>(pageNum, 13));
     }
 
     // 根据类型获取实时记录（示例：根据 vehicleStatus 筛选）
     @GetMapping("/type")
     public Page<RealTimeDetectionRecord> searchRecords(@RequestParam("type") String type,
                                                        @RequestParam("pageNum") int pageNum) {
-        return realTimeService.page(new Page<>(pageNum, 10),
+        return realTimeService.page(new Page<>(pageNum, 13),
                 new QueryWrapper<RealTimeDetectionRecord>().eq("vehicle_status", type));
     }
 
@@ -86,13 +86,13 @@ public class RealTimeDetectionController {
                     "SELECT camera_id FROM camera WHERE location LIKE '%" + location + "%'");
         }
 
-        return realTimeService.page(new Page<>(pageNum, 10), queryWrapper);
+        return realTimeService.page(new Page<>(pageNum, 13), queryWrapper);
     }
 
     // 新增接口：获取实时检测记录的总页数
     // 前端可通过 pageSize 参数指定每页记录条数，默认值为 10
     @GetMapping("/pageCount")
-    public int getTotalPageCount(@RequestParam(defaultValue = "10") int pageSize) {
+    public int getTotalPageCount(@RequestParam(defaultValue = "13") int pageSize) {
         long totalRecords = realTimeService.count();
         // 向上取整计算总页数： (totalRecords + pageSize - 1) / pageSize
         return (int) ((totalRecords + pageSize - 1) / pageSize);

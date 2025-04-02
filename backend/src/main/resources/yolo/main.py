@@ -14,6 +14,7 @@ from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
 import time
 
+# 省份简称列表
 PROVINCE_ABBR = [
     '京', '沪', '津', '渝', '冀', '晋', '辽', '吉', '黑',
     '苏', '浙', '皖', '闽', '赣', '鲁', '豫', '鄂', '湘',
@@ -26,16 +27,16 @@ class LicensePlateProcessor:
         self.args = args
         # 加载 YOLO 模型
         self.yolo_model = YOLO(args.model)
-        # 配置 PaddleOCR（用于车牌识别）
+        # 配置 PaddleOCR 用于车牌识别
         self.paddle_ocr = PaddleOCR(
             use_angle_cls=True,
             lang="ch",
             rec_algorithm="SVTR_LCNet",
             det_db_score_mode="fast"
         )
-        # 注意：不再自动拼接时间戳，直接使用传入的 project 与 name 生成输出目录
+        # 构建输出目录，并设置 JSON/TXT 结果文件路径
         self.setup_output()
-        # 指定中文字体路径，注意确认该路径下有相应字体
+        # 指定中文字体路径，根据实际情况调整（例如 Windows 下通常为 C:/Windows/Fonts/simhei.ttf）
         self.font_path = "C:/Windows/Fonts/simhei.ttf"
         if not os.path.exists(self.font_path):
             raise FileNotFoundError(f"Chinese font not found: {self.font_path}")
@@ -43,13 +44,13 @@ class LicensePlateProcessor:
 
     def setup_output(self):
         """
-        直接使用传入的 --project 与 --name 构建输出目录，
-        使其与 Java 端创建的文件夹保持一致。
+        使用传入的 --project 与 --name 构建输出目录，同时修改 JSON 文件命名，
+        保证名称以 detections_ 开头。无论视频或图像检测都采用相同的方式。
         """
         self.output_dir = Path(self.args.project) / self.args.name
         self.output_dir.mkdir(parents=True, exist_ok=True)
         self.txt_path = self.output_dir / "results.txt"
-        self.json_path = self.output_dir / "detections.json"
+        self.json_path = self.output_dir / f"detections_{self.args.name}.json"
 
     def is_valid_plate(self, text):
         clean_text = text.replace("·", "").replace(" ", "")
@@ -59,10 +60,8 @@ class LicensePlateProcessor:
     def process_frame(self, frame, frame_count=0):
         results = self.yolo_model(frame, conf=self.args.conf, imgsz=640)
         for result in results:
-            for box, cls, conf in zip(result.boxes.xyxy,
-                                      result.boxes.cls,
-                                      result.boxes.conf):
-                # 解析目标检测框坐标
+            for box, cls, conf in zip(result.boxes.xyxy, result.boxes.cls, result.boxes.conf):
+                # 解析检测框坐标
                 x1, y1, x2, y2 = map(int, box.tolist())
                 x1 = max(0, x1)
                 y1 = max(0, y1)
@@ -115,32 +114,62 @@ class LicensePlateProcessor:
         draw.text((x1, text_y), label, font=self.font, fill=(0, 255, 0))
         return cv2.cvtColor(np.array(pil_img), cv2.COLOR_RGB2BGR)
 
-    def process_source(self):
+    def process_video_file(self, video_file):
         """
-        如果输入源是目录，则进行批量处理；
-        否则（典型为摄像头设备数字，例如 "0"），进入实时采集模式，
-        实时处理每一帧，保存为 jpg 文件（供 Java 获取）及视频文件（如果启用了 --save-video）。
+        处理单个视频文件
         """
-        # 针对实时检测，认为 args.source 为摄像头编号，尽量转换为 int
-        try:
-            camera_index = int(self.args.source)
-        except ValueError:
-            camera_index = self.args.source
-
-        cap = cv2.VideoCapture(camera_index)
+        cap = cv2.VideoCapture(video_file)
+        if not cap.isOpened():
+            print(f"无法打开视频文件: {video_file}")
+            return
         fps = cap.get(cv2.CAP_PROP_FPS)
         if fps <= 0:
             fps = 25  # 默认帧率
         width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
         height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+        writer = None
+        base_name = os.path.basename(video_file)
+        name_without_ext = os.path.splitext(base_name)[0]
+        if self.args.save_video:
+            out_video_path = self.output_dir / f"{name_without_ext}_output.mp4"
+            fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+            writer = cv2.VideoWriter(str(out_video_path), fourcc, fps, (width, height))
+        frame_count = 0
+        while cap.isOpened():
+            ret, frame = cap.read()
+            if not ret:
+                break
+            processed_frame = self.process_frame(frame, frame_count)
+            # 保存最新的检测结果帧
+            cv2.imwrite(str(self.output_dir / f"{name_without_ext}_latest.jpg"), processed_frame)
+            if writer is not None:
+                writer.write(processed_frame)
+            frame_count += 1
+        cap.release()
+        if writer is not None:
+            writer.release()
+            print("视频保存完成，保存路径：", out_video_path)
+        else:
+            print("处理结束：" + video_file)
 
-        # 若启用了视频保存，则创建 VideoWriter（输出文件为 output.mp4）
+    def process_video_capture(self, camera_index):
+        """
+        实时视频流/摄像头检测
+        """
+        cap = cv2.VideoCapture(camera_index)
+        if not cap.isOpened():
+            print(f"无法打开摄像头或视频流：{camera_index}")
+            return
+        fps = cap.get(cv2.CAP_PROP_FPS)
+        if fps <= 0:
+            fps = 25  # 默认帧率
+        width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+        height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
         writer = None
         if self.args.save_video:
-            self.output_video_path = self.output_dir / "output.mp4"
+            out_video_path = self.output_dir / "output.mp4"
             fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-            writer = cv2.VideoWriter(str(self.output_video_path), fourcc, fps, (width, height))
-
+            writer = cv2.VideoWriter(str(out_video_path), fourcc, fps, (width, height))
         frame_count = 0
         stop_signal_path = self.output_dir / "stop.txt"
         while cap.isOpened():
@@ -148,7 +177,6 @@ class LicensePlateProcessor:
             if not ret:
                 break
             processed_frame = self.process_frame(frame, frame_count)
-            # 每次覆盖最新图像，供 Java 端读取
             cv2.imwrite(str(self.output_dir / "latest.jpg"), processed_frame)
             if writer is not None:
                 writer.write(processed_frame)
@@ -159,16 +187,97 @@ class LicensePlateProcessor:
         cap.release()
         if writer is not None:
             writer.release()
-            print("视频保存完成，保存路径：", self.output_video_path)
+            print("视频保存完成，保存路径：", out_video_path)
         else:
             print("检测结束！")
 
     def process_images_folder(self):
-        # 图像批量处理（非实时模式）可另行实现
-        pass
+        """
+        批量处理图像文件（非实时模式）
+        """
+        image_extensions = ('.jpg', '.jpeg', '.png')
+        image_files = [
+            os.path.join(self.args.source, f)
+            for f in os.listdir(self.args.source)
+            if f.lower().endswith(image_extensions)
+        ]
+        if not image_files:
+            print(f"目录 {self.args.source} 中没有找到图片文件")
+            return
+        for image_file in image_files:
+            print(f"正在处理图片文件： {image_file}")
+            image = cv2.imread(image_file)
+            if image is None:
+                print(f"无法读取图片: {image_file}")
+                continue
+            processed_image = self.process_frame(image)
+            # 保存处理后的图片，以 _output.jpg 结尾
+            base_name = os.path.basename(image_file)
+            name_without_ext = os.path.splitext(base_name)[0]
+            cv2.imwrite(str(self.output_dir / f"{name_without_ext}_output.jpg"), processed_image)
+        print("所有图片处理完成。")
+
+    def process_source(self):
+        """
+        根据 --source 和 --mode 参数判断：
+          - 如果 mode 为 video，则：
+              * 如果传入的是目录，则批量遍历视频文件（特定扩展名）；
+              * 如果传入的是单个视频文件，则直接处理；
+              * 否则尝试将其作为摄像头设备（实时流）处理。
+          - 如果 mode 为 image，则：
+              * 如果传入的是目录，则批量遍历目录内的图片文件；
+              * 如果传入的是单个图片文件，则直接处理该图像。
+        """
+        if self.args.mode == "video":
+            if os.path.isdir(self.args.source):
+                video_extensions = ('.mp4', '.avi', '.mov', '.mkv')
+                video_files = [
+                    os.path.join(self.args.source, f)
+                    for f in os.listdir(self.args.source)
+                    if f.lower().endswith(video_extensions)
+                ]
+                if not video_files:
+                    print(f"目录 {self.args.source} 中没有找到视频文件")
+                    return
+                for video_file in video_files:
+                    print(f"正在处理视频文件： {video_file}")
+                    self.process_video_file(video_file)
+                print("所有视频处理完成。")
+            elif os.path.isfile(self.args.source):
+                print(f"正在处理单个视频文件： {self.args.source}")
+                self.process_video_file(self.args.source)
+            else:
+                try:
+                    camera_index = int(self.args.source)
+                    print(f"检测到摄像头设备编号： {camera_index}")
+                    self.process_video_capture(camera_index)
+                except ValueError:
+                    if os.path.exists(self.args.source):
+                        print(f"检测到视频文件： {self.args.source}")
+                        self.process_video_file(self.args.source)
+                    else:
+                        print(f"无法识别输入源：{self.args.source}")
+        elif self.args.mode == "image":
+            if os.path.isdir(self.args.source):
+                self.process_images_folder()
+            elif os.path.isfile(self.args.source):
+                print(f"正在处理单个图片文件： {self.args.source}")
+                image = cv2.imread(self.args.source)
+                if image is None:
+                    print(f"无法读取图片文件：{self.args.source}")
+                    return
+                processed_image = self.process_frame(image)
+                base_name = os.path.basename(self.args.source)
+                name_without_ext = os.path.splitext(base_name)[0]
+                cv2.imwrite(str(self.output_dir / f"{name_without_ext}_output.jpg"), processed_image)
+                print("图像处理完成。")
+            else:
+                print(f"无法识别输入源：{self.args.source}")
+        else:
+            print(f"未知的模式: {self.args.mode}")
 
     def process_videos_folder(self):
-        # 视频批量处理（非实时模式）可另行实现
+        # 可根据需要实现非实时视频处理的其他逻辑
         pass
 
 if __name__ == "__main__":
@@ -176,7 +285,7 @@ if __name__ == "__main__":
     parser.add_argument("--model", type=str, default="yolo11n.pt",
                         help="YOLO模型权重文件路径")
     parser.add_argument("--source", type=str, required=True,
-                        help="输入源（单个文件或文件夹路径，或摄像头设备编号）")
+                        help="输入源（单个文件、文件夹路径，或摄像头设备编号）")
     parser.add_argument("--project", type=str, required=True,
                         help="检测结果输出父目录")
     parser.add_argument("--name", type=str, required=True,
@@ -188,9 +297,12 @@ if __name__ == "__main__":
     parser.add_argument("--json", action="store_true",
                         help="启用JSON结果输出")
     parser.add_argument("--save-video", action="store_true",
-                        help="保存视频检测结果（实时模式下有效）")
+                        help="保存视频检测结果")
     parser.add_argument("--show", action="store_true",
                         help="实时显示检测过程")
+    # 新增一个参数用于区分检测模式：video 或 image
+    parser.add_argument("--mode", type=str, default="video",
+                        help="检测模式：video 或 image")
     args = parser.parse_args()
 
     processor = LicensePlateProcessor(args)

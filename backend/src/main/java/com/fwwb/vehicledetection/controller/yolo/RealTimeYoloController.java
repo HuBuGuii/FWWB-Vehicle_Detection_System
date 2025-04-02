@@ -160,7 +160,7 @@ public class RealTimeYoloController {
                         rtRecord.setWeather(weather);
                         rtRecord.setVehicleId(vehicleId);
                         rtRecord.setVehicleStatus(null);
-                        rtRecord.setMaxAge(24L);
+                        rtRecord.setMaxAge(168L);
                         rtRecord.setExp(expFolderName);
                         realTimeDetectionRecordService.save(rtRecord);
                     }
