@@ -15,7 +15,8 @@
               v-model="formData.date"
               type="daterange"
               unlink-panels
-
+              format="YYYY-MM-DD"
+              value-format="YYYY-MM-DD HH:mm:ss"
               range-separator="To"
               start-placeholder="起始日期"
               end-placeholder="结束日期"
@@ -146,38 +147,20 @@ const submitForm = async () => {
     ElMessage.warning('至少选择一项筛选')
     return
   }
-  const send = {
-    timerange:{
-      startTime:`${formData.date[0]}`,
-      endTime:`${formData.date[1]}`
-    },
-    ...(conDition.value && {location:`${formData.section}`}),
-    license:`${formData.plateNumber}`,
-    type:`${formData.vehicleType}`
+  const [startTime,endTime]=formData.date
+  const params = {
+    startTime:startTime || '',
+    endTime:endTime || '',
+    location:formData.section || '',
+    license:formData.plateNumber || '',
+    type:formData.vehicleType || ''
   }
-  if(conDition.value === true){                                   //实时监测的调用
-    try{
-      await formRef.value?.validate()
-      const message = JSON.stringify(send)
-      console.log('send==' + message)
-      const response = await request.get('/detections/realtime/search',message)
-      console.log('response == ' + response)
-    }catch(error){
-      ElMessage.error('表单填写出现错误')
-      console.log('error信息' + error)
-    }
+  if(conDition.value){
+    console.log()
+    const response = await request.get('/detections/realtime',{params:params})
+    console.log(response)
   }
-  if(conDition.value === false){                                  //文件上传的调用
-    try{
-      await formRef.value?.validate()
-      console.log('send==' + send)
-      const response = await request.get('/detections/nonrealtime/search',send)
-      console.log('response == ' + response)
-    }catch(error){
-      ElMessage.error('表单填写出现错误')
-      console.log('error信息' + error)
-    }
-  }
+
 }
 
 const handleClose = () => {

@@ -9,6 +9,7 @@
             ><RouterLink to="/" class="link">返回首页</RouterLink></span
           >
           <span class="manager" >
+            <ControlCom></ControlCom>
             <span class="manage"
               ><el-button plain @click="handleManager" >进入路段规划</el-button>
               <el-icon class="icon"><ArrowLeftBold /></el-icon>
@@ -30,11 +31,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import sectionCom from '@/components/sectionCom.vue'
 import { useMapStore } from '@/stores/map'
 import MapManager from '@/components/mapManager.vue'
 import FlowChart from '@/components/flowChart.vue'
+import ControlCom from '@/components/controlCom.vue'
 
 
 const map = useMapStore()
