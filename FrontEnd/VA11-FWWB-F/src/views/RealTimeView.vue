@@ -1,7 +1,7 @@
 <template>
   <div id="fileUpload">
     <div class="mainContent">
-      <div class="title">实时监控</div>
+      <div class="title"><span>实时监控</span><controlCom></controlCom></div>
       <div class="graph"></div>
       <div class="dashboard">
         <div class="board1">
@@ -56,6 +56,7 @@
 </template>
 
 <script setup lang="ts">
+import controlCom from '@/components/controlCom.vue';
 const recentData = [
   { date: '10/11', car: '小型车' },
   { date: '10/11', car: '小型车' },
@@ -106,6 +107,9 @@ $design-height: 1080;
     padding: 0 30px;
     .title {
       margin: px-to-vh(30) 0 px-to-vh(15) 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
     .graph {

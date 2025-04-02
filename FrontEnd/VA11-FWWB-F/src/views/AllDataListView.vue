@@ -49,7 +49,7 @@
         <el-main>
           <div class="tablecontainer" ref="tablecontainer">
             <el-table
-              :data="allData"
+              :data="showData"
               stripe
               border
               style="width: 100%"
@@ -73,16 +73,17 @@
           </div>
           <div class="pagination">
             <el-pagination
-              :page-size="pageSize"
+              :page-size="data.pagination.pageSize"
               :pager-count="9"
               layout="prev, pager, next"
-              :total="1000"
+              :total="data.pagination.totalPage * data.pagination.pageSize"
+              @current-change="data.handlePageChange"
             />
           </div>
         </el-main>
       </el-container>
     </el-container>
-    <ScreenCom :ifshow-screen="ifshowScreen" :condition="isR"></ScreenCom>
+    <ScreenCom :ifshow-screen="ifshowScreen"></ScreenCom>
   </div>
 </template>
 
@@ -93,11 +94,14 @@ import { useRoute } from 'vue-router'
 import ScreenCom from '@/components/screenCom.vue'
 import ControlCom from '@/components/controlCom.vue'
 import { ElMessage } from 'element-plus'
+import { useDataStore } from '@/stores/data'
+
 
 const route = useRoute()
+const data = useDataStore()
 const auth = useAuthStore()
 const ifshowScreen = ref(false)
-const allData = ref([
+const showData = ref([
   { id: 1, time: '1/1', address: '路段1', number: 'h132kc', type: '小车', color: '白' },
   { id: 1, time: '1/1', address: '路段1', number: 'h132kc', type: '小车', color: '白' },
   { id: 1, time: '1/1', address: '路段1', number: 'h132kc', type: '小车', color: '白' },
@@ -117,8 +121,7 @@ const allData = ref([
 const tablecontainer = ref()
 const tableMaxH = ref<number>(0)
 const loading = ref(false)
-const pageSize = ref(0)
-const isR = ref(true)
+
 
 const activeMenu = computed(() => route.path)
 
@@ -128,8 +131,7 @@ const showScreen = () => {
 }
 
 const switchCC = () => {
-  isR.value = !isR.value
-  console.log('已切换')
+  data.isRealTime = !data.isRealTime
 }
 
 const handleSelect = (index: string) => {
@@ -144,10 +146,10 @@ const calMaxH = () => {
 }
 
 const nowCon = computed(() => {
-  return isR.value? '实时监测' : '文件上传'
+  return data.isRealTime? '实时监测' : '文件上传'
 })
 
-watch(isR,(newVal)=> {
+watch(() =>data.isRealTime,(newVal)=> {
   if(newVal === true){
     ElMessage.success('已切换至实时监测')
   }
@@ -160,14 +162,12 @@ const handleDetail = (id: number) => {
   console.log(id)
 }
 
-const getData = async () => {
-  console.log('等着写')
-}
 
-onMounted(() => {
+
+onMounted(async() => {
   calMaxH()
   console.log(tableMaxH)
-  getData()
+  //等着加载数据
 })
 </script>
 

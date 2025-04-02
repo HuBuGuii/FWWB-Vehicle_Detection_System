@@ -7,7 +7,7 @@
     <main class="view-content">
       <div class="header">
         <div class="smallTitle">VA11</div>
-        <div class="user">用户123 已登入</div>
+        <div class="user"><controlCom></controlCom></div>
       </div>
       <div class="Title">
         <div class="name">智航云轨</div>
@@ -87,7 +87,7 @@
 //导入
 
 import router from '@/router'
-
+import controlCom from '@/components/controlCom.vue'
 //初始化
 
 const toMap = () => {

@@ -51,22 +51,29 @@
 <script setup lang="ts">
 import { ref, toRaw } from 'vue'
 import { Check, Plus, Edit, Delete } from '@element-plus/icons-vue'
-import type { Node } from 'element-plus/es/components/tree/src/tree.type'
+import type { TreeNodeData } from 'element-plus/es/components/tree/src/tree.type'
 import { ElMessage } from 'element-plus'
 import { useMapStore } from '@/stores/map'
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
 const map = useMapStore()
 
 interface TreeNode {
   id: number
   label: string
-  camera: string // 新增摄像头字段
+  camera: string
+  dir1: number
+  dir2: number
   children?: TreeNode[]
   editing?: boolean
 }
 
-// 响应式数据
-const treeData:TreeNode[] = map.treeData
+// 将store数据转换为响应式数据
+const treeData = ref<TreeNode[]>(map.treeData.map(node => ({
+  ...node,
+  editing: false
+})))
 
 const defaultProps = {
   children: 'children',
@@ -83,6 +90,8 @@ const addNode = (data: TreeNode) => {
     id: nodeId++,
     label: '新节点',
     camera: '新摄像头',
+    dir1: 0,
+    dir2: 0,
     children: [],
   }
 
@@ -93,19 +102,17 @@ const addNode = (data: TreeNode) => {
 }
 
 // 删除节点
-const removeNode = (node: Node, data: TreeNode) => {
-
-  // 执行删除操作
+const removeNode = (node: TreeNodeData, data: TreeNode) => {
   const parent = node.parent
-  const children = parent?.data?.children || parent?.data || treeData
+  const children = parent?.data?.children || parent?.data || treeData.value
   const index = children.findIndex((d: TreeNode) => d.id === data.id)
   if (index !== -1) {
     children.splice(index, 1)
   }
 
   ElMessage({
-    message:'节点已删除',
-    type:'error'
+    message: '节点已删除',
+    type: 'error'
   })
 }
 
@@ -117,23 +124,25 @@ const startEdit = (data: TreeNode) => {
 }
 
 // 保存编辑
-const saveEdit = (node: Node, data: TreeNode) => {
+const saveEdit = (node: TreeNodeData, data: TreeNode) => {
   data.editing = false
   data.label = editLabel.value
   data.camera = editCamera.value
   editLabel.value = ''
   editCamera.value = ''
   ElMessage({
-    message:'编辑已保存',
-    type:'success'
+    message: '编辑已保存',
+    type: 'success'
   })
 }
 
 const handleclose = () => {
-  const rawData = toRaw(treeData)
-  console.log(rawData)             //rawData为我所需的数组类型
+  const rawData = toRaw(treeData.value)
+  console.log(rawData)
   map.treeData = rawData
-  map.showManager=false
+  map.showManager = false
+  // 添加页面刷新
+  router.go(0)
 }
 </script>
 

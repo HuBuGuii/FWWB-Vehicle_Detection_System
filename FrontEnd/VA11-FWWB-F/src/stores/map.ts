@@ -7,12 +7,13 @@ export const useMapStore = defineStore('map',() => {
     label: string
     dir1:number
     dir2:number
-    camera: string 
+    camera: string
     children?: TreeNode[]
     editing?: boolean
   }
 
   const showManager = ref(false)
+  
   const treeData = ref<TreeNode[]>([
     {
       id: 1,

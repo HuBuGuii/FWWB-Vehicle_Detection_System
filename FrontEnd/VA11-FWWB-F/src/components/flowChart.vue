@@ -1,52 +1,69 @@
 <template>
   <div class="flow-chart">
     <VueFlow
+      :model-value="elements"
       :nodes="nodes"
       :edges="edges"
-      :default-viewport="{ zoom: 1 }"
+      :default-viewport="{ x: 0, y: 0, zoom: 0.65 }"
       :min-zoom="0.2"
       :max-zoom="4"
+      :fit-view-on-init="true"
+      :fit-view-padding="0.2"
+      @nodeClick="onNodeClick"
       class="vue-flow-wrapper"
-      ref="vueFlowRef"
     >
       <Background pattern-color="#aaa" :gap="20" :size="1" variant="dots" />
-
       <MiniMap position="bottom-right" />
 
-      <template #node-custom="nodeProps">
-        <SectionCom :road="nodeProps.node.data.road" :camera="nodeProps.node.data.camera" />
+      <template #node-custom="props">
+        <div class="custom-node">
+          <Handle
+            type="target"
+            :position="position.Left"
+            :style="{ background: '#555' }"
+          />
+          <SectionCom
+            :road="props.data.road"
+            :camera="props.data.camera"
+          />
+          <Handle
+            type="source"
+            :position="position.Right"
+            :style="{ background: '#555' }"
+          />
+        </div>
       </template>
     </VueFlow>
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref, watch, nextTick } from 'vue'
-import { VueFlow, Node, Edge, MarkerType } from '@vue-flow/core'
+<script setup lang="ts">
+import { ref, watch, nextTick, onMounted, onUnmounted } from 'vue'
+import { VueFlow, useVueFlow, Handle, Position } from '@vue-flow/core'
 import { Background } from '@vue-flow/background'
 import { MiniMap } from '@vue-flow/minimap'
-import { debounce } from 'lodash-es'
+import { MarkerType } from '@vue-flow/core'
+import type { Edge, Node } from '@vue-flow/core'
 import SectionCom from '@/components/sectionCom.vue'
 import { useMapStore } from '@/stores/map'
+import { useRouter } from 'vue-router'
+import type { NodeMouseEvent } from '@vue-flow/core'
 
-// 必须导入样式
 import '@vue-flow/core/dist/style.css'
 import '@vue-flow/core/dist/theme-default.css'
-// import '@vue-flow/background/dist/style.css'
 import '@vue-flow/minimap/dist/style.css'
 
 interface FlowNode extends Node {
   id: string
-  type?: string
+  type: string
   position: { x: number; y: number }
   data: {
     road: { dir1: number; dir2: number }
     camera: string
   }
-  __vf?: {
-    sourcePosition: 'right'
-    targetPosition: 'left'
-  }
+  draggable?: boolean
+  selectable?: boolean
+  connectable?: boolean
 }
 
 interface TreeNode {
@@ -57,115 +74,125 @@ interface TreeNode {
   children?: TreeNode[]
 }
 
-export default defineComponent({
-  components: {
-    VueFlow,
-    Background,
-    MiniMap,
-    SectionCom,
-  },
-  setup() {
-    const mapStore = useMapStore()
-    const nodes = ref<FlowNode[]>([])
-    const edges = ref<Edge[]>([])
-    const vueFlowRef = ref<any>()
+const elements = ref<(FlowNode | Edge)[]>([])
+const mapStore = useMapStore()
+const nodes = ref<FlowNode[]>([])
+const edges = ref<Edge[]>([])
+const { fitView } = useVueFlow()
+const position = Position
+const router = useRouter()
 
-    const transformTreeToFlow = (
-      treeNodes: TreeNode[],
-      parent: { id?: string; x: number; y: number } | null = null,
-      horizontalSpacing = 500,
-      verticalSpacing = 300,
-    ): { nodes: FlowNode[]; edges: Edge[] } => {
-      const resultNodes: FlowNode[] = []
-      const resultEdges: Edge[] = []
+const onNodeClick = (event: NodeMouseEvent) => {
+  console.log('Node clicked:', event.node)  // 调试输出
 
-      treeNodes.forEach((node, index) => {
-        const nodeId = `node-${node.id}`
-        const xPos = parent ? parent.x + horizontalSpacing : 0
-        const baseY = parent
-          ? parent.y - (treeNodes.length * verticalSpacing) / 2
-          : -((treeNodes.length - 1) * verticalSpacing) / 2
+  if (event.node?.data) {
+    console.log('Navigating to:', event.node.data)  // 调试输出
+    router.push({
+      name:'realtime',
+      query: {
+        camera: event.node.data.camera,
+        dir1: event.node.data.road.dir1.toString(),
+        dir2: event.node.data.road.dir2.toString()
+      }
+    })
+  }
+}
 
-        const yPos = baseY + index * verticalSpacing
+const transformTreeToFlow = (
+  treeNodes: TreeNode[],
+  parent: { id?: string; x: number; y: number } | null = null,
+  horizontalSpacing = 400,
+  verticalSpacing = 250,
+): { nodes: FlowNode[]; edges: Edge[] } => {
+  const resultNodes: FlowNode[] = []
+  const resultEdges: Edge[] = []
 
-        // 生成节点
-        const flowNode: FlowNode = {
-          id: nodeId,
-          type: 'custom',
-          position: { x: xPos, y: yPos },
-          data: {
-            road: {
-              dir1: Number(node.dir1) || 0,
-              dir2: Number(node.dir2) || 0,
-            },
-            camera: node.camera,
-          },
-          __vf: {
-            sourcePosition: 'right',
-            targetPosition: 'left',
-          },
-        }
-        resultNodes.push(flowNode)
+  treeNodes.forEach((node, index) => {
+    const nodeId = `node-${node.id}`
+    const xPos = parent ? parent.x + horizontalSpacing : 0
+    const yPos = index * verticalSpacing
 
-        // 生成边
-        if (parent?.id) {
-          resultEdges.push({
-            id: `edge-${parent.id}-${nodeId}`,
-            source: parent.id,
-            target: nodeId,
-            type: 'smoothstep',
-            style: {
-              stroke: '#94a3b8',
-              strokeWidth: 2,
-            },
-            markerEnd: {
-              type: MarkerType.ArrowClosed,
-              color: '#94a3b8',
-            },
-          })
-        }
+    resultNodes.push({
+      id: nodeId,
+      type: 'custom',
+      position: { x: xPos, y: yPos },
+      data: {
+        road: {
+          dir1: Number(node.dir1) || 0,
+          dir2: Number(node.dir2) || 0,
+        },
+        camera: node.camera,
+      },
+      draggable: true,
+      selectable: true,
+      connectable: true,
+    })
 
-        // 递归处理子节点
-        if (node.children?.length) {
-          const childrenResult = transformTreeToFlow(
-            node.children,
-            { id: nodeId, x: xPos, y: yPos },
-            horizontalSpacing * 0.9,
-            verticalSpacing * 1.2,
-          )
-          resultNodes.push(...childrenResult.nodes)
-          resultEdges.push(...childrenResult.edges)
-        }
+    if (parent?.id) {
+      resultEdges.push({
+        id: `edge-${parent.id}-${nodeId}`,
+        source: parent.id,
+        target: nodeId,
+        type: 'smoothstep',
+        animated: true,
+        style: {
+          stroke: '#94a3b8',
+          strokeWidth: 2,
+        },
+        markerEnd: {
+          type: MarkerType.ArrowClosed,
+          color: '#94a3b8',
+        },
       })
-
-      return { nodes: resultNodes, edges: resultEdges }
     }
 
-    watch(
-      mapStore.treeData,
-      debounce((newValue: TreeNode[]) => {
-        const { nodes: flowNodes, edges: flowEdges } = transformTreeToFlow(newValue)
-        console.log('Nodes:', flowNodes)
-        console.log('Edges:', flowEdges)
-        nodes.value = flowNodes
-        edges.value = flowEdges
-        nextTick(() => {
-          vueFlowRef.value?.$el.fitView({ padding: 0.3 })
-        })
-      }, 300),
-    )
-
-    return {
-      nodes,
-      edges,
-      vueFlowRef,
+    if (node.children?.length) {
+      const childrenResult = transformTreeToFlow(
+        node.children,
+        { id: nodeId, x: xPos, y: yPos },
+        horizontalSpacing,
+        verticalSpacing,
+      )
+      resultNodes.push(...childrenResult.nodes)
+      resultEdges.push(...childrenResult.edges)
     }
-  },
+  })
+
+  return { nodes: resultNodes, edges: resultEdges }
+}
+
+const updateView = () => {
+  nextTick(() => {
+    fitView({
+      padding: 0.2,
+      minZoom: 0.65,
+      maxZoom: 0.65
+    })
+  })
+}
+
+onMounted(() => {
+  window.addEventListener('resize', updateView)
 })
+
+onUnmounted(() => {
+  window.removeEventListener('resize', updateView)
+})
+
+watch(
+  () => mapStore.treeData,
+  (newValue: TreeNode[]) => {
+    if (!newValue?.length) return
+    const { nodes: flowNodes, edges: flowEdges } = transformTreeToFlow(newValue)
+    nodes.value = flowNodes
+    edges.value = flowEdges
+    updateView()
+  },
+  { immediate: true }
+)
 </script>
 
 <style scoped>
-/* 原有样式保持不变 */
 .flow-chart {
   position: relative;
   width: 100vw;
@@ -178,17 +205,47 @@ export default defineComponent({
   background: #f8fafc;
 }
 
+.custom-node {
+  position: relative;
+  width: 260px;
+  height: 160px;
+  cursor: pointer;
+}
+
+:deep(.vue-flow__handle) {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #555;
+  border: 2px solid white;
+}
+
+:deep(.vue-flow__handle-left) {
+  left: -4px;
+}
+
+:deep(.vue-flow__handle-right) {
+  right: -4px;
+}
+
 :deep(.vue-flow__edge-path) {
   stroke-linecap: round;
+  stroke: #94a3b8;
+  stroke-width: 2;
 }
 
 :deep(.vue-flow__edge:hover .vue-flow__edge-path) {
   stroke: #64748b;
+  stroke-width: 3;
 }
 
 :deep(.vue-flow__minimap) {
   background: rgba(255, 255, 255, 0.8);
   border-radius: 8px;
   border: 1px solid #e2e8f0;
+}
+
+:deep(.vue-flow__pane) {
+  cursor: move;
 }
 </style>

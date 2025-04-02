@@ -1,7 +1,7 @@
 <template>
   <div id="fileUpload">
     <div class="mainContent">
-      <div class="title">文件分析</div>
+      <div class="title"><span>文件分析</span><controlCom></controlCom></div>
       <div class="graph">
         <el-upload
           ref="uploadRef"
@@ -44,7 +44,7 @@
     </div>
     <div class="rightAside">
       <div class="totalData">
-        <div class="title">检测数据</div>
+        <div class="title"><span>检测数据</span></div>
         <div class="cards">
           <div class="card1">
             <div class="number"></div>
@@ -76,6 +76,7 @@
 </template>
 
 <script setup lang="ts">
+import controlCom from '@/components/controlCom.vue'
 import { ref } from 'vue'
 import { ElMessage } from 'element-plus'
 import type { UploadInstance } from 'element-plus'
@@ -153,6 +154,9 @@ $design-height: 1080;
     padding: 0 30px;
     .title {
       margin: px-to-vh(30) 0 px-to-vh(15) 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
     .graph {

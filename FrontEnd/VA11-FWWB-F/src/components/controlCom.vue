@@ -134,7 +134,9 @@ const filteredMenuOptions = computed<MenuOption[]>(() => {
 }
 
 .username {
-  font-size: 14px;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0px;
   color: var(--el-text-color-primary);
 }
 
