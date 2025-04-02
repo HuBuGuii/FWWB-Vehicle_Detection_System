@@ -167,7 +167,7 @@ public class YoloDetectionController {
                 record.setConfidence(confidence);
                 record.setVehicleId(vehicleId);
                 record.setVehicleStatus("Nah");
-                record.setMaxAge(24L);
+                record.setMaxAge(168L);
                 record.setExp(outputExpDir.getFileName().toString());
                 nonRealTimeService.save(record);
             }

@@ -50,7 +50,7 @@ public class NonRealTimeDetectionController {
      * @param type      车辆类型（可选）  —— 对应车辆表中的 type 字段
      * @param license   车牌号（可选）  —— 对应车辆表中的 licence 字段
      * @param pageNum   页码
-     * @return 分页查询结果
+     * @return 分页查询结果，同时包含总页数信息
      */
     @GetMapping("/search")
     public Page<NonRealTimeDetectionRecord> searchNonRealTimeRecords(
@@ -62,9 +62,11 @@ public class NonRealTimeDetectionController {
             @RequestParam(required = false) String license,
             @RequestParam(defaultValue = "1") int pageNum) {
 
+        // 固定每页显示 13 条记录，如果需要其他值，可将其作为参数传入
+        int pageSize = 13;
         QueryWrapper<NonRealTimeDetectionRecord> queryWrapper = new QueryWrapper<>();
 
-        // 时间范围条件
+        // 添加时间范围条件
         if (startTime != null && endTime != null) {
             queryWrapper.between("time", startTime, endTime);
         } else if (startTime != null) {
@@ -73,7 +75,7 @@ public class NonRealTimeDetectionController {
             queryWrapper.le("time", endTime);
         }
 
-        // 如果传入车辆类型或车牌号参数，则构造一个车辆表子查询
+        // 如果传入车辆类型或车牌号参数，则构造车辆表子查询
         if ((type != null && !type.trim().isEmpty()) ||
                 (license != null && !license.trim().isEmpty())) {
 
@@ -90,7 +92,21 @@ public class NonRealTimeDetectionController {
             queryWrapper.inSql("vehicle_id", subQuery.toString());
         }
 
-        return nonRealTimeService.page(new Page<>(pageNum, 13), queryWrapper);
+        // 使用 MyBatis-Plus 分页查询数据
+        Page<NonRealTimeDetectionRecord> page = nonRealTimeService.page(new Page<>(pageNum, pageSize), queryWrapper);
+
+        // 手动计算总记录数（使用与查询数据相同的条件）
+        long totalRecords = nonRealTimeService.count(queryWrapper);
+        // 向上取整计算总页数
+        int totalPages = (int) ((totalRecords + pageSize - 1) / pageSize);
+
+        // 如果分页插件内部 count 有问题，可以手动修正 total 字段
+        page.setTotal(totalRecords);
+        // MyBatis-Plus 的 Page 对象通常通过 getPages() 自动计算总页数，
+        // 如果需要手动设置（取决于版本），也可以调用 page.setPages(totalPages);
+
+        // 返回的 JSON 中将包含 "records", "total", "size"（即 pageSize）, "current"（即 pageNum）和 "pages"
+        return page;
     }
 
     // 创建非实时检测记录

@@ -32,35 +32,30 @@ public class RealTimeDetectionController {
     }
 
     /**
-     * 多条件筛选实时检测记录
-     *
-     * 改为通过 URL 参数传递筛选条件：
-     * - startTime 与 endTime：使用 ISO 日期时间格式（例如：2025-04-01T10:15:30）
-     * - type：车辆状态
-     * - license：车牌号
-     * - location：摄像头位置
-     * - pageNum：页码（默认为1）
-     *
+     * 多条件筛选非实时检测记录
      * @param startTime 开始时间（可选）
      * @param endTime   结束时间（可选）
-     * @param type      车辆状态（可选）
-     * @param license   车牌号（可选）
-     * @param location  摄像头位置（可选）
+     * @param type      车辆类型（可选）  —— 对应车辆表中的 type 字段
+     * @param license   车牌号（可选）  —— 对应车辆表中的 licence 字段
      * @param pageNum   页码
-     * @return 分页查询结果
+     * @return 分页查询结果，同时包含总记录数和总页数信息
      */
     @GetMapping("/search")
-    public Page<RealTimeDetectionRecord> searchRealTimeRecords(
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startTime,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endTime,
+    public Page<NonRealTimeDetectionRecord> searchNonRealTimeRecords(
+            @RequestParam(required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startTime,
+            @RequestParam(required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endTime,
             @RequestParam(required = false) String type,
             @RequestParam(required = false) String license,
-            @RequestParam(required = false) String location,
             @RequestParam(defaultValue = "1") int pageNum) {
 
-        QueryWrapper<RealTimeDetectionRecord> queryWrapper = new QueryWrapper<>();
+        // 固定每页显示 13 条记录（如果需要可以把 pageSize 作为参数传入）
+        int pageSize = 13;
 
-        // 时间范围条件
+        QueryWrapper<NonRealTimeDetectionRecord> queryWrapper = new QueryWrapper<>();
+
+        // 添加时间范围条件
         if (startTime != null && endTime != null) {
             queryWrapper.between("time", startTime, endTime);
         } else if (startTime != null) {
@@ -69,24 +64,37 @@ public class RealTimeDetectionController {
             queryWrapper.le("time", endTime);
         }
 
-        // 车辆类型条件
-        if (type != null && !type.isEmpty()) {
-            queryWrapper.eq("vehicle_status", type);
+        // 构造车辆表子查询：当传入车辆类型或车牌号参数时
+        if ((type != null && !type.trim().isEmpty()) ||
+                (license != null && !license.trim().isEmpty())) {
+
+            StringBuilder subQuery = new StringBuilder("SELECT vehicle_id FROM vehicle WHERE 1=1");
+
+            if (license != null && !license.trim().isEmpty()) {
+                subQuery.append(" AND licence LIKE '%").append(license).append("%'");
+            }
+
+            if (type != null && !type.trim().isEmpty()) {
+                subQuery.append(" AND type = '").append(type).append("'");
+            }
+
+            queryWrapper.inSql("vehicle_id", subQuery.toString());
         }
 
-        // 车牌号条件（需要关联车辆表查询）
-        if (license != null && !license.isEmpty()) {
-            queryWrapper.inSql("vehicle_id",
-                    "SELECT vehicle_id FROM vehicle WHERE licence LIKE '%" + license + "%'");
-        }
+        // 使用 MyBatis-Plus 分页查询数据
+        Page<NonRealTimeDetectionRecord> page = nonRealTimeService.page(new Page<>(pageNum, pageSize), queryWrapper);
 
-        // 位置条件（需要关联摄像头表查询）
-        if (location != null && !location.isEmpty()) {
-            queryWrapper.inSql("camera_id",
-                    "SELECT camera_id FROM camera WHERE location LIKE '%" + location + "%'");
-        }
+        // 手动调用 count 查询，并计算总页数（公式： (totalRecords + pageSize - 1) / pageSize ）
+        long totalRecords = nonRealTimeService.count(queryWrapper);
+        int totalPages = (int) ((totalRecords + pageSize - 1) / pageSize);
 
-        return realTimeService.page(new Page<>(pageNum, 13), queryWrapper);
+        // 更新 Page 对象中的 total 字段，pages 字段通常为自动计算（取决于 MyBatis-Plus 版本）
+        page.setTotal(totalRecords);
+
+        // 如果需要在返回的 JSON 中明确返回自定义计算的页数，可以将 totalPages 封装到 DTO 中返回
+        // 或者将其写入日志、响应头等方式传递给前端
+
+        return page;
     }
 
     // 新增接口：获取实时检测记录的总页数
