@@ -110,11 +110,15 @@ const filteredMenuOptions = computed<MenuOption[]>(() => {
     item.showForRoles?.includes(userStore.role)
   )
 })
+
+
+
 </script>
 
 <style scoped>
 .user-selector {
-  width: 180px;
+  min-width: 180px;
+  max-width: 250px;
   --el-select-input-focus-border-color: transparent;
 }
 

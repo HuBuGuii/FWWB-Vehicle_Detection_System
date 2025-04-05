@@ -101,6 +101,7 @@ const route = useRoute()
 const data = useDataStore()
 const auth = useAuthStore()
 const ifshowScreen = ref(false)
+
 const showData = ref([
   { id: 1, time: '1/1', address: '路段1', number: 'h132kc', type: '小车', color: '白' },
   { id: 1, time: '1/1', address: '路段1', number: 'h132kc', type: '小车', color: '白' },
@@ -211,6 +212,9 @@ onMounted(async() => {
     color: rgba(128, 128, 128, 1);
     text-align: left;
     vertical-align: top;
+  }
+  .tool{
+    display: flex;
   }
 }
 

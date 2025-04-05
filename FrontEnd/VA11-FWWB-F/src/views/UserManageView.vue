@@ -35,7 +35,7 @@
           <div class="user">
             <el-icon size="50px" color="rgba(229, 229, 229, 1)"><Avatar /></el-icon>
             <span>welcome</span>
-            <span>{{ auth.userName }}</span>
+              <span style="color:#409eff ;">{{ auth.userName }}</span>
           </div>
           <div class="tools">
             <el-input
