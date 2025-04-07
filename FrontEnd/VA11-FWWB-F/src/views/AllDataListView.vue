@@ -24,7 +24,7 @@
             <span>文件分析</span>
           </el-menu-item>
 
-          <el-menu-item index="/user-manage" v-if="auth.role === 'user'">
+          <el-menu-item index="/user-manage" v-if="auth.role === 'manager'">
             <el-icon><Service /></el-icon>
             <span>用户管理</span>
           </el-menu-item>
