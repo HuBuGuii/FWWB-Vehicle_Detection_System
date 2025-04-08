@@ -1,6 +1,6 @@
 {
-  "timestamp": "2025-03-23 23:11:01.768",
-  "frame": 1,
+  "timestamp": "2025-04-08 16:37:43.441",
+  "frame": 0,
   "type": "car",
   "confidence": 0.91,
   "coordinates": [
@@ -12,8 +12,8 @@
   "license_plate": "None"
 },
 {
-  "timestamp": "2025-03-23 23:11:01.905",
-  "frame": 1,
+  "timestamp": "2025-04-08 16:37:43.516",
+  "frame": 0,
   "type": "truck",
   "confidence": 0.909,
   "coordinates": [
@@ -25,8 +25,8 @@
   "license_plate": "None"
 },
 {
-  "timestamp": "2025-03-23 23:11:02.008",
-  "frame": 1,
+  "timestamp": "2025-04-08 16:37:43.574",
+  "frame": 0,
   "type": "car",
   "confidence": 0.887,
   "coordinates": [
@@ -38,8 +38,8 @@
   "license_plate": "None"
 },
 {
-  "timestamp": "2025-03-23 23:11:02.025",
-  "frame": 1,
+  "timestamp": "2025-04-08 16:37:43.608",
+  "frame": 0,
   "type": "car",
   "confidence": 0.885,
   "coordinates": [
@@ -51,8 +51,8 @@
   "license_plate": "None"
 },
 {
-  "timestamp": "2025-03-23 23:11:02.095",
-  "frame": 1,
+  "timestamp": "2025-04-08 16:37:43.667",
+  "frame": 0,
   "type": "car",
   "confidence": 0.883,
   "coordinates": [
@@ -64,8 +64,8 @@
   "license_plate": "None"
 },
 {
-  "timestamp": "2025-03-23 23:11:02.111",
-  "frame": 1,
+  "timestamp": "2025-04-08 16:37:43.681",
+  "frame": 0,
   "type": "car",
   "confidence": 0.873,
   "coordinates": [
@@ -77,8 +77,8 @@
   "license_plate": "None"
 },
 {
-  "timestamp": "2025-03-23 23:11:02.130",
-  "frame": 1,
+  "timestamp": "2025-04-08 16:37:43.691",
+  "frame": 0,
   "type": "van",
   "confidence": 0.871,
   "coordinates": [
@@ -90,8 +90,8 @@
   "license_plate": "None"
 },
 {
-  "timestamp": "2025-03-23 23:11:02.147",
-  "frame": 1,
+  "timestamp": "2025-04-08 16:37:43.701",
+  "frame": 0,
   "type": "car",
   "confidence": 0.863,
   "coordinates": [
@@ -103,8 +103,8 @@
   "license_plate": "None"
 },
 {
-  "timestamp": "2025-03-23 23:11:02.161",
-  "frame": 1,
+  "timestamp": "2025-04-08 16:37:43.708",
+  "frame": 0,
   "type": "car",
   "confidence": 0.85,
   "coordinates": [
@@ -116,8 +116,8 @@
   "license_plate": "None"
 },
 {
-  "timestamp": "2025-03-23 23:11:02.171",
-  "frame": 1,
+  "timestamp": "2025-04-08 16:37:43.724",
+  "frame": 0,
   "type": "car",
   "confidence": 0.766,
   "coordinates": [

@@ -3,7 +3,6 @@
     <el-container>
       <el-aside width="200px">
         <el-menu :default-active="activeMenu" class="sidebar-menu" router @select="handleSelect">
-          <!-- 使用 el-menu-item 定义每个导航项 -->
           <el-menu-item index="/allData">
             <el-icon><TrendCharts /></el-icon>
             <span>全部记录</span>
@@ -30,6 +29,7 @@
           </el-menu-item>
         </el-menu>
       </el-aside>
+
       <el-container>
         <el-header>
           <div class="header-bar">
@@ -39,38 +39,49 @@
               <span style="color:#409eff">{{ nowCon }}</span>
             </div>
             <div class="tool">
-              <el-button plain @click="switchCC">实时/文件</el-button
-              ><el-button plian @click="showScreen" style="margin-right: 20px;">筛选小助手</el-button>
+              <el-button plain @click="switchCC">实时/文件</el-button>
+              <el-button plain @click="showScreen" style="margin-right: 20px;">筛选小助手</el-button>
               <ControlCom></ControlCom>
             </div>
-
           </div>
         </el-header>
+
         <el-main>
           <div class="tablecontainer" ref="tablecontainer">
             <el-table
               :data="showData"
               stripe
               border
-              style="width: 100%"
-              max-height="tableMaxH"
               v-loading="loading"
+              :max-height="tableMaxH"
               table-layout="auto"
             >
-              <el-table-column prop="time" label="时间" align="center" min-width="120" />
-              <el-table-column prop="address" label="路段" align="center" min-width="120" />
-              <el-table-column prop="number" label="车牌号" align="center" min-width="120" />
-              <el-table-column prop="type" label="车辆类型" align="center" min-width="120" />
-              <el-table-column prop="color" label="车辆颜色" align="center" min-width="120" />
-              <el-table-column label="详细信息" align="center" min-width="120">
-                <template #default="scope">
-                  <el-button type="primary" plain @click="handleDetail(scope.row.id)"
-                    >详情</el-button
+              <template v-for="col in tableColumns" :key="col.prop">
+                <el-table-column
+                  v-bind="col"
+                  align="center"
+                  min-width="120"
+                >
+                  <template #default="{ row }" v-if="col.formatter">
+                    {{ col.formatter(row) }}
+                  </template>
+                </el-table-column>
+              </template>
+
+              <el-table-column label="操作" align="center" min-width="120">
+                <template #default="{ row }">
+                  <el-button
+                    type="primary"
+                    plain
+                    @click="handleDetail(isRealTimeRecord(row) ? row.rdId : row.nrdId)"
                   >
+                    详情
+                  </el-button>
                 </template>
               </el-table-column>
             </el-table>
           </div>
+
           <div class="pagination">
             <el-pagination
               :page-size="data.pagination.pageSize"
@@ -95,6 +106,44 @@ import ScreenCom from '@/components/screenCom.vue'
 import ControlCom from '@/components/controlCom.vue'
 import { ElMessage } from 'element-plus'
 import { useDataStore } from '@/stores/data'
+import request from '@/utils/request'
+
+// types.ts
+// 基础接口
+interface BaseDetectionRecord {
+  time: Date;
+  confidence: number;
+  vehicleId: number;
+  vehicleStatus: string;
+  maxAge: number;
+  exp: string;
+  vehicleInfo?: VehicleInfo;
+}
+
+// 实时检测记录
+interface RealTimeDetectionRecord extends BaseDetectionRecord {
+  rdId: string;
+  cameraId: string;
+  temperature: number;
+  weather: string;
+}
+
+// 非实时检测记录
+interface NonRealTimeDetectionRecord extends BaseDetectionRecord {
+  nrdId: string;
+  userId: string;
+}
+
+interface VehicleInfo {
+  vehicleId: number;
+  licence: string | null;
+  type: string;
+  color?: string;
+}
+
+type DetectionRecord = RealTimeDetectionRecord | NonRealTimeDetectionRecord;
+
+// API 响应类型
 
 
 const route = useRoute()
@@ -102,29 +151,49 @@ const data = useDataStore()
 const auth = useAuthStore()
 const ifshowScreen = ref(false)
 
-const showData = ref([
-  { id: 1, time: '1/1', address: '路段1', number: 'h132kc', type: '小车', color: '白' },
-  { id: 1, time: '1/1', address: '路段1', number: 'h132kc', type: '小车', color: '白' },
-  { id: 1, time: '1/1', address: '路段1', number: 'h132kc', type: '小车', color: '白' },
-  { id: 1, time: '1/1', address: '路段1', number: 'h132kc', type: '小车', color: '白' },
-  { id: 1, time: '1/1', address: '路段1', number: 'h132kc', type: '小车', color: '白' },
-  { id: 1, time: '1/1', address: '路段1', number: 'h132kc', type: '小车', color: '白' },
-  { id: 1, time: '1/1', address: '路段1', number: 'h132kc', type: '小车', color: '白' },
-  { id: 1, time: '1/1', address: '路段1', number: 'h132kc', type: '小车', color: '白' },
-  { id: 1, time: '1/1', address: '路段1', number: 'h132kc', type: '小车', color: '白' },
-  { id: 1, time: '1/1', address: '路段1', number: 'h132kc', type: '小车', color: '白' },
-  { id: 1, time: '1/1', address: '路段1', number: 'h132kc', type: '小车', color: '白' },
-  { id: 1, time: '1/1', address: '路段1', number: 'h132kc', type: '小车', color: '白' },
-  { id: 1, time: '1/1', address: '路段1', number: 'h132kc', type: '小车', color: '白' },
-
-  //排个13行差不多，问后端要的时候就一页13行
-])
-const tablecontainer = ref()
-const tableMaxH = ref<number>(0)
+const showData = ref<DetectionRecord[]>([])
 const loading = ref(false)
-
+const tablecontainer = ref<HTMLElement>()
+const tableMaxH = ref(0)
 
 const activeMenu = computed(() => route.path)
+
+const nowCon = computed(() => {
+  return data.isRealTime ? '实时监测' : '文件上传'
+})
+
+// 类型守卫
+function isRealTimeRecord(record: DetectionRecord): record is RealTimeDetectionRecord {
+  return 'rd_id' in record;
+}
+
+// 表格列定义
+const tableColumns = computed(() => [
+{
+    prop: 'time',
+    label: '时间',
+    formatter: (row: DetectionRecord) => new Date(row.time).toLocaleString()
+  },
+  {
+    prop: 'vehicleInfo.licence',
+    label: '车牌号',
+    formatter: (row: DetectionRecord) => row.vehicleInfo?.licence || '未知'
+  },
+  {
+    prop: 'vehicleInfo.type',
+    label: '车辆类型',
+    formatter: (row: DetectionRecord) => row.vehicleInfo?.type || '未知'
+  },
+  {
+    prop: 'confidence',
+    label: '置信度',
+    formatter: (row: DetectionRecord) => `${(row.confidence * 100).toFixed(2)}%`
+  },
+  {
+    prop: 'vehicle_status',
+    label: '状态'
+  }
+])
 
 const showScreen = () => {
   ifshowScreen.value = !ifshowScreen.value
@@ -137,39 +206,117 @@ const switchCC = () => {
 
 const handleSelect = (index: string) => {
   console.log('当前选中菜单:', index)
-  // router.push(index)
 }
-const calMaxH = () => {
-  if (tablecontainer.value) {
-    const temp = tablecontainer.value.getBoundingClientRect()
-    tableMaxH.value = temp.height - 2
+
+const getData = async (page = 1) => {
+  loading.value = true
+  const recordType = data.isRealTime ? 'realtime' : 'nonrealtime'
+
+  try {
+    const response = await request.get(
+      `/detections/${recordType}/${page}`
+    )
+    console.log('API Response:', response) // 检查原始响应
+
+    if (response.records) {
+      showData.value = response.records
+      await fetchVehicleInfo() // 获取到记录后立即获取车辆信息
+      console.log('处理后' + showData.value)
+    }
+
+  } catch (error) {
+    console.error('获取数据失败:', error)
+    ElMessage.error('获取数据失败')
+  } finally {
+    loading.value = false
   }
 }
 
-const nowCon = computed(() => {
-  return data.isRealTime? '实时监测' : '文件上传'
-})
+const fetchVehicleInfo = async () => {
+  if (!showData.value.length) return;
 
-watch(() =>data.isRealTime,(newVal)=> {
-  if(newVal === true){
-    ElMessage.success('已切换至实时监测')
-  }
-  if(newVal === false){
-    ElMessage.success('已切换至文件上传')
-  }
-})
+  loading.value = true;
+  try {
+    console.log('原始数据:', showData.value); // 检查原始数据
 
-const handleDetail = (id: number) => {
-  console.log(id)
+    // 安全地获取 vehicleId
+    const vehicleIds = [...new Set(
+      showData.value
+        .filter(record => record && typeof record === 'object') // 确保记录是对象
+        .map(record => {
+          console.log('处理记录:', record); // 检查每条记录
+          return record.vehicleId || record.vehicleId; // 尝试两种可能的属性名
+        })
+        .filter((id): id is number => {
+          console.log('过滤 ID:', id, typeof id); // 检查 ID 值和类型
+          return typeof id === 'number' && !isNaN(id);
+        })
+    )];
+
+    console.log('提取的车辆 IDs:', vehicleIds);
+
+    if (vehicleIds.length === 0) {
+      console.warn('没有有效的车辆ID');
+      return;
+    }
+
+    const responses = await Promise.all(
+      vehicleIds.map(async id => {
+        try {
+          const response = await request.get<VehicleInfo>(`/vehicles/${id}`);
+          return response.data;
+        } catch (error) {
+          console.error(`获取车辆 ${id} 信息失败:`, error);
+          return null;
+        }
+      })
+    );
+
+    // 过滤掉失败的请求
+    const validResponses = responses.filter((response): response is VehicleInfo =>
+      response !== null
+    );
+
+    const vehicleMap = new Map(
+      validResponses.map(vehicle => [vehicle.vehicleId, vehicle])
+    );
+
+    // 更新记录时也要安全地处理
+    showData.value = showData.value.map(record => {
+      const vehicleId = record.vehicleId || record.vehicleId;
+      return {
+        ...record,
+        vehicleInfo: vehicleId ? vehicleMap.get(vehicleId) : undefined
+      };
+    });
+
+  } catch (error) {
+    console.error('获取车辆信息失败:', error);
+    ElMessage.error('获取车辆信息失败');
+  } finally {
+    loading.value = false;
+  }
 }
 
 
 
-onMounted(async() => {
-  calMaxH()
-  console.log(tableMaxH)
-  //等着加载数据
+
+const handleDetail = (id: string) => {
+  console.log('查看详情:', id)
+  // 实现详情查看逻辑
+}
+
+// 监听数据源变化
+watch(() => data.isRealTime, (newVal) => {
+  ElMessage.success(`已切换至${newVal ? '实时监测' : '文件上传'}`)
+  getData()
+}, { immediate: true })
+
+onMounted(() => {
+  getData()
 })
+
+
 </script>
 
 <style scoped lang="scss">
@@ -178,23 +325,28 @@ onMounted(async() => {
   width: 100vw;
   position: relative;
 }
+
 .el-container {
   height: 100%;
   width: 100%;
 }
+
 .el-main {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
+
 .sidebar-menu {
   height: 100% !important;
   border-right: 1px solid #e4e7ed !important;
   box-sizing: border-box;
 }
+
 .tablecontainer {
   width: 100%;
 }
+
 .header-bar {
   width: 100%;
   box-sizing: border-box;
@@ -203,6 +355,7 @@ onMounted(async() => {
   align-items: center;
   justify-content: space-between;
   border-bottom: 4px solid rgba(229, 229, 229, 1);
+
   span {
     margin-left: 20px;
     font-size: 26px;
@@ -213,9 +366,13 @@ onMounted(async() => {
     text-align: left;
     vertical-align: top;
   }
-  .tool{
+
+  .tool {
     display: flex;
   }
 }
 
+.pagination {
+  margin-top: 20px;
+}
 </style>
