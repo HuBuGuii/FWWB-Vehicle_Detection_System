@@ -81,6 +81,11 @@ public class AuthController {
         resp.put("userId", user.getUserId());
         resp.put("roleId", user.getRoleId());
         resp.put("realName", user.getRealName());
+        resp.put("account", user.getAccount());
+        resp.put("password", user.getPassword());
+        resp.put("authorizationStatus", user.getAuthorizationStatus());
+        
+
 
         return ResponseEntity.ok(resp);
     }

@@ -35,8 +35,6 @@ conda:
 
 logging:
   level:
-    org:
-      springframework=DEBUG:
-        .beans=TRACE:
-        .context:
-          .annotation=TRACE:
+    org.springframework: DEBUG
+    org.springframework.beans: DEBUG
+    org.springframework.context: DEBUG

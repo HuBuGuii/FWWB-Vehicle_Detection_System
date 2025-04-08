@@ -1,5 +1,0 @@
-{"timestamp": "2025-03-25 17:43:02.556", "frame": 29, "type": "bus", "confidence": 0.728, "coordinates": [160, 76, 288, 373], "license_plate": "None"}
-{"timestamp": "2025-03-25 17:43:03.483", "frame": 33, "type": "truck", "confidence": 0.725, "coordinates": [1, 43, 150, 220], "license_plate": "None"}
-{"timestamp": "2025-03-25 17:43:09.032", "frame": 61, "type": "bus", "confidence": 0.77, "coordinates": [488, 0, 638, 233], "license_plate": "None"}
-{"timestamp": "2025-03-25 17:43:09.503", "frame": 63, "type": "bus", "confidence": 0.701, "coordinates": [482, 0, 640, 261], "license_plate": "None"}
-{"timestamp": "2025-03-25 17:43:09.788", "frame": 64, "type": "car", "confidence": 0.729, "coordinates": [0, 388, 199, 480], "license_plate": "None"}

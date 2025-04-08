@@ -25,32 +25,38 @@ PROVINCE_ABBR = [
 class LicensePlateProcessor:
     def __init__(self, args):
         self.args = args
-        # 加载 YOLO 模型
         self.yolo_model = YOLO(args.model)
-        # 配置 PaddleOCR 用于车牌识别
         self.paddle_ocr = PaddleOCR(
             use_angle_cls=True,
             lang="ch",
             rec_algorithm="SVTR_LCNet",
             det_db_score_mode="fast"
         )
-        # 构建输出目录，并设置 JSON/TXT 结果文件路径
         self.setup_output()
-        # 指定中文字体路径，根据实际情况调整（例如 Windows 下通常为 C:/Windows/Fonts/simhei.ttf）
         self.font_path = "C:/Windows/Fonts/simhei.ttf"
         if not os.path.exists(self.font_path):
             raise FileNotFoundError(f"Chinese font not found: {self.font_path}")
         self.font = ImageFont.truetype(self.font_path, 20)
 
+    def get_unique_dir(self, base_path, base_name):
+        """生成唯一的目录名称，格式为basename、basename_1、basename_2等"""
+        counter = 0
+        while True:
+            dir_name = f"{base_name}_{counter}" if counter > 0 else base_name
+            dir_path = base_path / dir_name
+            if not dir_path.exists():
+                return dir_path
+            counter += 1
+
     def setup_output(self):
-        """
-        使用传入的 --project 与 --name 构建输出目录，同时修改 JSON 文件命名，
-        保证名称以 detections_ 开头。无论视频或图像检测都采用相同的方式。
-        """
-        self.output_dir = Path(self.args.project) / self.args.name
+        """构建唯一输出目录，并设置结果文件路径"""
+        base_path = Path(self.args.project)
+        base_name = self.args.name
+        self.output_dir = self.get_unique_dir(base_path, base_name)
         self.output_dir.mkdir(parents=True, exist_ok=True)
         self.txt_path = self.output_dir / "results.txt"
-        self.json_path = self.output_dir / f"detections_{self.args.name}.json"
+        # 使用输出目录名称作为JSON文件名的一部分
+        self.json_path = self.output_dir / f"detections_{self.output_dir.name}.json"
 
     def is_valid_plate(self, text):
         clean_text = text.replace("·", "").replace(" ", "")

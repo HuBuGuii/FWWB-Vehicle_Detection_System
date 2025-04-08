@@ -1,1 +1,0 @@
-{"timestamp": "2025-03-25 18:41:48.748", "frame": 26, "type": "car", "confidence": 0.775, "coordinates": [195, 381, 507, 480], "license_plate": "None"}
