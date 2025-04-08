@@ -9,8 +9,8 @@ spring:
       enabled: true
   datasource:
     url: jdbc:postgresql://localhost:5432/fwwb
-    username: 13168
-    password: 1234
+    username: postgres
+    password: password
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
@@ -36,5 +36,6 @@ conda:
 logging:
   level:
     org.springframework: DEBUG
-    org.springframework.beans: DEBUG
-    org.springframework.context: DEBUG
+    org.springframework.beans: TRACE
+    org.springframework.context.annotation: TRACE
+    com.fwwb.vehicledetection: DEBUG  # 添加你的项目包路径日志级别

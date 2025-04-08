@@ -8,7 +8,7 @@
             ><el-icon class="icon"><ArrowLeftBold /></el-icon
             ><RouterLink to="/" class="link">返回首页</RouterLink></span
           >
-          <span class="manager" >
+          <span class="controlCom" >
             <ControlCom></ControlCom>
             <span class="manage"
               ><el-button plain @click="handleManager" >进入路段规划</el-button>
@@ -125,5 +125,13 @@ const handleManager = () => {
 .el-main{
   height: calc(100vh - 60px);
   padding:0;
+}
+.controlCom{
+  display: flex;
+  align-items: center;
+  .manage{
+    display: flex;
+    align-items: center;
+  }
 }
 </style>

@@ -142,6 +142,13 @@ import { useAuthStore } from '@/stores/auth'
 import { useRouter } from 'vue-router'
 import request from '@/utils/request'
 
+interface Info{
+  roleId:number
+  realName:string
+  userId:string
+  token:string
+}
+
 // 类型定义
 interface LoginFormData {
   account: string
@@ -251,9 +258,10 @@ const handleLogin = async (): Promise<void> => {
     // 模拟登录请求
     const response = await request.post('auth/login',loginForm)
     console.log(response)
-    const token = response.token                                          //没有问题，后端没按格式返
+    const token = response.token                                      //没有问题，后端没按格式返
+    authStore.setUser(response)
     console.log('token是' + token)
-    localStorage.setItem('access_token',token)
+    await localStorage.setItem('access_token',token)
     console.log('token has been stored')
     ElMessage.success('登录成功')
     authStore.LogCondition = true

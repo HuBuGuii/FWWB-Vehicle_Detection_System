@@ -13,21 +13,43 @@ export const useMapStore = defineStore('map',() => {
   }
 
   const showManager = ref(false)
-  
+
   const treeData = ref<TreeNode[]>([
     {
       id: 1,
-      label: '示例节点1',
+      label: '空港大道',
       dir1:70,
       dir2:30,
-      camera: 'CAM-001',
+      camera: 'CAM-KG',
       children: [
         {
           id: 3,
           dir1:50,
           dir2:50,
-          label: '示例节点1-1',
-          camera: 'CAM-003',
+          label: 'T3航站楼',
+          camera: 'CAM-T3',
+          children:[
+            {id:5,
+              dir1:40,
+              dir2:90,
+              label:'T1航站楼',
+              camera:'CAM-T1',
+              children:[{
+                id:6,
+                dir1:10,
+                dir2:20,
+                label:'T2航站楼',
+                camera:'CAM-T2'
+              }]
+            }
+          ]
+        },
+        {
+          id:4,
+          dir1:30,
+          dir2:80,
+          label:'T4航站楼',
+          camera:'CAM-T4',
         },
       ],
     },
@@ -35,8 +57,8 @@ export const useMapStore = defineStore('map',() => {
       id: 2,
       dir1:90,
       dir2:10,
-      label: '示例节点2',
-      camera: 'CAM-002',
+      label: '示例节点',
+      camera: 'CAM-DEMO',
     },
   ])
 

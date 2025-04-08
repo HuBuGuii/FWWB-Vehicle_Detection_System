@@ -7,18 +7,20 @@
           ref="uploadRef"
           class="upload"
           drag
-          action="#"
+          :action="uploadUrl"
           multiple
+          v-model:file-list="fileList"
           :before-upload="beforeUpload"
-          :on-success="handleSucess"
-          :on-error="handleError"
           :auto-upload="false"
+          :http-request="customUpload"
+          @change="handleChange"
         >
           <el-icon class="el-icon--upload"><upload-filled /></el-icon>
           <div class="el-upload__text">拖拽文件或 <em>点击此处上传</em></div>
           <template #tip>
             <div class="el-upload__tip">
-              只能上传视频或图片，上传完成后点击右侧按钮开始分析 <el-button @click="handleUpload">开始分析</el-button>
+              只能上传视频或图片，上传完成后点击右侧按钮开始分析
+              <el-button @click="handleUpload" :disabled="!fileList.length">开始分析</el-button>
             </div>
           </template>
         </el-upload>
@@ -77,12 +79,23 @@
 
 <script setup lang="ts">
 import controlCom from '@/components/controlCom.vue'
-import { ref } from 'vue'
-import { ElMessage } from 'element-plus'
-import type { UploadInstance } from 'element-plus'
+import { ref, onMounted, watch } from 'vue'
+import { ElLoading, ElMessage } from 'element-plus'
+import type { UploadFile, UploadInstance, UploadProps } from 'element-plus'
+import request from '@/utils/request'
+
+console.log('组件初始化')
+
+onMounted(() => {
+  console.log('组件已挂载')
+})
+
 const uploadRef = ref<UploadInstance>()
+const fileList = ref<UploadFile[]>([])
+const currentFileType = ref<'image' | 'video' | null>(null)
+const uploadUrl = '#'
 
-const recentData = [
+const recentData = ref([
   { date: '10/11', car: '小型车' },
   { date: '10/11', car: '小型车' },
   { date: '10/11', car: '小型车' },
@@ -93,28 +106,94 @@ const recentData = [
   { date: '10/11', car: '小型车' },
   { date: '10/11', car: '小型车' },
   { date: '10/11', car: '小型车' },
-]
+])
 
-const beforeUpload = (file:File) => {
-  const isImage = file.type.startsWith('image/'); // 检查是否为图片
-  const isVideo = file.type.startsWith('video/'); // 检查是否为视频
-  if(!isImage && !isVideo){
+watch(fileList, (newFiles) => {
+  console.log('文件列表更新:', newFiles)
+}, { deep: true })
+
+const handleChange = (file: UploadFile, fileList: UploadFile[]) => {
+  console.log('文件变化:', file, fileList)
+}
+
+const beforeUpload: UploadProps['beforeUpload'] = (file) => {
+  console.log('beforeUpload触发', file)
+
+  const isImage = file.type.startsWith('image/')
+  const isVideo = file.type.startsWith('video/')
+
+  console.log('文件类型:', file.type)
+
+  if (!isImage && !isVideo) {
     ElMessage.error('只能上传视频或图片')
     return false
   }
+
+  const newType = isImage ? 'image' : 'video'
+
+  // 修改这部分逻辑
+  if (currentFileType.value === null) {
+    // 如果是第一个文件，设置当前类型
+    console.log('设置初始文件类型:', newType)
+    currentFileType.value = newType
+    return true
+  } else if (currentFileType.value !== newType) {
+    // 如果已有文件，检查类型是否匹配
+    console.log('文件类型不匹配:', currentFileType.value, newType)
+    ElMessage.error('不能同时上传图片和视频，请先清空当前选择')
+    return false
+  }
+
+  console.log('文件类型检查通过')
   return true
 }
 
-const handleSucess = () => {
-  ElMessage.success('上传成功')
-}
-
-const handleError = () => {
-  ElMessage.error('上传失败')
-}
-
-const handleUpload = () => {
+const handleUpload = async () => {
+  console.log('handleUpload触发')
+  console.log('当前文件列表:', fileList.value)
   uploadRef.value?.submit()
+}
+
+const customUpload = async (options: any) => {
+  console.log('customUpload开始', options)
+
+  const { file } = options
+  const formData = new FormData()
+  formData.append('files', file)
+
+  console.log('准备发送请求，FormData:', formData)
+
+  const loading = ElLoading.service({
+    lock: true,
+    text: '正在上传...',
+    background: 'rgba(0, 0, 0, 0.7)'
+  })
+
+  try {
+    console.log('发送请求到:', `/yolo/${currentFileType.value}`)
+
+    const response = await request.post(`/yolo/${currentFileType.value}`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      },
+      onUploadProgress: (progressEvent) => {
+        if (progressEvent.total) {
+          const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total)
+          console.log('上传进度:', progress + '%')
+          loading.setText(`上传进度: ${progress}%`)
+        }
+      }
+    })
+
+    console.log('上传响应:', response)
+    loading.close()
+    ElMessage.success('上传成功')
+
+  } catch (error) {
+    console.error('上传错误:', error)
+    loading.close()
+    ElMessage.error('上传失败')
+  }
 }
 </script>
 
