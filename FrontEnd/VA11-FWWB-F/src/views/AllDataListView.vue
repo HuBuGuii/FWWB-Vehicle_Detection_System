@@ -39,6 +39,7 @@
               <span style="color:#409eff">{{ nowCon }}</span>
             </div>
             <div class="tool">
+              <el-button plain @click="data.clearF" v-if="data.isFiltered">清除筛选</el-button>
               <el-button plain @click="switchCC">实时/文件</el-button>
               <el-button plain @click="showScreen" style="margin-right: 20px;">筛选小助手</el-button>
               <ControlCom></ControlCom>
@@ -49,11 +50,11 @@
         <el-main>
           <div class="tablecontainer" ref="tablecontainer">
             <el-table
-              :data="showData"
+              :data="data.showData"
+               style="width: 100%"
               stripe
               border
               v-loading="loading"
-              :max-height="tableMaxH"
               table-layout="auto"
             >
               <template v-for="col in tableColumns" :key="col.prop">
@@ -69,11 +70,11 @@
               </template>
 
               <el-table-column label="操作" align="center" min-width="120">
-                <template #default="{ row }">
+                <template #default="scope">
                   <el-button
                     type="primary"
                     plain
-                    @click="handleDetail(isRealTimeRecord(row) ? row.rdId : row.nrdId)"
+                    @click="handleDetail(isRealTimeRecord(scope.row) ? scope.row.rdId : scope.row.nrdId)"
                   >
                     详情
                   </el-button>
@@ -106,7 +107,8 @@ import ScreenCom from '@/components/screenCom.vue'
 import ControlCom from '@/components/controlCom.vue'
 import { ElMessage } from 'element-plus'
 import { useDataStore } from '@/stores/data'
-import request from '@/utils/request'
+
+
 
 // types.ts
 // 基础接口
@@ -138,7 +140,6 @@ interface VehicleInfo {
   vehicleId: number;
   licence: string | null;
   type: string;
-  color?: string;
 }
 
 type DetectionRecord = RealTimeDetectionRecord | NonRealTimeDetectionRecord;
@@ -151,10 +152,8 @@ const data = useDataStore()
 const auth = useAuthStore()
 const ifshowScreen = ref(false)
 
-const showData = ref<DetectionRecord[]>([])
 const loading = ref(false)
 const tablecontainer = ref<HTMLElement>()
-const tableMaxH = ref(0)
 
 const activeMenu = computed(() => route.path)
 
@@ -162,25 +161,32 @@ const nowCon = computed(() => {
   return data.isRealTime ? '实时监测' : '文件上传'
 })
 
+
 // 类型守卫
 function isRealTimeRecord(record: DetectionRecord): record is RealTimeDetectionRecord {
-  return 'rd_id' in record;
+  return 'rdId' in record;
 }
 
+
+
 // 表格列定义
-const tableColumns = computed(() => [
-{
+const tableColumns = [
+  {
     prop: 'time',
     label: '时间',
     formatter: (row: DetectionRecord) => new Date(row.time).toLocaleString()
   },
   {
-    prop: 'vehicleInfo.licence',
+    prop: 'vehicleId',
+    label: '车辆ID'
+  },
+  {
+    prop: 'vehicleInfo',
     label: '车牌号',
     formatter: (row: DetectionRecord) => row.vehicleInfo?.licence || '未知'
   },
   {
-    prop: 'vehicleInfo.type',
+    prop: 'vehicleInfo',
     label: '车辆类型',
     formatter: (row: DetectionRecord) => row.vehicleInfo?.type || '未知'
   },
@@ -190,10 +196,10 @@ const tableColumns = computed(() => [
     formatter: (row: DetectionRecord) => `${(row.confidence * 100).toFixed(2)}%`
   },
   {
-    prop: 'vehicle_status',
+    prop: 'vehicleStatus',
     label: '状态'
   }
-])
+]
 
 const showScreen = () => {
   ifshowScreen.value = !ifshowScreen.value
@@ -202,104 +208,12 @@ const showScreen = () => {
 
 const switchCC = () => {
   data.isRealTime = !data.isRealTime
+  data.getData()
 }
 
 const handleSelect = (index: string) => {
   console.log('当前选中菜单:', index)
 }
-
-const getData = async (page = 1) => {
-  loading.value = true
-  const recordType = data.isRealTime ? 'realtime' : 'nonrealtime'
-
-  try {
-    const response = await request.get(
-      `/detections/${recordType}/${page}`
-    )
-    console.log('API Response:', response) // 检查原始响应
-
-    if (response.records) {
-      showData.value = response.records
-      await fetchVehicleInfo() // 获取到记录后立即获取车辆信息
-      console.log('处理后' + showData.value)
-    }
-
-  } catch (error) {
-    console.error('获取数据失败:', error)
-    ElMessage.error('获取数据失败')
-  } finally {
-    loading.value = false
-  }
-}
-
-const fetchVehicleInfo = async () => {
-  if (!showData.value.length) return;
-
-  loading.value = true;
-  try {
-    console.log('原始数据:', showData.value); // 检查原始数据
-
-    // 安全地获取 vehicleId
-    const vehicleIds = [...new Set(
-      showData.value
-        .filter(record => record && typeof record === 'object') // 确保记录是对象
-        .map(record => {
-          console.log('处理记录:', record); // 检查每条记录
-          return record.vehicleId || record.vehicleId; // 尝试两种可能的属性名
-        })
-        .filter((id): id is number => {
-          console.log('过滤 ID:', id, typeof id); // 检查 ID 值和类型
-          return typeof id === 'number' && !isNaN(id);
-        })
-    )];
-
-    console.log('提取的车辆 IDs:', vehicleIds);
-
-    if (vehicleIds.length === 0) {
-      console.warn('没有有效的车辆ID');
-      return;
-    }
-
-    const responses = await Promise.all(
-      vehicleIds.map(async id => {
-        try {
-          const response = await request.get<VehicleInfo>(`/vehicles/${id}`);
-          return response.data;
-        } catch (error) {
-          console.error(`获取车辆 ${id} 信息失败:`, error);
-          return null;
-        }
-      })
-    );
-
-    // 过滤掉失败的请求
-    const validResponses = responses.filter((response): response is VehicleInfo =>
-      response !== null
-    );
-
-    const vehicleMap = new Map(
-      validResponses.map(vehicle => [vehicle.vehicleId, vehicle])
-    );
-
-    // 更新记录时也要安全地处理
-    showData.value = showData.value.map(record => {
-      const vehicleId = record.vehicleId || record.vehicleId;
-      return {
-        ...record,
-        vehicleInfo: vehicleId ? vehicleMap.get(vehicleId) : undefined
-      };
-    });
-
-  } catch (error) {
-    console.error('获取车辆信息失败:', error);
-    ElMessage.error('获取车辆信息失败');
-  } finally {
-    loading.value = false;
-  }
-}
-
-
-
 
 const handleDetail = (id: string) => {
   console.log('查看详情:', id)
@@ -309,11 +223,11 @@ const handleDetail = (id: string) => {
 // 监听数据源变化
 watch(() => data.isRealTime, (newVal) => {
   ElMessage.success(`已切换至${newVal ? '实时监测' : '文件上传'}`)
-  getData()
+  data.getData()
 }, { immediate: true })
 
 onMounted(() => {
-  getData()
+  data.getData()
 })
 
 

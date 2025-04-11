@@ -73,9 +73,10 @@
 import { ref, reactive } from 'vue'
 import { watch } from 'vue'
 import { ElMessage, type FormInstance, type FormRules } from 'element-plus'
-import request from '@/utils/request'
+import { useDataStore } from '@/stores/data'
 
 const showScreen = ref(false)
+const data = useDataStore()
 const conDition = ref(true)
 const props = defineProps({ ifshowScreen: Boolean , condition:Boolean})
 // 表单数据类型
@@ -106,10 +107,9 @@ const sectionOptions = [
 
 // 车辆类型选项（示例数据）
 const vehicleTypeOptions = [
-  { value: '1', label: '小型客车' },
-  { value: '2', label: '大型客车' },
-  { value: '3', label: '货运卡车' },
-  { value: '4', label: '特种车辆' },
+  { value: 'car', label: 'car' },
+  { value: 'truck', label: 'truck' },
+  { value: 'van', label: 'van' },
 ]
 
 
@@ -147,19 +147,15 @@ const submitForm = async () => {
     ElMessage.warning('至少选择一项筛选')
     return
   }
-  const [startTime,endTime]=formData.date
-  const params = {
-    startTime:startTime || '',
-    endTime:endTime || '',
-    location:formData.section || '',
-    license:formData.plateNumber || '',
-    type:formData.vehicleType || ''
-  }
-  if(conDition.value){
-    console.log()
-    const response = await request.get('/detections/realtime',{params:params})
-    console.log(response)
-  }
+
+  const [startTime,endTime] = formData.date || []
+  data.filters.startTime = startTime || ''
+  data.filters.endTime = endTime || ''
+  data.filters.location = formData.section || ''
+  data.filters.license = formData.plateNumber || ''
+  data.filters.type = formData.vehicleType || ''
+  await data.applyFilters()
+  handleClose()
 
 }
 
@@ -171,6 +167,7 @@ const handleClose = () => {
 const resetForm = () => {
   if (!formRef.value) return
   formRef.value.resetFields()
+  data.resetFilter()
 }
 
 watch(
