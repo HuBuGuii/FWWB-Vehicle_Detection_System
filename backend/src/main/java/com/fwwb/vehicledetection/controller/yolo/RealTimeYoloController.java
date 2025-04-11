@@ -9,6 +9,7 @@ import com.fwwb.vehicledetection.service.RealTimeDetectionRecordService;
 import com.fwwb.vehicledetection.service.VehicleService;
 import com.fwwb.vehicledetection.util.WeatherUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.servlet.ServletOutputStream;
@@ -18,6 +19,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 @RestController
@@ -39,6 +41,19 @@ public class RealTimeYoloController {
     private CameraService cameraService;
 
     private ObjectMapper mapper = new ObjectMapper();
+    private final ConcurrentHashMap<Long, RealtimeDetectionSession> activeSessions = new ConcurrentHashMap<>();
+
+    @GetMapping("/stop/{cameraId}")
+    public ResponseEntity<String> stopRealtimeDetection(@PathVariable Long cameraId) {
+        RealtimeDetectionSession session = activeSessions.get(cameraId);
+        if (session != null) {
+            session.stop();
+            activeSessions.remove(cameraId);
+            return ResponseEntity.ok("Real-time detection stopped for cameraId: " + cameraId);
+        } else {
+            return ResponseEntity.badRequest().body("No active session found for cameraId: " + cameraId);
+        }
+    }
 
     /**
      * 统一实时检测接口：
@@ -77,6 +92,7 @@ public class RealTimeYoloController {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "无法启动实时检测");
             return;
         }
+        activeSessions.put(cameraId, session);
 
         // 设置响应内容类型为 MJPEG 流
         response.setContentType("multipart/x-mixed-replace; boundary=frame");
@@ -182,8 +198,10 @@ public class RealTimeYoloController {
         } finally {
             // 客户端断开或出现异常时，通知 Python 脚本退出
             session.stop();
+            activeSessions.remove(cameraId);
         }
     }
+
 
     /**
      * 简单映射：取 type 的hashCode 绝对值作为 vehicleId
@@ -233,6 +251,10 @@ public class RealTimeYoloController {
                 ProcessBuilder pb = new ProcessBuilder(command);
                 pb.directory(new File("./src/main/resources/yolo"));
                 pb.redirectErrorStream(true);
+
+                Map<String, String> env = pb.environment();
+                env.put("OPENCV_VIDEOIO_PRIORITY_DSHOW", "980");
+
                 process = pb.start();
 
                 // 后台线程读取并打印 Python 脚本输出日志
@@ -257,7 +279,7 @@ public class RealTimeYoloController {
 
         public void stop() {
             running = false;
-            // 写入停止信号文件 stop.txt，通知 Python 端退出采集循环
+            // 创建停止信号文件
             if (outputExpDir != null) {
                 File stopFile = new File(outputExpDir.toFile(), "stop.txt");
                 try {
@@ -268,15 +290,9 @@ public class RealTimeYoloController {
                     e.printStackTrace();
                 }
             }
-            // 等待 Python 进程退出5秒，超时则强制销毁
+            // 强制终止进程
             if (process != null) {
-                try {
-                    if (!process.waitFor(5, TimeUnit.SECONDS)) {
-                        process.destroyForcibly();
-                    }
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                process.destroy();
             }
         }
 
