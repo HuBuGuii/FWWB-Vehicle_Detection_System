@@ -1,15 +1,18 @@
 package com.fwwb.vehicledetection.util;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Assert;
 import com.fwwb.vehicledetection.domain.model.NonRealTimeDetectionRecord;
 import com.fwwb.vehicledetection.domain.model.RealTimeDetectionRecord;
 import com.fwwb.vehicledetection.service.NonRealTimeDetectionRecordService;
 import com.fwwb.vehicledetection.service.RealTimeDetectionRecordService;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.sql.DataSource;
 import java.io.File;
 import java.util.List;
 

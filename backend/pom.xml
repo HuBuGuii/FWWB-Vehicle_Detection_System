@@ -9,7 +9,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.2.0</version>
+		<version>3.4.3</version>
 		<relativePath/>
 	</parent>
 
@@ -22,14 +22,12 @@
 	<properties>
 		<!-- 使用 Java 21 (Spring Boot 3.2.x 官方支持的最高版本) -->
 		<java.version>21</java.version>
-		<mybatis-plus.version>3.5.4</mybatis-plus.version>
 
 		<!-- 显式管理依赖版本 -->
 		<postgresql.version>42.7.1</postgresql.version>
 		<lombok.version>1.18.30</lombok.version>
 		<jjwt.version>0.12.5</jjwt.version>
 		<guava.version>33.0.0-jre</guava.version>
-
 		<spring-data-redis.version>3.2.4</spring-data-redis.version>
 
 	</properties>
@@ -61,21 +59,14 @@
 		<!-- MyBatis-Plus -->
 		<dependency>
 			<groupId>com.baomidou</groupId>
-			<artifactId>mybatis-plus-boot-starter</artifactId>
-			<version>${mybatis-plus.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.mybatis</groupId>
-					<artifactId>mybatis-spring</artifactId>
-				</exclusion>
-			</exclusions>
+			<artifactId>mybatis-plus-spring-boot3-starter</artifactId>
+			<version>3.5.11</version>
 		</dependency>
 		<dependency>
-			<groupId>org.mybatis</groupId>
-			<artifactId>mybatis-spring</artifactId>
-			<version>3.0.3</version>
+			<groupId>com.baomidou</groupId>
+			<artifactId>mybatis-plus-jsqlparser</artifactId>
+			<version>3.5.11</version>
 		</dependency>
-
 
 		<!-- Database -->
 		<dependency>
@@ -155,6 +146,7 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>
 		</dependency>
+
 	</dependencies>
 
 	<build>
