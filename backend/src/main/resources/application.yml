@@ -23,10 +23,9 @@ spring:
     redis:
       host: 127.0.0.1
       port: 6379
+
 mybatis-plus:
   configuration:
-    default-enum-type-handler: org.apache.ibatis.type.EnumOrdinalTypeHandler
-    map-underscore-to-camel-case: true
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 conda:
@@ -35,7 +34,6 @@ conda:
 
 logging:
   level:
-    org.springframework: DEBUG
-    org.springframework.beans: TRACE
-    org.springframework.context.annotation: TRACE
-    com.fwwb.vehicledetection: DEBUG  # 添加你的项目包路径日志级别
+    root: INFO           # 全局日志级别（DEBUG, INFO, WARN, ERROR）
+    org.springframework: WARN  # 单独设置Spring框架日志级别
+    com.example: DEBUG   # 设置特定包的日志级别

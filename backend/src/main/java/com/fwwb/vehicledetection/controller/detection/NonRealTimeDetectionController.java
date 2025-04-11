@@ -4,12 +4,16 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.fwwb.vehicledetection.domain.model.NonRealTimeDetectionRecord;
 import com.fwwb.vehicledetection.service.NonRealTimeDetectionRecordService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/detections/nonrealtime")
 public class NonRealTimeDetectionController {
@@ -72,20 +76,37 @@ public class NonRealTimeDetectionController {
             queryWrapper.le("time", endTime);
         }
 
-        // 使用参数化查询避免 SQL 注入
+        // 车辆类型和车牌号条件
         if ((type != null && !type.trim().isEmpty()) || (license != null && !license.trim().isEmpty())) {
-            queryWrapper.inSql("vehicle_id", "SELECT vehicle_id FROM vehicle WHERE 1=1" +
-                    (type != null && !type.trim().isEmpty() ? " AND type = #{type}" : "") +
-                    (license != null && !license.trim().isEmpty() ? " AND licence LIKE CONCAT('%', #{license}, '%')" : ""));
-            // 如果需要传递参数到子查询，可以通过 Map 或其他方式实现
-            queryWrapper.getParamNameValuePairs().put("type", type);
-            queryWrapper.getParamNameValuePairs().put("license", license);
+            StringBuilder subQuery = new StringBuilder("vehicle_id IN (SELECT vehicle_id FROM vehicle WHERE 1=1");
+            List<Object> params = new ArrayList<>();
+            int paramIndex = 0;
+
+            if (type != null && !type.trim().isEmpty()) {
+                subQuery.append(" AND type = {" + paramIndex + "}");
+                params.add(type);
+                paramIndex++;
+            }
+            if (license != null && !license.trim().isEmpty()) {
+                subQuery.append(" AND licence LIKE CONCAT('%', {" + paramIndex + "}, '%')");
+                params.add(license);
+                paramIndex++;
+            }
+            subQuery.append(")");
+
+            log.info("Generated subQuery: {}, params: {}", subQuery, params);
+            queryWrapper.apply(subQuery.toString(), params.toArray());
         }
 
-        // 直接使用分页查询，依赖插件自动计算 total
-        Page<NonRealTimeDetectionRecord> page = nonRealTimeService.page(new Page<>(pageNum, pageSize), queryWrapper);
-
-        return page;
+        try {
+            log.info("Executing query with params: pageNum={}, pageSize={}, type={}, license={}", pageNum, pageSize, type, license);
+            Page<NonRealTimeDetectionRecord> page = nonRealTimeService.page(new Page<>(pageNum, pageSize), queryWrapper);
+            log.info("Query result: total={}, pages={}", page.getTotal(), page.getPages());
+            return page;
+        } catch (Exception e) {
+            log.error("查询非实时检测记录失败，queryWrapper={}", queryWrapper.toString(), e);
+            throw new RuntimeException("查询失败，详细信息: " + e.toString(), e);
+        }
     }
 
     // 创建非实时检测记录
