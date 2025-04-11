@@ -226,9 +226,12 @@ export const useDataStore = defineStore('data', () => {
 
       console.log('request params:', params)
       const response = await request.get<ApiResponse>(baseUrl, { params })
+      pagination.totalPage = response.pages
+      console.log('loadData is ===')
+      console.log(response.records)
 
-      if (response.data.records) {
-        showData.value = response.data.records
+      if (response.records) {
+        midData.value = response.records || []
         await fetchVehicleInfo()
       }
     } catch (error) {
@@ -242,12 +245,17 @@ export const useDataStore = defineStore('data', () => {
   const handlePageChange = (page: number) => {
     pagination.nowPage = page
     console.log(pagination.nowPage)
-    getData()
+    if(isFiltered.value){
+      loadData()
+    }else{
+      getData()
+    }
     console.log(showData)
   }
 
   const clearF = () => {
     isFiltered.value = false
+    pagination.nowPage = 1
     getData()
   }
 

@@ -2,7 +2,20 @@
   <div id="fileUpload">
     <div class="mainContent">
       <div class="title"><span>实时监控</span><controlCom></controlCom></div>
-      <div class="graph"></div>
+      <div class="graph">
+        <video
+          v-if="cameraStore.currentStream"
+          ref="videoRef"
+          autoplay
+          class="camera-feed"
+        ></video>
+        <div v-else-if="cameraStore.loading" class="loading">
+          加载中...
+        </div>
+        <div v-else class="no-signal">
+          无信号
+        </div>
+      </div>
       <div class="dashboard">
         <div class="board1">
           <div class="pie"></div>
@@ -57,6 +70,8 @@
 
 <script setup lang="ts">
 import controlCom from '@/components/controlCom.vue';
+
+import {  ref } from 'vue';
 const recentData = [
   { date: '10/11', car: '小型车' },
   { date: '10/11', car: '小型车' },
@@ -69,6 +84,10 @@ const recentData = [
   { date: '10/11', car: '小型车' },
   { date: '10/11', car: '小型车' },
 ]
+
+const videoRef = ref<HTMLVideoElement | null>(null)
+
+
 </script>
 
 <style scoped lang="scss">

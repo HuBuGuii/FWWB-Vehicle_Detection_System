@@ -1,0 +1,77 @@
+// stores/camera.ts
+import { defineStore } from 'pinia'
+import { ref } from 'vue'
+import request from '@/utils/request'
+import { ElMessage } from 'element-plus'
+
+interface Camera {
+  cameraId: string
+  cameraName: string
+  location: string
+  status: string
+  sourceType: 'USB' | 'IP' | 'RTSP'
+  deviceId: string
+}
+
+export const useCameraStore = defineStore('cameras', () => {
+  const currentCamera = ref<Camera | null>(null)
+  const currentStream = ref<MediaStream | null>(null)
+  const loading = ref(false)
+
+  // 获取并启动指定摄像头
+  const initializeCamera = async (cameraId: string) => {
+    try {
+      loading.value = true
+      
+      // 获取摄像头信息
+      const response = await request.get<Camera>(`/cameras/${cameraId}/info`)
+      currentCamera.value = response.data
+
+      // 启动摄像头流
+      await startCameraStream()
+    } catch (error) {
+      ElMessage.error('初始化摄像头失败')
+      console.error(error)
+    } finally {
+      loading.value = false
+    }
+  }
+
+  // 启动摄像头流
+  const startCameraStream = async () => {
+    if (!currentCamera.value) return
+
+    try {
+      if (currentCamera.value.sourceType === 'USB') {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: {
+            deviceId: { exact: currentCamera.value.deviceId }
+          }
+        })
+        currentStream.value = stream
+        return stream
+      }
+    } catch (error) {
+      ElMessage.error('启动摄像头失败')
+      console.error(error)
+    }
+  }
+
+  // 停止摄像头流
+  const stopCameraStream = () => {
+    if (currentStream.value) {
+      currentStream.value.getTracks().forEach(track => track.stop())
+      currentStream.value = null
+    }
+    currentCamera.value = null
+  }
+
+  return {
+    currentCamera,
+    currentStream,
+    loading,
+    initializeCamera,
+    stopCameraStream
+  }
+})
+
