@@ -47,7 +47,7 @@ public class YoloDetectionController {
      * 根据检测结果中的 type 字段生成 vehicleId（这里采用 type 的 hash 值作为简单映射方式）
      */
     private long getVehicleIdByType(String type) {
-        return Math.abs(type.hashCode());
+        return Math.abs(type.hashCode() % Integer.MAX_VALUE) + 1;
     }
 
     /**

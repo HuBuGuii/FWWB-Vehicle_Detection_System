@@ -6,7 +6,9 @@ import com.fwwb.vehicledetection.domain.model.RealTimeDetectionRecord;
 import com.fwwb.vehicledetection.mapper.RealTimeDetectionRecordMapper;
 import com.fwwb.vehicledetection.service.RealTimeDetectionRecordService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+@Transactional
 @Service
 public class RealTimeDetectionRecordServiceImpl extends ServiceImpl<RealTimeDetectionRecordMapper, RealTimeDetectionRecord>
         implements RealTimeDetectionRecordService {
