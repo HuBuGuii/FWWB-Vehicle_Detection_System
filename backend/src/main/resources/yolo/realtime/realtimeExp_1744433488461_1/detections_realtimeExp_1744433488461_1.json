@@ -1,0 +1,390 @@
+{
+  "timestamp": "2025-04-12 12:52:57.459",
+  "frame": 525,
+  "type": "bus",
+  "confidence": 0.747,
+  "coordinates": [
+    106,
+    305,
+    242,
+    480
+  ],
+  "license_plate": "None"
+},
+{
+  "timestamp": "2025-04-12 13:00:19.065",
+  "frame": 2530,
+  "type": "truck",
+  "confidence": 0.781,
+  "coordinates": [
+    0,
+    357,
+    272,
+    480
+  ],
+  "license_plate": "None"
+},
+{
+  "timestamp": "2025-04-12 13:00:19.294",
+  "frame": 2531,
+  "type": "truck",
+  "confidence": 0.841,
+  "coordinates": [
+    0,
+    346,
+    257,
+    480
+  ],
+  "license_plate": "None"
+},
+{
+  "timestamp": "2025-04-12 13:00:19.521",
+  "frame": 2532,
+  "type": "truck",
+  "confidence": 0.8,
+  "coordinates": [
+    0,
+    343,
+    246,
+    480
+  ],
+  "license_plate": "None"
+},
+{
+  "timestamp": "2025-04-12 13:00:19.734",
+  "frame": 2533,
+  "type": "truck",
+  "confidence": 0.817,
+  "coordinates": [
+    0,
+    344,
+    259,
+    480
+  ],
+  "license_plate": "None"
+},
+{
+  "timestamp": "2025-04-12 13:00:27.753",
+  "frame": 2570,
+  "type": "bus",
+  "confidence": 0.707,
+  "coordinates": [
+    500,
+    227,
+    640,
+    480
+  ],
+  "license_plate": "None"
+},
+{
+  "timestamp": "2025-04-12 13:00:28.407",
+  "frame": 2573,
+  "type": "bus",
+  "confidence": 0.702,
+  "coordinates": [
+    500,
+    228,
+    639,
+    480
+  ],
+  "license_plate": "None"
+},
+{
+  "timestamp": "2025-04-12 13:00:28.896",
+  "frame": 2575,
+  "type": "bus",
+  "confidence": 0.72,
+  "coordinates": [
+    501,
+    245,
+    640,
+    478
+  ],
+  "license_plate": "None"
+},
+{
+  "timestamp": "2025-04-12 13:00:29.124",
+  "frame": 2576,
+  "type": "bus",
+  "confidence": 0.701,
+  "coordinates": [
+    501,
+    246,
+    640,
+    478
+  ],
+  "license_plate": "None"
+},
+{
+  "timestamp": "2025-04-12 13:00:29.763",
+  "frame": 2579,
+  "type": "bus",
+  "confidence": 0.711,
+  "coordinates": [
+    501,
+    251,
+    640,
+    480
+  ],
+  "license_plate": "None"
+},
+{
+  "timestamp": "2025-04-12 13:00:29.982",
+  "frame": 2580,
+  "type": "bus",
+  "confidence": 0.737,
+  "coordinates": [
+    502,
+    252,
+    640,
+    480
+  ],
+  "license_plate": "None"
+},
+{
+  "timestamp": "2025-04-12 13:00:34.430",
+  "frame": 2599,
+  "type": "bus",
+  "confidence": 0.748,
+  "coordinates": [
+    508,
+    288,
+    640,
+    479
+  ],
+  "license_plate": "None"
+},
+{
+  "timestamp": "2025-04-12 13:00:37.081",
+  "frame": 2610,
+  "type": "bus",
+  "confidence": 0.715,
+  "coordinates": [
+    507,
+    286,
+    640,
+    480
+  ],
+  "license_plate": "None"
+},
+{
+  "timestamp": "2025-04-12 13:00:37.321",
+  "frame": 2611,
+  "type": "bus",
+  "confidence": 0.731,
+  "coordinates": [
+    507,
+    287,
+    640,
+    480
+  ],
+  "license_plate": "None"
+},
+{
+  "timestamp": "2025-04-12 13:00:37.570",
+  "frame": 2612,
+  "type": "bus",
+  "confidence": 0.756,
+  "coordinates": [
+    509,
+    286,
+    640,
+    480
+  ],
+  "license_plate": "None"
+},
+{
+  "timestamp": "2025-04-12 13:00:37.839",
+  "frame": 2613,
+  "type": "bus",
+  "confidence": 0.797,
+  "coordinates": [
+    507,
+    284,
+    640,
+    480
+  ],
+  "license_plate": "None"
+},
+{
+  "timestamp": "2025-04-12 13:00:38.099",
+  "frame": 2614,
+  "type": "bus",
+  "confidence": 0.774,
+  "coordinates": [
+    506,
+    285,
+    640,
+    480
+  ],
+  "license_plate": "None"
+},
+{
+  "timestamp": "2025-04-12 13:00:38.363",
+  "frame": 2615,
+  "type": "bus",
+  "confidence": 0.776,
+  "coordinates": [
+    507,
+    285,
+    640,
+    480
+  ],
+  "license_plate": "None"
+},
+{
+  "timestamp": "2025-04-12 13:00:38.627",
+  "frame": 2616,
+  "type": "bus",
+  "confidence": 0.778,
+  "coordinates": [
+    508,
+    285,
+    640,
+    480
+  ],
+  "license_plate": "None"
+},
+{
+  "timestamp": "2025-04-12 13:00:38.888",
+  "frame": 2617,
+  "type": "bus",
+  "confidence": 0.758,
+  "coordinates": [
+    508,
+    286,
+    640,
+    480
+  ],
+  "license_plate": "None"
+},
+{
+  "timestamp": "2025-04-12 13:00:39.154",
+  "frame": 2618,
+  "type": "bus",
+  "confidence": 0.778,
+  "coordinates": [
+    509,
+    285,
+    640,
+    480
+  ],
+  "license_plate": "None"
+},
+{
+  "timestamp": "2025-04-12 13:00:39.410",
+  "frame": 2619,
+  "type": "bus",
+  "confidence": 0.757,
+  "coordinates": [
+    507,
+    285,
+    640,
+    480
+  ],
+  "license_plate": "None"
+},
+{
+  "timestamp": "2025-04-12 13:00:39.654",
+  "frame": 2620,
+  "type": "bus",
+  "confidence": 0.754,
+  "coordinates": [
+    508,
+    286,
+    640,
+    480
+  ],
+  "license_plate": "None"
+},
+{
+  "timestamp": "2025-04-12 13:00:39.917",
+  "frame": 2621,
+  "type": "bus",
+  "confidence": 0.721,
+  "coordinates": [
+    507,
+    285,
+    640,
+    480
+  ],
+  "license_plate": "None"
+},
+{
+  "timestamp": "2025-04-12 13:00:40.183",
+  "frame": 2622,
+  "type": "bus",
+  "confidence": 0.709,
+  "coordinates": [
+    510,
+    286,
+    640,
+    480
+  ],
+  "license_plate": "None"
+},
+{
+  "timestamp": "2025-04-12 13:06:03.074",
+  "frame": 4225,
+  "type": "truck",
+  "confidence": 0.722,
+  "coordinates": [
+    355,
+    316,
+    640,
+    480
+  ],
+  "license_plate": "None"
+},
+{
+  "timestamp": "2025-04-12 13:10:51.418",
+  "frame": 5718,
+  "type": "bus",
+  "confidence": 0.763,
+  "coordinates": [
+    446,
+    286,
+    640,
+    480
+  ],
+  "license_plate": "None"
+},
+{
+  "timestamp": "2025-04-12 13:10:52.018",
+  "frame": 5719,
+  "type": "bus",
+  "confidence": 0.701,
+  "coordinates": [
+    404,
+    286,
+    639,
+    480
+  ],
+  "license_plate": "None"
+},
+{
+  "timestamp": "2025-04-12 13:11:11.033",
+  "frame": 5790,
+  "type": "truck",
+  "confidence": 0.712,
+  "coordinates": [
+    237,
+    305,
+    360,
+    478
+  ],
+  "license_plate": "None"
+},
+{
+  "timestamp": "2025-04-12 13:11:11.763",
+  "frame": 5793,
+  "type": "truck",
+  "confidence": 0.755,
+  "coordinates": [
+    273,
+    293,
+    384,
+    480
+  ],
+  "license_plate": "None"
+},

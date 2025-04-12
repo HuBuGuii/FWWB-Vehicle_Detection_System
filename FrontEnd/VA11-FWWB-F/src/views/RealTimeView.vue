@@ -1,19 +1,30 @@
 <template>
   <div id="fileUpload">
     <div class="mainContent">
-      <div class="title"><span>实时监控</span><controlCom></controlCom></div>
+      <div class="title">
+        <span>实时监控</span>
+        <controlCom></controlCom>
+      </div>
       <div class="graph">
-        <video
-          v-if="cameraStore.currentStream"
-          ref="videoRef"
-          autoplay
-          class="camera-feed"
-        ></video>
-        <div v-else-if="cameraStore.loading" class="loading">
-          加载中...
+        <div v-if="streamActive" class="video-container">
+          <img
+          :src="streamUrl || ''"
+  class="camera-feed"
+  @error="handleStreamError"
+  @load="() => console.log('图像加载成功')"
+  @loadstart="() => console.log('图像开始加载')"
+  @progress="(event) => console.log('接收数据进度:', event)"
+  alt="YOLO Detection Stream"
+          />
+          <div class="control-overlay">
+            <el-button type="danger" @click="stopDetection">停止检测</el-button>
+          </div>
+        </div>
+        <div v-else-if="loading" class="loading">
+          正在启动YOLO检测...
         </div>
         <div v-else class="no-signal">
-          无信号
+          <el-button type="primary" @click="startDetection">开始检测</el-button>
         </div>
       </div>
       <div class="dashboard">
@@ -29,10 +40,10 @@
           <div class="pie"></div>
           <div class="name">拥堵系数</div>
         </div>
-        <span class="inlinelink"
-          ><RouterLink to="/map" class="link">进入路段地图</RouterLink
-          ><el-icon class="icon"><ArrowLeftBold /></el-icon
-        ></span>
+        <span class="inlinelink">
+          <RouterLink to="/map" class="link">进入路段地图</RouterLink>
+          <el-icon class="icon"><ArrowLeftBold /></el-icon>
+        </span>
       </div>
     </div>
     <div class="rightAside">
@@ -58,9 +69,9 @@
           </span>
         </div>
         <div class="table">
-          <el-table :data="recentData" stripe style="width: 100%;" >
+          <el-table :data="recentData" stripe style="width: 100%;">
             <el-table-column prop="date" label="Date" width="100" />
-            <el-table-column prop="car" label="Name"  />
+            <el-table-column prop="car" label="Name" />
           </el-table>
         </div>
       </div>
@@ -69,25 +80,97 @@
 </template>
 
 <script setup lang="ts">
-import controlCom from '@/components/controlCom.vue';
+import { onUnmounted, ref } from 'vue'
+import { ElMessage } from 'element-plus'
+import controlCom from '@/components/controlCom.vue'
+import { useDataStore } from '@/stores/data'
+import { ArrowLeftBold, ArrowRightBold } from '@element-plus/icons-vue'
+import request from '@/utils/request'
 
-import {  ref } from 'vue';
-const recentData = [
-  { date: '10/11', car: '小型车' },
-  { date: '10/11', car: '小型车' },
-  { date: '10/11', car: '小型车' },
-  { date: '10/11', car: '小型车' },
-  { date: '10/11', car: '小型车' },
-  { date: '10/11', car: '小型车' },
-  { date: '10/11', car: '小型车' },
-  { date: '10/11', car: '小型车' },
-  { date: '10/11', car: '小型车' },
-  { date: '10/11', car: '小型车' },
-]
+const datastore = useDataStore()
+const recentData = datastore.showData.slice(0, 10)
 
-const videoRef = ref<HTMLVideoElement | null>(null)
+const streamUrl = ref<string | null>(null)
+const loading = ref(false)
+const streamActive = ref(false)
 
+const getToken = () => {
+  return localStorage.getItem('access_token') // 或者从其他存储位置获取 token
+}
 
+// 启动YOLO检测
+const startDetection = async () => {
+  try {
+    loading.value = true
+    const token = getToken()
+    if (!token) {
+      ElMessage.error('未登录或 token 已过期')
+      return
+    }
+
+    console.log('开始连接视频流...')
+
+    // 使用 axios 请求视频流
+    const response = await request({
+      url: '/yolo/realtime/5',
+      method: 'GET',
+      responseType: 'blob', // 重要：设置响应类型为 blob
+      headers: {
+        'Accept': 'multipart/x-mixed-replace; boundary=frame'
+      }
+    })
+
+    // 创建 Blob URL
+    const blob = new Blob([response.data], { type: 'multipart/x-mixed-replace; boundary=frame' })
+    streamUrl.value = URL.createObjectURL(blob)
+
+    loading.value = false
+    streamActive.value = true
+
+  } catch (error) {
+    console.error('启动检测失败:', error)
+    ElMessage.error('启动检测失败，请检查登录状态')
+    handleStreamError()
+  }
+}
+
+const cleanup = () => {
+  if (streamUrl.value) {
+    URL.revokeObjectURL(streamUrl.value)
+    streamUrl.value = null
+  }
+  loading.value = false
+  streamActive.value = false
+}
+
+// 停止检测
+const stopDetection = async () => {
+  try {
+    cleanup()
+    await request({
+      url: '/yolo/stop/4',
+      method: 'POST'
+    })
+  } catch (error) {
+    console.error('停止检测失败:', error)
+    ElMessage.error('停止检测失败')
+  }
+}
+
+// 处理视频流错误
+const handleStreamError = () => {
+  console.error('视频流错误')
+  ElMessage.error('视频流连接失败')
+  cleanup()
+}
+
+// 页面卸载时确保停止检测
+onUnmounted(() => {
+  cleanup()
+  if (streamActive.value) {
+    stopDetection()
+  }
+})
 </script>
 
 <style scoped lang="scss">
@@ -135,6 +218,38 @@ $design-height: 1080;
       border-radius: 10px;
       background-color: darkgrey;
       flex: 1;
+      overflow: hidden;
+
+      .video-container {
+        position: relative;
+        width: 100%;
+        height: 100%;
+
+        .control-overlay {
+          position: absolute;
+          top: 10px;
+          right: 10px;
+          z-index: 10;
+        }
+
+        .camera-feed {
+          width: 100%;
+          height: 100%;
+          object-fit: contain;
+          border-radius: 10px;
+        }
+      }
+
+      .loading,
+      .no-signal {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        font-size: 18px;
+      }
     }
 
     .dashboard {
@@ -179,6 +294,7 @@ $design-height: 1080;
     }
   }
 }
+
 .title {
   height: px-to-vh(80);
   font-size: 30px;
@@ -189,10 +305,12 @@ $design-height: 1080;
   text-align: left;
   vertical-align: top;
 }
+
 .inlinelink {
   width: px-to-vw(180);
   display: flex;
 }
+
 .link {
   height: px-to-vh(63);
   opacity: 1;
@@ -204,34 +322,41 @@ $design-height: 1080;
   text-align: left;
   vertical-align: middle;
 }
+
 a {
   text-decoration: none;
   color: inherit;
 }
+
 .icon {
   transform: translateY(50%);
   color: rgba(42, 90, 145, 1);
 }
+
 .totalData {
   flex-grow: 2;
   flex-shrink: 0;
-  flex-basis:25%;
+  flex-basis: 25%;
   margin-bottom: 20px;
 }
+
 .listData {
   flex-grow: 7;
-  flex-basis:70%;
+  flex-basis: 70%;
 }
+
 .name {
   height: px-to-vh(110);
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
-.table{
-  flex:1;
+
+.table {
+  flex: 1;
   overflow-y: auto;
 }
+
 .cards {
   display: flex;
   justify-content: space-between;
@@ -245,5 +370,4 @@ a {
     height: 90%;
   }
 }
-
 </style>
