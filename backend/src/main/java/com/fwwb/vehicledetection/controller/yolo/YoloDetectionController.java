@@ -300,21 +300,60 @@ public class YoloDetectionController {
                 String type = (String) recordMap.get("type");
                 String licence = (String) recordMap.get("license_plate");
                 Double confidence = Double.valueOf(recordMap.get("confidence").toString());
+
+                // 规范化 licence：空字符串或 null 都视为 null
+                if (licence != null && licence.trim().isEmpty()) {
+                    licence = null;
+                }
+
                 long vehicleId = getVehicleIdByType(type, licence);
 
-                Vehicle vehicle = vehicleService.getById(vehicleId);
-                if (vehicle == null) {
-                    vehicle = new Vehicle();
-                    vehicle.setVehicleId(vehicleId);
-                    vehicle.setType(type);
-                    vehicle.setLicence(licence);
-                    vehicleService.save(vehicle);
+                // 查找或创建车辆
+                Vehicle vehicle = null;
+                synchronized (this) { // 防止竞争条件
+                    // 优先按 type 和 licence 查询（如果 licence 非 null）
+                    if (licence != null) {
+                        vehicle = vehicleService.lambdaQuery()
+                                .eq(Vehicle::getType, type)
+                                .eq(Vehicle::getLicence, licence)
+                                .one();
+                    } else {
+                        // 如果 licence 为 null，按 vehicleId 查询
+                        vehicle = vehicleService.getById(vehicleId);
+                    }
+
+                    // 如果未找到车辆，则创建新记录
+                    if (vehicle == null) {
+                        vehicle = new Vehicle();
+                        vehicle.setVehicleId(vehicleId);
+                        vehicle.setType(type);
+                        vehicle.setLicence(licence); // 可能为 null
+                        try {
+                            vehicleService.save(vehicle);
+                        } catch (Exception e) {
+                            // 捕获可能的数据库唯一约束异常
+                            if (e.getMessage().contains("vehicle_licence_key")) {
+                                // 再次尝试查找现有记录
+                                vehicle = vehicleService.lambdaQuery()
+                                        .eq(Vehicle::getType, type)
+                                        .eq(Vehicle::getLicence, licence)
+                                        .one();
+                                if (vehicle == null) {
+                                    throw new RuntimeException("Failed to handle duplicate licence: " + licence, e);
+                                }
+                            } else {
+                                throw e;
+                            }
+                        }
+                    }
                 }
+
+                // 保存检测记录
                 NonRealTimeDetectionRecord record = new NonRealTimeDetectionRecord();
                 record.setUserId(3L);
                 record.setTime(LocalDateTime.now());
                 record.setConfidence(confidence);
-                record.setVehicleId(vehicleId);
+                record.setVehicleId(vehicle.getVehicleId()); // 使用实际的 vehicleId
                 record.setVehicleStatus("Nah");
                 record.setMaxAge(168L);
                 record.setExp(outputExpDir.getFileName().toString());
