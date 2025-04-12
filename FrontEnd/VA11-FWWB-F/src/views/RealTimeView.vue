@@ -6,25 +6,22 @@
         <controlCom></controlCom>
       </div>
       <div class="graph">
-        <div v-if="streamActive" class="video-container">
+        <div class="video-container">
           <img
-          :src="streamUrl || ''"
-  class="camera-feed"
-  @error="handleStreamError"
-  @load="() => console.log('图像加载成功')"
-  @loadstart="() => console.log('图像开始加载')"
-  @progress="(event) => console.log('接收数据进度:', event)"
-  alt="YOLO Detection Stream"
+            v-show="false"
+            :src="streamUrl || ''"
+            class="camera-feed"
+            @error="handleStreamError"
+            @load="() => console.log('图像加载成功')"
+            alt="YOLO Detection Stream"
           />
-          <div class="control-overlay">
-            <el-button type="danger" @click="stopDetection">停止检测</el-button>
-          </div>
-        </div>
-        <div v-else-if="loading" class="loading">
-          正在启动YOLO检测...
-        </div>
-        <div v-else class="no-signal">
-          <el-button type="primary" @click="startDetection">开始检测</el-button>
+          <video
+            ref="videoRef"
+            autoplay
+            muted
+            playsInline
+            class="camera-feed"
+          ></video>
         </div>
       </div>
       <div class="dashboard">
@@ -80,7 +77,7 @@
 </template>
 
 <script setup lang="ts">
-import { onUnmounted, ref } from 'vue'
+import { onMounted, onUnmounted, ref } from 'vue'
 import { ElMessage } from 'element-plus'
 import controlCom from '@/components/controlCom.vue'
 import { useDataStore } from '@/stores/data'
@@ -88,88 +85,154 @@ import { ArrowLeftBold, ArrowRightBold } from '@element-plus/icons-vue'
 import request from '@/utils/request'
 
 const datastore = useDataStore()
-const recentData = datastore.showData.slice(0, 10)
-
+const recentData = ref([])
+const videoRef = ref<HTMLVideoElement | null>(null)
+const mediaStream = ref<MediaStream | null>(null)
 const streamUrl = ref<string | null>(null)
-const loading = ref(false)
-const streamActive = ref(false)
 
 const getToken = () => {
-  return localStorage.getItem('access_token') // 或者从其他存储位置获取 token
+  return localStorage.getItem('access_token')
+}
+
+const checkDevices = async () => {
+  try {
+    const devices = await navigator.mediaDevices.enumerateDevices()
+    const videoDevices = devices.filter(device => device.kind === 'videoinput')
+    console.log('可用的视频设备:', videoDevices)
+    return videoDevices.length > 0
+  } catch (error) {
+    console.error('获取设备列表失败:', error)
+    return false
+  }
+}
+// 启动本地摄像头
+const startLocalCamera = async () => {
+  try {
+    // 首先检查是否有可用设备
+    const hasDevices = await checkDevices()
+    if (!hasDevices) {
+      ElMessage.error('未检测到摄像头设备')
+      return
+    }
+
+    // 尝试不同的约束条件
+    const constraints = {
+      video: {
+        width: { ideal: 1280 },
+        height: { ideal: 720 },
+        facingMode: 'user', // 使用前置摄像头
+      }
+    }
+
+    console.log('正在尝试获取媒体流，约束条件:', constraints)
+    const stream = await navigator.mediaDevices.getUserMedia(constraints)
+    console.log('成功获取媒体流:', stream)
+
+    // 检查流的轨道
+    const videoTracks = stream.getVideoTracks()
+    console.log('视频轨道:', videoTracks)
+
+    if (videoTracks.length === 0) {
+      throw new Error('没有获取到视频轨道')
+    }
+
+    mediaStream.value = stream
+    if (videoRef.value) {
+      videoRef.value.srcObject = stream
+      // 添加事件监听
+      videoRef.value.onloadedmetadata = () => {
+        console.log('视频元数据已加载')
+        videoRef.value?.play()
+          .then(() => console.log('视频开始播放'))
+          .catch(err => console.error('视频播放失败:', err))
+      }
+      videoRef.value.onerror = (err) => {
+        console.error('视频元素错误:', err)
+      }
+    } else {
+      console.error('video元素引用未找到')
+    }
+
+  } catch (error) {
+    console.error('启动摄像头详细错误:', error)
+    if (error instanceof DOMException) {
+      switch (error.name) {
+        case 'NotAllowedError':
+          ElMessage.error('摄像头权限被拒绝')
+          break
+        case 'NotFoundError':
+          ElMessage.error('找不到摄像头设备')
+          break
+        case 'NotReadableError':
+          ElMessage.error('摄像头被其他应用程序占用')
+          break
+        case 'OverconstrainedError':
+          ElMessage.error('摄像头不支持请求的分辨率')
+          break
+        default:
+          ElMessage.error(`摄像头错误: ${error.name}`)
+      }
+    } else {
+      ElMessage.error('启动摄像头时发生未知错误')
+    }
+  }
 }
 
 // 启动YOLO检测
-const startDetection = async () => {
+const startYoloDetection = async () => {
   try {
-    loading.value = true
     const token = getToken()
     if (!token) {
       ElMessage.error('未登录或 token 已过期')
       return
     }
 
-    console.log('开始连接视频流...')
+    // 添加时间戳避免缓存
+    streamUrl.value = `/api/yolo/realtime/4`
 
-    // 使用 axios 请求视频流
-    const response = await request({
-      url: '/yolo/realtime/5',
-      method: 'GET',
-      responseType: 'blob', // 重要：设置响应类型为 blob
-      headers: {
-        'Accept': 'multipart/x-mixed-replace; boundary=frame'
+    // 在 img 标签上添加请求头
+    const img = document.querySelector('.camera-feed') as HTMLImageElement
+    if (img) {
+      const xhr = new XMLHttpRequest()
+      xhr.open('GET', streamUrl.value)
+      xhr.setRequestHeader('Authorization', `Bearer ${token}`)
+      xhr.responseType = 'blob'
+
+      xhr.onload = function() {
+        if (xhr.status === 200) {
+          const url = URL.createObjectURL(xhr.response)
+          img.src = url
+        } else {
+          console.error('加载图像失败:', xhr.status)
+          ElMessage.error('加载图像失败')
+        }
       }
-    })
 
-    // 创建 Blob URL
-    const blob = new Blob([response.data], { type: 'multipart/x-mixed-replace; boundary=frame' })
-    streamUrl.value = URL.createObjectURL(blob)
-
-    loading.value = false
-    streamActive.value = true
+      xhr.send()
+    }
 
   } catch (error) {
-    console.error('启动检测失败:', error)
+    console.error('启动YOLO检测失败:', error)
     ElMessage.error('启动检测失败，请检查登录状态')
-    handleStreamError()
   }
 }
 
-const cleanup = () => {
-  if (streamUrl.value) {
-    URL.revokeObjectURL(streamUrl.value)
-    streamUrl.value = null
-  }
-  loading.value = false
-  streamActive.value = false
-}
 
-// 停止检测
-const stopDetection = async () => {
-  try {
-    cleanup()
-    await request({
-      url: '/yolo/stop/4',
-      method: 'POST'
-    })
-  } catch (error) {
-    console.error('停止检测失败:', error)
-    ElMessage.error('停止检测失败')
-  }
-}
-
-// 处理视频流错误
 const handleStreamError = () => {
   console.error('视频流错误')
   ElMessage.error('视频流连接失败')
-  cleanup()
 }
 
-// 页面卸载时确保停止检测
+onMounted(async () => {
+  await startLocalCamera()
+  await startYoloDetection()
+})
+
 onUnmounted(() => {
-  cleanup()
-  if (streamActive.value) {
-    stopDetection()
+  if (mediaStream.value) {
+    mediaStream.value.getTracks().forEach(track => track.stop())
   }
+
 })
 </script>
 
@@ -200,98 +263,84 @@ $design-height: 1080;
     background: rgba(255, 255, 255, 1);
     border-radius: 20px;
   }
-  .mainContent {
-    position: relative;
+}
+
+.mainContent {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 66%;
+  margin-right: 30px;
+  padding: 0 30px;
+
+  .title {
+    margin: px-to-vh(30) 0 px-to-vh(15) 0;
     display: flex;
-    flex-direction: column;
-    width: 66%;
-    margin-right: 30px;
-    padding: 0 30px;
-    .title {
-      margin: px-to-vh(30) 0 px-to-vh(15) 0;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .graph {
-      border-radius: 10px;
-      background-color: darkgrey;
-      flex: 1;
-      overflow: hidden;
-
-      .video-container {
-        position: relative;
-        width: 100%;
-        height: 100%;
-
-        .control-overlay {
-          position: absolute;
-          top: 10px;
-          right: 10px;
-          z-index: 10;
-        }
-
-        .camera-feed {
-          width: 100%;
-          height: 100%;
-          object-fit: contain;
-          border-radius: 10px;
-        }
-      }
-
-      .loading,
-      .no-signal {
-        width: 100%;
-        height: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        color: white;
-        font-size: 18px;
-      }
-    }
-
-    .dashboard {
-      height: px-to-vh(235);
-      display: flex;
-      margin: px-to-vh(30) 0;
-      > div {
-        width: px-to-vw(220);
-        height: px-to-vh(235);
-        margin-right: px-to-vw(40);
-        border-radius: 20px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-      }
-      .board1 {
-        background-color: #d7fcfa;
-      }
-      .board2 {
-        background-color: #fffac9;
-      }
-      .board3 {
-        background-color: #fad3ca;
-      }
-      .inlinelink {
-        margin-left: 20%;
-        transform: translateY(6%);
-      }
-    }
+    justify-content: space-between;
+    align-items: center;
   }
-  .rightAside {
-    box-sizing: border-box;
-    padding: 30px;
+
+  .graph {
+    border-radius: 10px;
+    background-color: darkgrey;
+    flex: 1;
+    overflow: hidden;
+  }
+}
+
+.video-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+
+  .camera-feed {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 10px;
+    background: #000;
+  }
+}
+
+.dashboard {
+  height: px-to-vh(235);
+  display: flex;
+  margin: px-to-vh(30) 0;
+  > div {
+    width: px-to-vw(220);
+    height: px-to-vh(235);
+    margin-right: px-to-vw(40);
+    border-radius: 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    position: relative;
-    width: 27%;
-    > div {
-      width: 100%;
-    }
+    justify-content: center;
+  }
+  .board1 {
+    background-color: #d7fcfa;
+  }
+  .board2 {
+    background-color: #fffac9;
+  }
+  .board3 {
+    background-color: #fad3ca;
+  }
+  .inlinelink {
+    margin-left: 20%;
+    transform: translateY(6%);
+  }
+}
+
+.rightAside {
+  box-sizing: border-box;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  width: 27%;
+  > div {
+    width: 100%;
   }
 }
 
