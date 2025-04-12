@@ -46,8 +46,23 @@ public class YoloDetectionController {
     /**
      * 根据检测结果中的 type 字段生成 vehicleId（这里采用 type 的 hash 值作为简单映射方式）
      */
-    private long getVehicleIdByType(String type) {
-        return Math.abs(type.hashCode() % Integer.MAX_VALUE) + 1;
+    private long getVehicleIdByType(String type, String licensePlate) {
+        if (type == null) {
+            throw new IllegalArgumentException("Vehicle type cannot be null");
+        }
+
+        // 生成 vehicle_id
+        long vehicleId;
+        if (licensePlate == null || licensePlate.trim().isEmpty()) {
+            // 当 license_plate 为 null 或空字符串，使用 type 的哈希值
+            vehicleId = Math.abs(type.hashCode() % Integer.MAX_VALUE) + 1; // 确保在 1 到 Integer.MAX_VALUE
+        } else {
+            // 当 license_plate 非空，使用 type + license_plate 的哈希值
+            String combined = type + licensePlate;
+            vehicleId = Math.abs(combined.hashCode() % Integer.MAX_VALUE) + 1; // 确保在 1 到 Integer.MAX_VALUE
+        }
+
+        return vehicleId;
     }
 
     /**
@@ -149,16 +164,31 @@ public class YoloDetectionController {
             for (Map<String, Object> recordMap : records) {
                 String type = (String) recordMap.get("type");
                 Double confidence = Double.valueOf(recordMap.get("confidence").toString());
-                long vehicleId = getVehicleIdByType(type);
+                String licensePlate = (String) recordMap.get("license_plate"); // 假设车牌字段为 license_plate
+                long vehicleId = getVehicleIdByType(type, licensePlate); // 使用扩展后的方法
 
-                // 如果数据库中不存在该车辆记录，则创建一条新记录
-                Vehicle vehicle = vehicleService.getById(vehicleId);
-                if (vehicle == null) {
-                    vehicle = new Vehicle();
-                    vehicle.setVehicleId(vehicleId);
-                    vehicle.setType(type);
-                    vehicle.setLicence(null);
-                    vehicleService.save(vehicle);
+                // 查找或创建车辆
+                Vehicle vehicle = null;
+                synchronized (this) { // 防止竞争条件
+                    // 首先尝试按 type 和 license_plate 查询
+                    if (licensePlate != null && !licensePlate.trim().isEmpty()) {
+                        vehicle = vehicleService.lambdaQuery()
+                                .eq(Vehicle::getType, type)
+                                .eq(Vehicle::getLicence, licensePlate)
+                                .one();
+                    } else {
+                        // 当 license_plate 为 null 或空时，按 vehicleId 查询
+                        vehicle = vehicleService.getById(vehicleId);
+                    }
+
+                    // 如果数据库中不存在该车辆记录，则创建一条新记录
+                    if (vehicle == null) {
+                        vehicle = new Vehicle();
+                        vehicle.setVehicleId(vehicleId);
+                        vehicle.setType(type);
+                        vehicle.setLicence(licensePlate != null && !licensePlate.trim().isEmpty() ? licensePlate : null);
+                        vehicleService.save(vehicle);
+                    }
                 }
                 // 创建并保存检测记录
                 NonRealTimeDetectionRecord record = new NonRealTimeDetectionRecord();
@@ -268,15 +298,16 @@ public class YoloDetectionController {
 
             for (Map<String, Object> recordMap : records) {
                 String type = (String) recordMap.get("type");
+                String licence = (String) recordMap.get("license_plate");
                 Double confidence = Double.valueOf(recordMap.get("confidence").toString());
-                long vehicleId = getVehicleIdByType(type);
+                long vehicleId = getVehicleIdByType(type, licence);
 
                 Vehicle vehicle = vehicleService.getById(vehicleId);
                 if (vehicle == null) {
                     vehicle = new Vehicle();
                     vehicle.setVehicleId(vehicleId);
                     vehicle.setType(type);
-                    vehicle.setLicence(null);
+                    vehicle.setLicence(licence);
                     vehicleService.save(vehicle);
                 }
                 NonRealTimeDetectionRecord record = new NonRealTimeDetectionRecord();
