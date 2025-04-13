@@ -4,8 +4,8 @@ server:
 spring:
   servlet:
     multipart:
-      max-file-size: 128MB
-      max-request-size: 256MB
+      max-file-size: 2048MB
+      max-request-size: 2048MB
       enabled: true
   datasource:
     url: jdbc:postgresql://localhost:5432/fwwb
@@ -34,6 +34,6 @@ conda:
 
 logging:
   level:
-    root: INFO           # 全局日志级别（DEBUG, INFO, WARN, ERROR）
-    org.springframework: WARN  # 单独设置Spring框架日志级别
-    com.example: DEBUG   # 设置特定包的日志级别
+    root: INFO
+    org.springframework: WARN
+    com.example: DEBUG

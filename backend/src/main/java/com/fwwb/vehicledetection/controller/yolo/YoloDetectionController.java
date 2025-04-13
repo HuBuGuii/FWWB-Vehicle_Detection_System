@@ -6,11 +6,14 @@ import com.fwwb.vehicledetection.domain.model.NonRealTimeDetectionRecord;
 import com.fwwb.vehicledetection.domain.model.Vehicle;
 import com.fwwb.vehicledetection.service.NonRealTimeDetectionRecordService;
 import com.fwwb.vehicledetection.service.VehicleService;
+import org.bytedeco.javacv.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -18,6 +21,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.List;
 
 
 @RestController
@@ -33,6 +37,7 @@ public class YoloDetectionController {
     // 视频检测：输入/输出目录
     private static final String INPUT_VIDEO_DIR = new File("src\\main\\resources\\yolo\\video\\videoInput").getAbsolutePath();
     private static final String OUTPUT_VIDEO_DIR = new File("src\\main\\resources\\yolo\\video\\videoOutput").getAbsolutePath();
+    private static final String INPUT_FRAMES_DIR = new File("src\\main\\resources\\yolo\\video\\videoFrame").getAbsolutePath();
 
     // 图像检测：输入/输出目录
     private static final String INPUT_IMAGE_DIR = new File("src\\main\\resources\\yolo\\image\\imageInput").getAbsolutePath();
@@ -66,18 +71,20 @@ public class YoloDetectionController {
     }
 
     /**
+     * 优化后的视频检测控制器API
      * POST /api/yolo/video
-     * 上传视频文件，经 Python 脚本检测后返回处理过的视频 exp 文件夹名称，
-     * 同时解析结果 JSON 文件，将检测记录更新到数据库中。
+     * 上传视频文件，先使用 JavaCV 抽帧到 8fps，生成图像文件到抽帧目录，
+     * 然后调用 Python 脚本检测，将输出的结果写入数据库。
      */
     @PostMapping("/video")
     public ResponseEntity<String> detectVideo(@RequestParam("files") MultipartFile[] files) {
         try {
-            // 创建输入输出目录（如果不存在）
+            // 创建输入、抽帧和输出目录（如果不存在）
             Files.createDirectories(Paths.get(INPUT_VIDEO_DIR));
+            Files.createDirectories(Paths.get(INPUT_FRAMES_DIR));
             Files.createDirectories(Paths.get(OUTPUT_VIDEO_DIR));
 
-            // 保存上传的视频文件到输入目录中
+            // 保存上传的视频文件到输入目录，并为每个视频抽帧
             for (MultipartFile file : files) {
                 String uniqueID = UUID.randomUUID().toString();
                 String originalFilename = file.getOriginalFilename();
@@ -86,19 +93,24 @@ public class YoloDetectionController {
                         : ".mp4";
                 String inputFilename = "video_" + uniqueID + extension;
                 Path inputVideoPath = Paths.get(INPUT_VIDEO_DIR, inputFilename);
+
+                // 保存视频文件
                 Files.write(inputVideoPath, file.getBytes());
+
+                // 抽帧到 8fps，保存到抽帧目录
+                extractFramesAt8fps(inputVideoPath, Paths.get(INPUT_FRAMES_DIR));
             }
 
-            // 构建并执行 Python 脚本命令，更新命令参数，启用 --json 与 --save-video 参数
+            // 构建并执行 Python 脚本命令，更新 --source 为抽帧目录
             ProcessBuilder pb = new ProcessBuilder(
                     CONDA_PYTHON_PATH,
                     YOLO_SCRIPT_PATH,
                     "--model", YOLO_MODEL_PATH,
-                    "--source", INPUT_VIDEO_DIR,
+                    "--source", INPUT_FRAMES_DIR, // 改为抽帧目录
                     "--project", OUTPUT_VIDEO_DIR,
                     "--name", "videoExp",
-                    "--save-video",
-                    "--json"
+                    "--json",
+                    "--mode","image"
             );
             // 设置工作目录为 main.py 所在目录
             pb.directory(new File("./src/main/resources/yolo"));
@@ -117,8 +129,15 @@ public class YoloDetectionController {
                 throw new RuntimeException("YOLO视频检测失败，退出码：" + exitCode);
             }
 
-            // 删除输入目录中的视频文件
+            // 删除输入视频目录和抽帧目录中的文件
             Files.list(Paths.get(INPUT_VIDEO_DIR)).forEach(path -> {
+                try {
+                    Files.deleteIfExists(path);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+            Files.list(Paths.get(INPUT_FRAMES_DIR)).forEach(path -> {
                 try {
                     Files.deleteIfExists(path);
                 } catch (IOException e) {
@@ -221,12 +240,55 @@ public class YoloDetectionController {
             }
 
             return ResponseEntity.ok("视频检测完成，结果已保存至 " + outputExpDir.getFileName().toString());
-        } catch (IOException | InterruptedException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(500).body("视频处理失败: " + e.getMessage());
         }
     }
 
+    /**
+     * 新增方法：抽帧视频到 8fps，保存为 JPG 文件
+     * @param videoPath 视频文件路径
+     * @param outputDir 抽帧输出目录
+     * @throws Exception 抽帧过程中的异常
+     */
+    private void extractFramesAt8fps(Path videoPath, Path outputDir) throws Exception {
+        // 确保输出目录存在
+        Files.createDirectories(outputDir);
+
+        // 使用 FFmpegFrameGrabber 打开视频
+        FFmpegFrameGrabber grabber = new FFmpegFrameGrabber(videoPath.toString());
+        grabber.start();
+
+        // 计算目标帧间隔（1/8 秒，单位为秒）
+        double targetInterval = 1.0 / 8.0; // 8fps
+        double lastTime = -targetInterval; // 初始化为负值以确保第一帧被提取
+        int frameCount = 0;
+
+        // 逐帧处理
+        Java2DFrameConverter converter = new Java2DFrameConverter();
+        while (true) {
+            Frame frame = grabber.grabImage(); // 仅抓取图像帧
+            if (frame == null) break;
+
+            // 获取当前帧时间（秒）
+            double currentTime = grabber.getTimestamp() / 1_000_000.0; // 微秒转为秒
+
+            // 如果时间间隔达到 1/8 秒，保存该帧
+            if (currentTime - lastTime >= targetInterval) {
+                BufferedImage image = converter.getBufferedImage(frame);
+                String frameFilename = String.format("frame_%06d.jpg", frameCount);
+                Path framePath = outputDir.resolve(frameFilename);
+                ImageIO.write(image, "jpg", framePath.toFile());
+                lastTime = currentTime;
+                frameCount++;
+            }
+        }
+
+        // 释放资源
+        grabber.stop();
+        grabber.close();
+    }
     /**
      * POST /api/yolo/image
      * 上传图片文件，经 Python 脚本检测后返回处理过的图片 exp 文件夹名称，
