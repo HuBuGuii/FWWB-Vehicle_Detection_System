@@ -209,21 +209,7 @@ public class YoloDetectionController {
                         try {
                             vehicleService.save(vehicle);
                         } catch (Exception e) {
-                            // 捕获数据库唯一约束异常
-                            if (e.getMessage().contains("vehicle_licence_key")) {
-                                System.out.println("检测到重复的车牌号（licence=" + licensePlate + "），跳过插入新车辆记录。");
-                                // 再次尝试查找现有记录
-                                vehicle = vehicleService.lambdaQuery()
-                                        .eq(Vehicle::getType, type)
-                                        .eq(Vehicle::getLicence, licensePlate)
-                                        .one();
-                                if (vehicle == null) {
-                                    System.out.println("无法找到匹配的车辆记录，继续处理其他记录。");
-                                    continue; // 跳过当前记录的后续处理，直接进入下一个循环
-                                }
-                            } else {
-                                throw e; // 其他异常继续抛出
-                            }
+                            e.printStackTrace();
                         }
                     }
                 }
